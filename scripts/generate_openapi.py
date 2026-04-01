@@ -243,7 +243,7 @@ def build_openapi():
          "MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. "
          "Send JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n"
          "## About This Document\n"
-         "This API reference covers all 13 Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed RFID readers. "
+         "This API reference covers the Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed RFID readers. "
          "Each command section includes the request payload schema, response payload schema, field descriptions, and JSON examples.\n\n"
          "## Supported Gen2X Features\n"
          "- **Tag Protection (Protected Mode)** — Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers. "
