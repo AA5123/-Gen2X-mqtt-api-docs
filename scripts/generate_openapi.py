@@ -239,6 +239,7 @@ def build_openapi():
         ("title", "Impinj Gen2X MQTT API"),
         ("version", "1.0.0"),
         ("description",
+         "# Impinj Gen2X MQTT API &nbsp; v1.0.0\n\n"
          "MQTT-based API for controlling Impinj Gen2X features on Zebra RFID readers. "
          "Send JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n"
          "## About This Document\n"

@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775078506" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775078739" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775078506"
+    spec-url="openapi.json?v=1775078739"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +59,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775078506"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775078739"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -84,13 +84,12 @@
       '.nav-bar-info { font-size: 20px !important; }',
       '.nav-bar-section { font-size: 20px !important; }',
       '[data-tag-group-header] { font-size: 19px !important; }',
-      '.nav-bar-info .info-title, .nav-bar-info .title, .api-info .info-title, .api-info .title, h2.title, div.title { font-size: 36px !important; font-weight: 800 !important; line-height: 1.2 !important; color: #003d6b !important; }',
-      '.nav-bar-info .info-version, .nav-bar-info .version, .api-info .info-version, .api-info .version, span.version { font-size: 26px !important; font-weight: 700 !important; line-height: 1.2 !important; color: #0073bb !important; }',
-      'h2.title { font-size: 36px !important; }',
-      'span.version { font-size: 26px !important; }',
-      /* Main content area title + version override */
-      '.section-gap--read-mode h2, .section-gap h2, .section-gap--read-mode .title, .main-content h2:first-of-type { font-size: 42px !important; font-weight: 900 !important; color: #003d6b !important; border-bottom: 3px solid #003d6b !important; padding-bottom: 8px !important; }',
-      '.section-gap--read-mode .version, .main-content .version, .api-info .version { font-size: 28px !important; font-weight: 700 !important; color: #0073bb !important; }',
+      /* Hide RapiDoc built-in small title and version - we render our own via markdown h1 */
+      '.section-gap--read-mode > .title, .section-gap > .title, .api-info > .title, h2.title { display: none !important; }',
+      '.section-gap--read-mode > .version, .section-gap > .version, .api-info > .version, span.version:not(.m-markdown span) { display: none !important; }',
+
+      /* Style the h1 we put in the markdown description */
+      '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #003d6b !important; border-bottom: 3px solid #003d6b !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; letter-spacing: -0.5px !important; line-height: 1.2 !important; }',
 
       /* Content area: full width with generous padding */
       '.main-content { max-width: 100% !important; width: 100% !important; padding: 0 24px !important; }',
@@ -436,6 +435,7 @@
   </script>
 </body>
 </html>
+
 
 
 
