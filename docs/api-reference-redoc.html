@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775079639" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775079818" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775079639"
+    spec-url="openapi.json?v=1775079818"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +59,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775079639"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775079818"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -84,6 +84,10 @@
       '.nav-bar-info { font-size: 20px !important; }',
       '.nav-bar-section { font-size: 20px !important; }',
       '[data-tag-group-header] { font-size: 19px !important; }',
+
+      /* Hide RapiDoc small title/version: they are direct children (h1/h2/span/div) of the overview section, NOT inside .m-markdown */
+      '.section-gap--read-mode > h1, .section-gap--read-mode > h2, .section-gap--read-mode > span, .section-gap > h1, .section-gap > h2, .section-gap > span { display: none !important; }',
+      '#overview > h1, #overview > h2, #overview > span, #api-title, #api-info > h1, #api-info > h2, #api-info > span { display: none !important; }',
 
       /* Style the h1 we put in the markdown description */
       '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #003d6b !important; border-bottom: 3px solid #003d6b !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; letter-spacing: -0.5px !important; line-height: 1.2 !important; }',
@@ -417,6 +421,7 @@
   </script>
 </body>
 </html>
+
 
 
 
