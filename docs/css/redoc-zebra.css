@@ -1,0 +1,208 @@
+/**
+ * Zebra Technologies branding for Redoc (API reference iframe).
+ * Applied only on api-reference-redoc.html. Does not affect other pages.
+ * MQTT API: HTTP method badges (POST, GET, etc.) and path display hidden.
+ */
+
+/* Hide large logo in main content to prevent overlap with title and intro text */
+#redoc-container > div > div:nth-child(2) img {
+  display: none !important;
+}
+
+/* ═══ Redoc sidebar – AWS-style tree indentation (light theme) ═══ */
+
+/* Sidebar container: white background, left border */
+#redoc-container > div > div:first-child {
+  background: #ffffff !important;
+  border-right: 1px solid #d5dbdb !important;
+}
+
+/* --- Level 1: Tag-group headings (MANAGEMENT INTERFACE, CONTROL INTERFACE, …) --- */
+#redoc-container [role="navigation"] ul > li > label[role="menuitem"] {
+  color: #545b64 !important;
+  text-transform: uppercase;
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 10px 12px 6px 12px !important;
+  cursor: default;
+}
+
+/* Ensure sidebar does not overflow; clip long operation names */
+#redoc-container > div > div:first-child {
+  overflow-x: hidden !important;
+}
+
+#redoc-container [role="navigation"] li {
+  overflow: hidden;
+}
+
+/* --- Level 2: Tag items (Management - Device Status, etc.) --- */
+#redoc-container [role="navigation"] ul > li > ul > li > label,
+#redoc-container [role="navigation"] ul > li > ul > li > a {
+  padding-left: 24px !important;
+  font-size: 0.87rem;
+  font-weight: 500;
+  color: #16191f !important;
+  line-height: 1.5;
+}
+
+/* Disclosure triangles are handled exclusively by JS (styleSidebar).
+   Suppress all CSS pseudo-element arrows to avoid doubled / stuck arrows. */
+#redoc-container [role="navigation"] label::before,
+#redoc-container [role="navigation"] label::after,
+#redoc-container [role="navigation"] a::before,
+#redoc-container [role="navigation"] a::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* --- Level 3: Operation leaf items (get_status, get_version, …) ---
+   In Redoc, operations are ALWAYS <a> tags; tags/groups are <label> tags.
+   Target by element type + sidebar position for maximum reliability. */
+#redoc-container [role="navigation"] ul > li > ul > li > ul a,
+#redoc-container [role="navigation"] ul > li > ul > li > ul label,
+#redoc-container [role="navigation"] ul > li > ul > li > ul > li > label,
+#redoc-container [role="navigation"] ul > li > ul > li > ul > li > a,
+#redoc-container [role="navigation"] ul ul ul a,
+#redoc-container [role="navigation"] ul ul ul label,
+/* Fallback: target ALL <a> tags inside sidebar (operations are always <a>) */
+#redoc-container > div > div:first-child a[href],
+#redoc-container > div > div:first-child [role="navigation"] a,
+#redoc-container > div > div:first-child nav a,
+/* Fallback selectors via role="menu" */
+#redoc-container ul[role="menu"] ul[role="menu"] ul[role="menu"] a,
+#redoc-container ul[role="menu"] ul[role="menu"] ul[role="menu"] label,
+#redoc-container ul[role="menu"] li ul li ul li > a,
+#redoc-container ul[role="menu"] li ul li ul li > label {
+  padding-left: 52px !important;
+  font-size: 0.84rem !important;
+  font-weight: 400 !important;
+  color: #16191f !important;
+  line-height: 1.5 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+  max-width: 100% !important;
+  text-transform: none !important;
+}
+
+/* Make sure operation list items don't add extra padding */
+#redoc-container [role="navigation"] ul ul ul > li,
+#redoc-container [role="navigation"] ul > li > ul > li > ul > li {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Ensure depth-2 tags (Management - Device Status etc.) have proper left padding.
+   Use :not() to exclude depth-3 operation items (which live inside ul ul ul). */
+#redoc-container [role="navigation"] > ul > li > ul > li > label,
+#redoc-container [role="navigation"] > ul > li > ul > li > a {
+  padding-left: 24px !important;
+}
+
+/* Active / selected item highlight */
+#redoc-container [role="navigation"] a:hover,
+#redoc-container [role="navigation"] label:hover {
+  color: #0073bb !important;
+}
+
+#redoc-container [role="navigation"] li.active > label,
+#redoc-container [role="navigation"] li.active > a,
+#redoc-container [role="navigation"] a[class*="active"],
+#redoc-container [role="navigation"] li[class*="active"] > a {
+  color: #0073bb !important;
+  font-weight: 600;
+  border-left: 3px solid #0073bb;
+  background-color: #f2f3f3 !important;
+}
+
+/* Hide ALL Redoc native arrow icons in navigation (SVGs, styled-components, etc.) */
+#redoc-container [role="navigation"] svg,
+#redoc-container [role="navigation"] [class*="arrow"],
+#redoc-container [role="navigation"] [class*="Arrow"],
+#redoc-container [role="navigation"] [class*="Caret"],
+#redoc-container [role="navigation"] [class*="caret"],
+#redoc-container [role="navigation"] [class*="expand"],
+#redoc-container [role="navigation"] [class*="Expand"] {
+  display: none !important;
+}
+
+/* Section separators between groups */
+#redoc-container [role="navigation"] > ul > li {
+  border-bottom: 1px solid #eaeded;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+/* Remove separator from sub-items */
+#redoc-container [role="navigation"] ul ul > li {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Scrollbar styling for sidebar */
+#redoc-container > div > div:first-child::-webkit-scrollbar {
+  width: 6px;
+}
+#redoc-container > div > div:first-child::-webkit-scrollbar-thumb {
+  background: #d5dbdb;
+  border-radius: 3px;
+}
+#redoc-container > div > div:first-child::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* MQTT API: hide HTTP method badges in content area only (not sidebar) */
+#redoc-container > div > div:nth-child(2) [class*="HttpVerb"],
+#redoc-container > div > div:nth-child(2) [class*="http-verb"],
+#redoc-container > div > div:nth-child(2) .http-verb,
+#redoc-container > div > div:nth-child(2) [data-method] {
+  display: none !important;
+}
+
+/* Hide method + path line in operation header (POST /get_status) – show only operation name */
+#redoc-container > div > div:nth-child(2) [class*="operation"] > div > div:first-child > span:first-child,
+#redoc-container > div > div:nth-child(2) h2 + div > span:first-child,
+#redoc-container > div > div:nth-child(2) h3 + div > span:first-child {
+  display: none !important;
+}
+
+/* Reduce large blank gaps when response sections are collapsed */
+#redoc-container > div > div:nth-child(2) [class*="operation"],
+#redoc-container > div > div:nth-child(2) [class*="Operation"] {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Prevent operation rows from stretching to match tallest side column */
+#redoc-container > div > div:nth-child(2) [class*="operation"] > div,
+#redoc-container > div > div:nth-child(2) [class*="Operation"] > div {
+  align-items: flex-start !important;
+  min-height: 0 !important;
+}
+
+/* Tighten response block spacing after collapse */
+#redoc-container > div > div:nth-child(2) [class*="response"],
+#redoc-container > div > div:nth-child(2) [class*="Response"] {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Hide Redocly / Redoc branding */
+#redoc-container a[href*="redoc"],
+#redoc-container a[href*="Redoc"],
+#redoc-container [class*="powered" i],
+#redoc-container [class*="Powered"],
+#redoc-container img[alt*="Redoc"],
+#redoc-container img[alt*="redoc"],
+a[href*="redocly"],
+a[href*="redoc.ly"] {
+  display: none !important;
+}
+
+/* ═══ Nested schema property indentation ═══ */
+/* Handled by JavaScript (indentNestedProps) since Redoc uses styled-components. */

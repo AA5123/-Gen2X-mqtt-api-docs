@@ -1,0 +1,10 @@
+{
+  "command": "set_impinjGen2X",
+  "command_id": "eb8db4d8-f641-4bdb-9858-302c4dbec101",
+  "payload": {
+    "tagProtect": {
+      "action": "enableTagVisibility",
+      "password": "77777777"
+    }
+  }
+}

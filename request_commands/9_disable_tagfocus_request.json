@@ -1,0 +1,9 @@
+{
+  "command": "set_impinjGen2X",
+  "command_id": "331c364f-ba53-4529-a150-d786f134b27b",
+  "payload": {
+    "tagFocus": {
+      "enabled": false
+    }
+  }
+}

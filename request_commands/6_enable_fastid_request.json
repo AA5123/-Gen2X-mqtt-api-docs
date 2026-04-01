@@ -1,0 +1,9 @@
+{
+  "command": "set_impinjGen2X",
+  "command_id": "657298d3-98de-421c-9b7c-ad3b53b7474f",
+  "payload": {
+    "fastID": {
+      "enabled": true
+    }
+  }
+}

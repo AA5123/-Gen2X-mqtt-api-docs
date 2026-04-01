@@ -1,0 +1,13 @@
+{
+  "topic": "commandrequest",
+  "payload": {
+    "command": "set_impinjGen2X",
+    "command_id": "149f1ba4-c3f5-4240-8d16-2c8988332619",
+    "payload": {
+      "fastID": {
+        "enabled": false
+      }
+    }
+  },
+  "sent_at": "2026-04-01T08:52:41.400565"
+}

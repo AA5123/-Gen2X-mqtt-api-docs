@@ -1,0 +1,19 @@
+{
+  "command": "get_impinjGen2X",
+  "command_id": "9d744286-7b97-40b8-9e91-190df0334557",
+  "payload": {
+    "tagQuieting": {
+      "basic": {
+        "action": "unquiet",
+        "tagIDs": [
+          "e28011b0a5050076c4d751e9",
+          "e28011b0a5050076c4d77307",
+          "e28011b0a5050076c4d751ec",
+          "e28011b0a5050076c4d7530a",
+          "e28011b0a5050076c4d751e4"
+        ]
+      }
+    }
+  },
+  "response": "success"
+}

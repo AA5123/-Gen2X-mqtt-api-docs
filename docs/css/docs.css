@@ -1,0 +1,877 @@
+/*
+ * RFD40 / RFD90 IoT Connector API Reference
+ * Industrial / enterprise documentation theme
+ */
+:root {
+  /* Zebra navy enterprise palette — unified with API reference */
+  --side-bg: #f7f8fa;
+  --side-bg-hover: #eef2f7;
+  --side-text: #1f2937;
+  --side-text-active: #003d6b;
+  --side-accent: #003d6b;
+  --side-border: #d5d9e0;
+
+  --main-bg: #ffffff;
+  --main-text: #1a1a1a;
+  --main-text-muted: #374151;
+  --main-border: #e5e7eb;
+  --main-heading: #003d6b;
+
+  --link: #003d6b;
+  --link-hover: #002d50;
+  --accent: #003d6b;
+
+  --table-header-bg: #003d6b;
+  --table-header-text: #ffffff;
+  --table-border: #d5d9e0;
+  --table-row-alt: #f7f9fb;
+
+  --code-bg: #1e293b;
+  --code-text: #f9fafb;
+  --code-inline-bg: #f3f4f6;
+  --code-inline-text: #1a1a1a;
+
+  --hr: #d5d9e0;
+  --strong: #1a1a1a;
+
+  /* TOC palette — aligned with navy theme */
+  --toc-bg: #f7f8fa;
+  --toc-bg-header: #f2f3f7;
+  --toc-border: #d5d9e0;
+  --toc-text: #1f2937;
+  --toc-text-muted: #374151;
+  --toc-hover-bg: #eef2f7;
+  --toc-hover-text: #003d6b;
+  --toc-active-bg: #e6f1fb;
+  --toc-active-text: #003d6b;
+  --toc-active-border: #003d6b;
+  --toc-focus: #003d6b;
+
+  /* Content area padding – industry-standard tightened spacing */
+  --content-padding-x: 24px;
+  --content-padding-y: 1.5rem;
+  --content-padding-bottom: 2rem;
+}
+
+* { box-sizing: border-box; }
+
+/* Skip-to-content link for keyboard accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--main-text);
+  background: var(--main-bg);
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  flex-shrink: 0;
+  background: var(--side-bg);
+  border-right: 1px solid var(--side-border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar .nav-title {
+  padding: 1rem 1.25rem;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--side-accent);
+  border-bottom: 1px solid var(--side-border);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.sidebar a {
+  display: block;
+  padding: 0.6rem 1.25rem;
+  color: var(--side-text);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.sidebar a:hover {
+  background: var(--side-bg-hover);
+  color: var(--side-text-active);
+  border-left-color: var(--side-accent);
+}
+
+.sidebar a.active {
+  background: var(--side-bg-hover);
+  color: var(--side-text-active);
+  font-weight: 600;
+  border-left-color: var(--side-accent);
+}
+
+/* Nested collapsible navigation (base) */
+.sidebar .nav-group {
+  border-left: 3px solid transparent;
+}
+
+.sidebar .nav-group-toggle {
+  padding-left: 1.25rem;
+}
+
+.sidebar .nav-group-toggle::before {
+  display: inline-block;
+  width: 0.6rem;
+  margin-right: 0.35rem;
+  content: "▾";
+  font-size: 0.75rem;
+  transition: transform 0.15s ease;
+}
+
+.sidebar .nav-group.collapsed .nav-group-toggle::before {
+  content: "▸";
+}
+
+.sidebar .nav-group-children {
+  overflow: hidden;
+}
+
+.sidebar .nav-group.collapsed .nav-group-children {
+  display: none;
+}
+
+.sidebar .nav-group-children a {
+  padding-left: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Main content area – 90–100% of available width, no max-width */
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  padding: var(--content-padding-y) var(--content-padding-x) var(--content-padding-bottom);
+  background: var(--main-bg);
+  overflow-y: auto;
+}
+
+/* Automatic numbering for h2, h3, h4 */
+.main {
+  counter-reset: h2counter 0 h3counter 0 h4counter 0;
+}
+.main h2 {
+  counter-increment: h2counter;
+  counter-reset: h3counter 0 h4counter 0;
+}
+.main h2::before {
+  content: counter(h2counter) ". ";
+}
+.main h3 {
+  counter-increment: h3counter;
+  counter-reset: h4counter 0;
+}
+.main h3::before {
+  content: counter(h2counter) "." counter(h3counter) " ";
+}
+.main h4 {
+  counter-increment: h4counter;
+}
+.main h4::before {
+  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " ";
+}
+
+.main h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--main-heading);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.main h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+  color: var(--main-heading);
+}
+
+.main h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 12px 0 6px 0;
+  color: var(--main-heading);
+}
+
+.main h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.1rem;
+  margin-bottom: 0.35rem;
+  color: var(--main-heading);
+}
+
+.main p {
+  margin: 0 0 8px 0;
+  color: var(--main-text);
+}
+
+.main strong { color: var(--strong); font-weight: 600; }
+
+/* Code – industrial dark block, light inline */
+.main pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-family: "Consolas", "Monaco", "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid var(--side-border);
+  margin: 1rem 0;
+}
+
+.main code {
+  font-family: "Consolas", "Monaco", "Liberation Mono", monospace;
+  font-size: 14px;
+}
+
+.main pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+.main p code,
+.main li code,
+.main td code {
+  background: var(--code-inline-bg);
+  color: var(--code-inline-text);
+  padding: 0.2em 0.45em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Tables – Zebra monochrome, high-contrast, enterprise */
+.main table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 4px 0 8px 0;
+  font-size: 15px;
+  color: var(--main-text);
+  border: 1px solid var(--table-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.main thead {
+  background: var(--table-header-bg);
+}
+
+.main th {
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--table-border);
+  white-space: nowrap;
+}
+
+.main td {
+  font-size: 15px;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+}
+
+.main tr:last-child td {
+  border-bottom: none;
+}
+
+.main td:last-child,
+.main th:last-child {
+  border-right: none;
+}
+
+.main tbody tr:nth-child(even) {
+  background: var(--table-row-alt);
+}
+
+.main tbody tr:hover {
+  background: #f3f4f6;
+}
+
+.main td.numeric {
+  text-align: center;
+}
+
+/* Lists */
+.main ul, .main ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+  color: var(--main-text);
+}
+
+.main li { margin: 0.35rem 0; }
+
+.main li::marker { color: var(--accent); }
+
+/* Links */
+.main a {
+  color: var(--link);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.main a:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
+}
+
+/* Horizontal rule */
+.main hr {
+  border: none;
+  border-top: 1px solid var(--hr);
+  margin: 8px 0;
+}
+
+/* Responsive – smaller padding on tablets and phones */
+@media (max-width: 1024px) {
+  :root {
+    --content-padding-x: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    position: relative;
+    max-height: 40vh;
+  }
+  .sidebar .nav-title { padding: 0.75rem 1rem; }
+  .sidebar a { padding: 0.5rem 1rem; }
+  .main {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+}
+
+/********************************************
+ * Modern, enterprise left navigation sidebar
+ ********************************************/
+
+/* Typography & spacing */
+.sidebar a {
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin: 0.15rem 0;
+}
+
+/* Top-level groups: slightly larger and bolder */
+.sidebar .nav-group > .nav-group-toggle {
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+/* Child links: clear indentation under section title */
+.sidebar .nav-group-children {
+  padding-left: 0.5rem;
+}
+.sidebar .nav-group-children a {
+  font-size: 0.97rem;
+  font-weight: 500;
+  padding-left: 2.5rem;
+}
+
+/* Depth-2 children — further indented for clear hierarchy */
+.sidebar .nav-group-children a.nav-sub-depth2 {
+  font-size: 0.94rem;
+  padding-left: 4rem;
+  opacity: 0.92;
+}
+
+/* Active & hover states with left border highlight */
+.sidebar a {
+  border-left: 3px solid transparent;
+  background: transparent;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.sidebar a:hover {
+  background: var(--toc-hover-bg);
+  border-left-color: var(--accent);
+  color: var(--side-text-active);
+}
+
+.sidebar a.active,
+.sidebar .nav-group-toggle.active {
+  background: var(--toc-active-bg);
+  border-left-color: var(--accent);
+  color: var(--side-text-active);
+  font-weight: 600;
+}
+
+/* Expand/collapse arrow: larger, with rotation and better spacing */
+.sidebar .nav-group {
+  border-left: 3px solid transparent;
+}
+
+.sidebar .nav-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;                         /* 8–10px gap between arrow & text */
+  padding-left: 1.3rem;
+  min-height: 2rem;                    /* ≥32px click area */
+}
+
+.sidebar .nav-group-toggle::before {
+  content: "▸";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;                       /* ≥24px clickable width */
+  height: 1.6rem;                      /* ≥24px clickable height */
+  font-size: 1.1rem;                   /* ~1.6–1.8× original */
+  transform-origin: center center;
+  transform: rotate(90deg);            /* expanded = pointing down */
+  transition: transform 0.18s ease, color 0.18s ease;
+  color: var(--side-text);
+}
+
+.sidebar .nav-group.collapsed .nav-group-toggle::before {
+  transform: rotate(0deg);             /* collapsed = pointing right */
+}
+
+.sidebar .nav-group-toggle:hover::before,
+.sidebar .nav-group-toggle.active::before {
+  color: var(--side-text-active);
+}
+
+/* Leaf toggle links (e.g., 6. API Reference) – look like group toggles but navigate directly */
+.sidebar a.nav-leaf-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1.3rem !important;
+  min-height: 2rem;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+.sidebar a.nav-leaf-toggle::before {
+  content: "▸";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 1.1rem;
+  color: var(--side-text);
+  flex-shrink: 0;
+}
+
+/* Children visibility */
+.sidebar .nav-group-children {
+  overflow: hidden;
+}
+
+.sidebar .nav-group.collapsed .nav-group-children {
+  display: none;
+}
+
+.sidebar .nav-group-children a {
+  font-size: 0.97rem;
+}
+
+/* Layout shell: header + TOC + content */
+.doc-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.doc-header-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+.toc-toggle {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.toc-toggle:hover {
+  background: #f3f4f6;
+}
+
+.layout-shell {
+  height: calc(100vh - 56px);
+  margin-top: 56px;
+  overflow: hidden;
+}
+
+.layout {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 290px;
+  min-width: 290px;
+  height: 100%;
+  position: relative;
+  top: auto;
+  transition: width 0.22s ease, min-width 0.22s ease, opacity 0.22s ease, transform 0.22s ease;
+}
+
+.main {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  transition: width 0.22s ease;
+}
+
+body.sidebar-collapsed .sidebar {
+  width: 0;
+  min-width: 0;
+  border-right: none;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+@media (max-width: 768px) {
+  .doc-header {
+    padding: 0 0.75rem;
+  }
+
+  .doc-header-title {
+    font-size: 0.78rem;
+  }
+
+  .layout {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    height: auto;
+    max-height: none;
+    z-index: 1150;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.25);
+  }
+
+  body.sidebar-collapsed .sidebar {
+    width: 290px;
+    min-width: 290px;
+    border-right: 1px solid #111827;
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+
+  .main {
+    width: 100%;
+    padding: 1.25rem 1rem 1.5rem;
+  }
+}
+
+/* ============================================================
+   TOC Skin: industrial documentation-ready navigation
+   ============================================================ */
+
+.doc-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--toc-border);
+}
+
+.toc-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--toc-border);
+  background: var(--toc-bg);
+  color: var(--toc-text);
+}
+
+.toc-toggle:hover {
+  background: var(--toc-hover-bg);
+}
+
+.toc-toggle:focus-visible,
+.sidebar a:focus-visible {
+  outline: 2px solid var(--toc-focus);
+  outline-offset: 1px;
+}
+
+.toc-backdrop {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1100;
+}
+
+.toc-backdrop.visible {
+  display: block;
+  opacity: 1;
+}
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--toc-bg);
+  border-right: 1px solid var(--toc-border);
+}
+
+.sidebar .nav-brand {
+  height: 88px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.15rem;
+  border-bottom: 1px solid var(--toc-border);
+  background: #f3f4f7;
+  overflow: hidden;
+}
+
+.sidebar .nav-brand-logo {
+  display: block;
+  width: 240px;
+  height: 68px;
+  max-width: none;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.sidebar .nav-title {
+  background: #f6f7fa;
+  border-bottom: 1px solid var(--toc-border);
+  padding: 0.95rem 1.1rem;
+}
+
+.sidebar .nav-title-main {
+  color: #16191f;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.sidebar .nav-title-sub {
+  margin-top: 0.32rem;
+  color: var(--toc-text-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.sidebar a {
+  color: var(--toc-text);
+  border-left: 0;
+  margin: 0;
+  padding: 0.32rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  min-height: 1.9rem;
+  line-height: 1.35;
+}
+
+.sidebar .nav-label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.4rem;
+  align-items: start;
+  width: 100%;
+}
+
+.sidebar .nav-label-num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sidebar .nav-label-text {
+  min-width: 0;
+  word-break: normal;
+}
+
+.sidebar a:hover {
+  background: var(--toc-hover-bg);
+  color: var(--toc-hover-text);
+}
+
+.sidebar .nav-group {
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.sidebar .nav-group > .nav-group-toggle {
+  color: var(--toc-text);
+  font-size: 0.91rem;
+  font-weight: 600;
+  min-height: 1.95rem;
+  padding-left: 0.45rem;
+  gap: 0.3rem;
+}
+
+.sidebar .nav-group-toggle::before {
+  width: 0.85rem;
+  height: 0.85rem;
+  font-size: 0.72rem;
+  color: var(--toc-text-muted);
+}
+
+.sidebar .nav-group-children {
+  padding-left: 1.25rem;
+}
+
+.sidebar .nav-group-children a {
+  padding-left: 0.95rem;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #2c3a4a;
+  padding-right: 0.8rem;
+}
+
+.sidebar .nav-group-children a .nav-label {
+  grid-template-columns: 3.2ch minmax(0, 1fr);
+}
+
+.sidebar .nav-group-children a.nav-sub-depth2 {
+  padding-left: 1.65rem;
+  font-size: 0.84rem;
+  opacity: 1;
+}
+
+.sidebar .nav-group-children a.nav-sub-depth2 .nav-label {
+  grid-template-columns: 4.6ch minmax(0, 1fr);
+}
+
+.sidebar a.active,
+.sidebar .nav-group-toggle.active {
+  background: transparent;
+  color: var(--toc-active-text);
+  border-left-color: transparent;
+  font-weight: 700;
+}
+
+.sidebar a.nav-top-link {
+  padding-left: 1rem !important;
+}
+
+.sidebar > a[href="index.html"] {
+  border-bottom: 1px solid var(--toc-border);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 300px;
+    min-width: 300px;
+  }
+
+  body.sidebar-collapsed .sidebar {
+    width: 300px;
+    min-width: 300px;
+  }
+}
+
+/* Final TOC indentation overrides (keep at file end) */
+.sidebar .nav-group-children {
+  margin-left: 2rem;
+  padding-left: 0;
+}
+
+.sidebar .nav-group-children a {
+  padding-left: 0.4rem;
+}
+
+.sidebar .nav-group-children a .nav-label {
+  grid-template-columns: 3.25ch minmax(0, 1fr);
+}
+
+.sidebar .nav-group-children a.nav-sub-depth2 {
+  margin-left: 0.95rem;
+  padding-left: 0.2rem;
+}
+
+.sidebar .nav-group-children a.nav-sub-depth2 .nav-label {
+  grid-template-columns: 4.7ch minmax(0, 1fr);
+}

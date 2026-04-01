@@ -1,0 +1,15 @@
+{
+  "topic": "controlrequest",
+  "payload": {
+    "command": "set_impinjGen2X",
+    "command_id": "15724566-b136-47fa-a314-2b29780bcad7",
+    "payload": {
+      "tagProtect": {
+        "action": "enableTagProtection",
+        "password": "77777777",
+        "tagID": "e2801191a5030069073b426d"
+      }
+    }
+  },
+  "sent_at": "2026-04-01T08:59:52.299326"
+}

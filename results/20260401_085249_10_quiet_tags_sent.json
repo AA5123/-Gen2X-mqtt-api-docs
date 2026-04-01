@@ -1,0 +1,18 @@
+{
+  "topic": "commandrequest",
+  "payload": {
+    "command": "set_impinjGen2X",
+    "command_id": "868c501c-fa53-4951-bd2a-645ca1c58a36",
+    "payload": {
+      "tagQuieting": {
+        "basic": {
+          "action": "quiet",
+          "tagIDs": [
+            "e2801191a5030069073b426d"
+          ]
+        }
+      }
+    }
+  },
+  "sent_at": "2026-04-01T08:52:49.169830"
+}

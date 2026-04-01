@@ -1,0 +1,73 @@
+{
+    "title": "enable_tag_protection",
+    "description": "Makes a specific tag invisible to unauthorized readers using a password-based protection mechanism.",
+    "x-tag": "Tag Protection",
+    "type": "object",
+    "required": [
+        "command",
+        "command_id",
+        "payload"
+    ],
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "set_impinjGen2X",
+            "description": "MQTT command name"
+        },
+        "command_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier to correlate request with response"
+        },
+        "payload": {
+            "type": "object",
+            "required": [
+                "tagProtect"
+            ],
+            "properties": {
+                "tagProtect": {
+                    "type": "object",
+                    "required": [
+                        "action",
+                        "password",
+                        "tagID"
+                    ],
+                    "properties": {
+                        "action": {
+                            "type": "string",
+                            "const": "enableTagProtection",
+                            "description": "Sets the tag to protected mode"
+                        },
+                        "password": {
+                            "type": "string",
+                            "minLength": 8,
+                            "maxLength": 8,
+                            "pattern": "^[0-9A-Fa-f]{8}$",
+                            "description": "8-character hexadecimal 32-bit password"
+                        },
+                        "tagID": {
+                            "type": "string",
+                            "pattern": "^[0-9A-Fa-f]+$",
+                            "description": "Hexadecimal tagID (EPC) of the target tag"
+                        }
+                    },
+                    "description": "Tag protection configuration"
+                }
+            },
+            "description": "Command payload containing the feature configuration"
+        }
+    },
+    "examples": [
+        {
+            "command": "set_impinjGen2X",
+            "command_id": "345d9511-40ac-4aed-894f-006df1205b99",
+            "payload": {
+                "tagProtect": {
+                    "action": "enableTagProtection",
+                    "password": "77777777",
+                    "tagID": "12348765a5050076c4d75211"
+                }
+            }
+        }
+    ]
+}

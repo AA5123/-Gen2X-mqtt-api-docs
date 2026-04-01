@@ -1,0 +1,11 @@
+{
+  "topic": "controlrequest",
+  "payload": {
+    "command": "start",
+    "command_id": "12b0b879-be88-4bdb-b190-9ed7bab44852",
+    "payload": {
+      "applyImpinjGen2X": true
+    }
+  },
+  "sent_at": "2026-04-01T09:00:16.485832"
+}

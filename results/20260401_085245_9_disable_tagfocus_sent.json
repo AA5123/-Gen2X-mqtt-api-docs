@@ -1,0 +1,13 @@
+{
+  "topic": "commandrequest",
+  "payload": {
+    "command": "set_impinjGen2X",
+    "command_id": "75b470d6-9af6-4dc2-9aa8-9f1aba9a016c",
+    "payload": {
+      "tagFocus": {
+        "enabled": false
+      }
+    }
+  },
+  "sent_at": "2026-04-01T08:52:45.430797"
+}

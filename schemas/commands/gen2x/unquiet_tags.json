@@ -1,0 +1,85 @@
+{
+    "title": "unquiet_tags",
+    "description": "Restores previously silenced tags back to inventory participation.",
+    "x-tag": "Tag Quieting",
+    "type": "object",
+    "required": [
+        "command",
+        "command_id",
+        "payload"
+    ],
+    "properties": {
+        "command": {
+            "type": "string",
+            "const": "set_impinjGen2X",
+            "description": "MQTT command name"
+        },
+        "command_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier to correlate request with response"
+        },
+        "payload": {
+            "type": "object",
+            "required": [
+                "tagQuieting"
+            ],
+            "properties": {
+                "tagQuieting": {
+                    "type": "object",
+                    "required": [
+                        "basic"
+                    ],
+                    "properties": {
+                        "basic": {
+                            "type": "object",
+                            "required": [
+                                "action",
+                                "tagIDs"
+                            ],
+                            "properties": {
+                                "action": {
+                                    "type": "string",
+                                    "const": "unquiet",
+                                    "description": "Restore the specified tags"
+                                },
+                                "tagIDs": {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "items": {
+                                        "type": "string",
+                                        "pattern": "^[0-9A-Fa-f]+$"
+                                    },
+                                    "description": "List of tag EPCs (hex strings) to unquiet"
+                                }
+                            },
+                            "description": "Basic tag quieting settings"
+                        }
+                    },
+                    "description": "Tag quieting configuration"
+                }
+            },
+            "description": "Command payload containing the feature configuration"
+        }
+    },
+    "examples": [
+        {
+            "command": "set_impinjGen2X",
+            "command_id": "4c352333-3869-43e1-bba8-eda8692d8c40",
+            "payload": {
+                "tagQuieting": {
+                    "basic": {
+                        "action": "unquiet",
+                        "tagIDs": [
+                            "e28011b0a5050076c4d751e9",
+                            "e28011b0a5050076c4d77307",
+                            "e28011b0a5050076c4d751ec",
+                            "e28011b0a5050076c4d7530a",
+                            "e28011b0a5050076c4d751e4"
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

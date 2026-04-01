@@ -1,0 +1,848 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Impinj Gen2X MQTT API",
+    "version": "1.0.0",
+    "description": "MQTT-based API for controlling Impinj Gen2X features on an RFID reader.\n\n## Connection Details\n| Parameter | Value |\n|-----------|-------|\n| Protocol | MQTT over TLS |\n| Broker | 10.117.229.9:8883 |\n| Publish Topic | `controlrequest` |\n| Subscribe Topic | `controlresponse` |\n| Tag Data Topic | `tagdatanew` |\n| Auth | Mutual TLS (CA cert + client cert + client key) |\n\n## Workflow\n1. Configure Gen2X features using `set_impinjGen2X`\n2. Verify configuration using `get_impinjGen2X`\n3. Stop the radio if running\n4. Start the radio with `applyImpinjGen2X: true`",
+    "contact": {
+      "name": "IoT-Connector Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "mqtt://10.117.229.9:8883",
+      "description": "RFID Reader MQTT Broker (Mutual TLS)"
+    }
+  ],
+  "tags": [
+    { "name": "Protected Mode", "description": "Makes tags invisible unless the correct 32-bit password is provided" },
+    { "name": "FastID", "description": "Tags return EPC + TID in a single inventory response" },
+    { "name": "TagFocus", "description": "Already-inventoried tags stay unresponsive to help find unread tags" },
+    { "name": "TagQuieting", "description": "Selectively silence/restore specific tags by EPC (M700/M800 chips)" },
+    { "name": "Configuration", "description": "Retrieve current Gen2X settings" },
+    { "name": "Radio Control", "description": "Start/stop the radio with Gen2X configuration" },
+    { "name": "Tag Data", "description": "Real-time RFID tag read events from the reader" }
+  ],
+  "paths": {
+    "/controlrequest/enableTagProtection": {
+      "post": {
+        "tags": ["Protected Mode"],
+        "summary": "Enable Tag Protection",
+        "description": "Makes a specific tag invisible to all RFID readers. Only readers with the correct password can see or interact with the tag after protection is enabled.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "enableTagProtection",
+        "requestBody": {
+          "description": "Enable tag protection command",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagProtectRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "345d9511-40ac-4aed-894f-006df1205b99",
+                "payload": {
+                  "tagProtect": {
+                    "action": "enableTagProtection",
+                    "password": "77777777",
+                    "tagID": "12348765a5050076c4d75211"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "345d9511-40ac-4aed-894f-006df1205b99",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/disableTagProtection": {
+      "post": {
+        "tags": ["Protected Mode"],
+        "summary": "Disable Tag Protection",
+        "description": "Removes protection from a specific tag, making it visible to all readers again without needing a password.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "disableTagProtection",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagProtectRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "a157818d-9667-4d9f-8181-114ab48306f6",
+                "payload": {
+                  "tagProtect": {
+                    "action": "disableTagProtection",
+                    "password": "77777777",
+                    "tagID": "12348765a5050076c4d75211"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "a157818d-9667-4d9f-8181-114ab48306f6",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/enableTagVisibility": {
+      "post": {
+        "tags": ["Protected Mode"],
+        "summary": "Enable Tag Visibility",
+        "description": "Provides the access password to the reader so it can see and inventory tags that are in protected mode.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "enableTagVisibility",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagVisibilityRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "eb8db4d8-f641-4bdb-9858-302c4dbec101",
+                "payload": {
+                  "tagProtect": {
+                    "action": "enableTagVisibility",
+                    "password": "77777777"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "eb8db4d8-f641-4bdb-9858-302c4dbec101",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/disableTagVisibility": {
+      "post": {
+        "tags": ["Protected Mode"],
+        "summary": "Disable Tag Visibility",
+        "description": "Revokes the reader's ability to see protected tags. Even if the password was provided before, the reader stops seeing protected tags.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "disableTagVisibility",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagVisibilityRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "3f27e129-a532-488d-8fc8-8699245de663",
+                "payload": {
+                  "tagProtect": {
+                    "action": "disableTagVisibility",
+                    "password": "77777777"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "3f27e129-a532-488d-8fc8-8699245de663",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/enableShortRange": {
+      "post": {
+        "tags": ["Protected Mode"],
+        "summary": "Enable Short Range Reading",
+        "description": "Protects a tag AND restricts it to respond only when in close proximity to the reader antenna. Useful for precise item picking or point-of-sale.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "enableShortRange",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ShortRangeRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "ea05d934-16cf-4fa4-9fa7-4c01f4bd4bea",
+                "payload": {
+                  "tagProtect": {
+                    "action": "enableTagProtection",
+                    "password": "77777777",
+                    "tagID": "e28011b0a5050076c4d7521a",
+                    "enableShortRange": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "ea05d934-16cf-4fa4-9fa7-4c01f4bd4bea",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/enableFastID": {
+      "post": {
+        "tags": ["FastID"],
+        "summary": "Enable FastID",
+        "description": "Enables Impinj FastID so tags return both their EPC and TID in a single inventory response. Faster and more efficient inventory.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "enableFastID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FastIDRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "657298d3-98de-421c-9b7c-ad3b53b7474f",
+                "payload": {
+                  "fastID": {
+                    "enabled": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "657298d3-98de-421c-9b7c-ad3b53b7474f",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/disableFastID": {
+      "post": {
+        "tags": ["FastID"],
+        "summary": "Disable FastID",
+        "description": "Disables FastID. Tags return only EPC per scan (normal mode).\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "disableFastID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FastIDRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "b35808c8-0e10-42a1-8f81-799e7843e5c9",
+                "payload": {
+                  "fastID": {
+                    "enabled": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "b35808c8-0e10-42a1-8f81-799e7843e5c9",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/enableTagFocus": {
+      "post": {
+        "tags": ["TagFocus"],
+        "summary": "Enable TagFocus",
+        "description": "Instructs already-inventoried tags to remain unresponsive, improving the reader's ability to find difficult-to-read tags. Targets tags in session S1.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "enableTagFocus",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagFocusRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "a3987547-62a8-4005-a064-485524e25bff",
+                "payload": {
+                  "tagFocus": {
+                    "enabled": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "a3987547-62a8-4005-a064-485524e25bff",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/disableTagFocus": {
+      "post": {
+        "tags": ["TagFocus"],
+        "summary": "Disable TagFocus",
+        "description": "Disables TagFocus. All tags respond normally whether previously read or not.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "disableTagFocus",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagFocusRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "331c364f-ba53-4529-a150-d786f134b27b",
+                "payload": {
+                  "tagFocus": {
+                    "enabled": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "331c364f-ba53-4529-a150-d786f134b27b",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/quietTags": {
+      "post": {
+        "tags": ["TagQuieting"],
+        "summary": "Quiet Tags",
+        "description": "Silences specific tags by their EPC so they do not participate in inventory rounds. Supported on Impinj M700/M800 series tag chips.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "quietTags",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagQuietingRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "43505552-cb1b-406c-a027-cf101f576034",
+                "payload": {
+                  "tagQuieting": {
+                    "basic": {
+                      "action": "quiet",
+                      "tagIDs": [
+                        "e28011b0a5050076c4d751e9",
+                        "e28011b0a5050076c4d77307",
+                        "e28011b0a5050076c4d751ec",
+                        "e28011b0a5050076c4d7530a",
+                        "e28011b0a5050076c4d751e4"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "43505552-cb1b-406c-a027-cf101f576034",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/unquietTags": {
+      "post": {
+        "tags": ["TagQuieting"],
+        "summary": "Unquiet Tags",
+        "description": "Restores silenced tags back to inventory participation.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "unquietTags",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TagQuietingRequest" },
+              "example": {
+                "command": "set_impinjGen2X",
+                "command_id": "4c352333-3869-43e1-bba8-eda8692d8c40",
+                "payload": {
+                  "tagQuieting": {
+                    "basic": {
+                      "action": "unquiet",
+                      "tagIDs": [
+                        "e28011b0a5050076c4d751e9",
+                        "e28011b0a5050076c4d77307",
+                        "e28011b0a5050076c4d751ec",
+                        "e28011b0a5050076c4d7530a",
+                        "e28011b0a5050076c4d751e4"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "set_impinjGen2X",
+                  "command_id": "4c352333-3869-43e1-bba8-eda8692d8c40",
+                  "payload": {
+                    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/getGen2XConfig": {
+      "post": {
+        "tags": ["Configuration"],
+        "summary": "Get Gen2X Configuration",
+        "description": "Retrieves the current Gen2X configuration from the reader to verify what was set.\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "getGen2XConfig",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GetConfigRequest" },
+              "example": {
+                "command": "get_impinjGen2X",
+                "command_id": "9d744286-7b97-40b8-9e91-190df0334557",
+                "payload": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns current Gen2X config on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "get_impinjGen2X",
+                  "command_id": "9d744286-7b97-40b8-9e91-190df0334557",
+                  "payload": {
+                    "tagQuieting": {
+                      "basic": {
+                        "action": "unquiet",
+                        "tagIDs": [
+                          "e28011b0a5050076c4d751e9",
+                          "e28011b0a5050076c4d77307",
+                          "e28011b0a5050076c4d751ec",
+                          "e28011b0a5050076c4d7530a",
+                          "e28011b0a5050076c4d751e4"
+                        ]
+                      }
+                    }
+                  },
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controlrequest/startWithGen2X": {
+      "post": {
+        "tags": ["Radio Control"],
+        "summary": "Start Radio with Gen2X",
+        "description": "Starts the radio with all configured Gen2X settings applied. **The radio must be stopped first before issuing this command.**\n\n**Topic:** `controlrequest`\n\n**Response Topic:** `controlresponse`",
+        "operationId": "startWithGen2X",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StartRequest" },
+              "example": {
+                "command": "start",
+                "command_id": "81dd51a2-b0d3-4099-b46a-5a3f82796ba1",
+                "payload": {
+                  "applyImpinjGen2X": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response on `controlresponse` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Gen2XResponse" },
+                "example": {
+                  "command": "start",
+                  "command_id": "81dd51a2-b0d3-4099-b46a-5a3f82796ba1",
+                  "payload": {},
+                  "response": "success"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tagdatanew": {
+      "get": {
+        "tags": ["Tag Data"],
+        "summary": "Tag Data Event (Subscribe)",
+        "description": "Subscribe to `tagdatanew` topic to receive real-time RFID tag read events. Each message contains tag identity, signal strength, antenna, and timing data.\n\n**Topic:** `tagdatanew`",
+        "operationId": "tagDataEvent",
+        "responses": {
+          "200": {
+            "description": "Tag read event received on `tagdatanew` topic",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TagDataEvent" },
+                "example": {
+                  "data": {
+                    "CRC": "715f",
+                    "PC": "3000",
+                    "antenna": 5,
+                    "channel": 920.75,
+                    "eventNum": 2845128,
+                    "format": "epc",
+                    "idHex": "12348765a5050076c4d75211",
+                    "peakRssi": -41,
+                    "phase": -89.89,
+                    "reads": 1
+                  },
+                  "timestamp": "2026-04-01T05:40:35.721+0000",
+                  "type": "CUSTOM"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TagProtectRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid", "description": "Unique ID to correlate request with response" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tagProtect": {
+                "type": "object",
+                "required": ["action", "password", "tagID"],
+                "properties": {
+                  "action": { "type": "string", "enum": ["enableTagProtection", "disableTagProtection"], "description": "Operation to perform" },
+                  "password": { "type": "string", "pattern": "^[0-9a-fA-F]{8}$", "description": "8-character hex password (e.g., 77777777)" },
+                  "tagID": { "type": "string", "description": "Hex EPC of the target tag" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TagVisibilityRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tagProtect": {
+                "type": "object",
+                "required": ["action", "password"],
+                "properties": {
+                  "action": { "type": "string", "enum": ["enableTagVisibility", "disableTagVisibility"] },
+                  "password": { "type": "string", "pattern": "^[0-9a-fA-F]{8}$", "description": "8-character hex password" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ShortRangeRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tagProtect": {
+                "type": "object",
+                "required": ["action", "password", "tagID", "enableShortRange"],
+                "properties": {
+                  "action": { "type": "string", "const": "enableTagProtection" },
+                  "password": { "type": "string", "pattern": "^[0-9a-fA-F]{8}$" },
+                  "tagID": { "type": "string", "description": "Hex EPC of the target tag" },
+                  "enableShortRange": { "type": "boolean", "description": "true to enable short-range mode" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "FastIDRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "fastID": {
+                "type": "object",
+                "required": ["enabled"],
+                "properties": {
+                  "enabled": { "type": "boolean", "description": "true to enable, false to disable FastID" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TagFocusRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tagFocus": {
+                "type": "object",
+                "required": ["enabled"],
+                "properties": {
+                  "enabled": { "type": "boolean", "description": "true to enable, false to disable TagFocus" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TagQuietingRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "set_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "tagQuieting": {
+                "type": "object",
+                "properties": {
+                  "basic": {
+                    "type": "object",
+                    "required": ["action", "tagIDs"],
+                    "properties": {
+                      "action": { "type": "string", "enum": ["quiet", "unquiet"], "description": "quiet to silence, unquiet to restore" },
+                      "tagIDs": { "type": "array", "items": { "type": "string" }, "description": "List of tag EPCs (hex strings)" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetConfigRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "get_impinjGen2X" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": { "type": "object" }
+        }
+      },
+      "StartRequest": {
+        "type": "object",
+        "required": ["command", "command_id", "payload"],
+        "properties": {
+          "command": { "type": "string", "example": "start" },
+          "command_id": { "type": "string", "format": "uuid" },
+          "payload": {
+            "type": "object",
+            "required": ["applyImpinjGen2X"],
+            "properties": {
+              "applyImpinjGen2X": { "type": "boolean", "description": "true to apply Gen2X config when starting" }
+            }
+          }
+        }
+      },
+      "Gen2XResponse": {
+        "type": "object",
+        "properties": {
+          "command": { "type": "string", "description": "Echoed command name" },
+          "command_id": { "type": "string", "format": "uuid", "description": "Matches the request command_id" },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string", "description": "Human-readable result message" }
+            }
+          },
+          "response": { "type": "string", "enum": ["success", "failure"], "description": "Result status" }
+        }
+      },
+      "TagDataEvent": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "CRC": { "type": "string", "description": "Tag CRC value (hex)" },
+              "PC": { "type": "string", "description": "Protocol Control word (hex)" },
+              "antenna": { "type": "integer", "description": "Antenna number that read the tag" },
+              "channel": { "type": "number", "description": "RF channel frequency in MHz" },
+              "eventNum": { "type": "integer", "description": "Event sequence number" },
+              "format": { "type": "string", "description": "Data format (e.g., epc)" },
+              "idHex": { "type": "string", "description": "Tag EPC in hexadecimal" },
+              "peakRssi": { "type": "number", "description": "Peak RSSI in dBm" },
+              "phase": { "type": "number", "description": "RF phase in radians" },
+              "reads": { "type": "integer", "description": "Number of reads in this event" }
+            }
+          },
+          "timestamp": { "type": "string", "format": "date-time", "description": "ISO 8601 timestamp" },
+          "type": { "type": "string", "description": "Event type" }
+        }
+      }
+    }
+  }
+}

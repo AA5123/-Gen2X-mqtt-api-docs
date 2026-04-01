@@ -1,0 +1,9 @@
+{
+  "topic": "commandrequest",
+  "payload": {
+    "command": "get_impinjGen2X",
+    "command_id": "504f3241-4805-410c-819c-994679ce5e90",
+    "payload": {}
+  },
+  "sent_at": "2026-04-01T08:52:53.302028"
+}

@@ -1,0 +1,8 @@
+{
+  "command": "set_impinjGen2X",
+  "command_id": "43505552-cb1b-406c-a027-cf101f576034",
+  "payload": {
+    "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+  },
+  "response": "success"
+}

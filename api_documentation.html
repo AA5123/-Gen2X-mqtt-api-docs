@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impinj Gen2X MQTT API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/@asyncapi/react-component@1.4.10/styles/default.min.css">
+  <style>
+    body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    #asyncapi { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div id="asyncapi"></div>
+  <script src="https://unpkg.com/@asyncapi/react-component@1.4.10/browser/standalone/index.js"></script>
+  <script>
+    const schema = `
+asyncapi: '2.6.0'
+info:
+  title: Impinj Gen2X MQTT API
+  version: '1.0.0'
+  description: |
+    MQTT-based API for controlling Impinj Gen2X features on an RFID reader.
+
+    ## Features
+    - **Protected Mode** — Makes tags invisible unless the correct password is provided
+    - **FastID** — Tags return EPC + TID in a single inventory response
+    - **TagFocus** — Already-inventoried tags stay unresponsive to help find unread tags
+    - **TagQuieting** — Selectively silence/restore specific tags by EPC
+
+    ## Workflow
+    1. Configure Gen2X features using set_impinjGen2X
+    2. Verify configuration using get_impinjGen2X
+    3. Stop the radio if running
+    4. Start the radio with applyImpinjGen2X: true
+
+servers:
+  production:
+    url: 10.117.229.9:8883
+    protocol: mqtt
+    protocolVersion: '3.1.1'
+    description: RFID Reader MQTT Broker (Mutual TLS)
+
+channels:
+  controlrequest:
+    description: Publish commands to configure and control Gen2X features.
+    publish:
+      operationId: sendGen2XCommand
+      summary: Send a Gen2X command to the reader
+      message:
+        oneOf:
+          - \\$ref: '#/components/messages/enableTagProtection'
+          - \\$ref: '#/components/messages/disableTagProtection'
+          - \\$ref: '#/components/messages/enableTagVisibility'
+          - \\$ref: '#/components/messages/disableTagVisibility'
+          - \\$ref: '#/components/messages/enableShortRange'
+          - \\$ref: '#/components/messages/enableFastID'
+          - \\$ref: '#/components/messages/disableFastID'
+          - \\$ref: '#/components/messages/enableTagFocus'
+          - \\$ref: '#/components/messages/disableTagFocus'
+          - \\$ref: '#/components/messages/quietTags'
+          - \\$ref: '#/components/messages/unquietTags'
+          - \\$ref: '#/components/messages/getGen2XConfig'
+          - \\$ref: '#/components/messages/startWithGen2X'
+
+  controlresponse:
+    description: Subscribe to receive command responses from the reader.
+    subscribe:
+      operationId: receiveGen2XResponse
+      summary: Receive Gen2X command response
+      message:
+        oneOf:
+          - \\$ref: '#/components/messages/gen2xSuccessResponse'
+          - \\$ref: '#/components/messages/getGen2XConfigResponse'
+          - \\$ref: '#/components/messages/startSuccessResponse'
+
+  tagdatanew:
+    description: Subscribe to receive real-time RFID tag read events.
+    subscribe:
+      operationId: receiveTagData
+      summary: Receive tag inventory data
+      message:
+        \\$ref: '#/components/messages/tagDataEvent'
+
+components:
+  messages:
+    enableTagProtection:
+      name: enableTagProtection
+      title: Enable Tag Protection
+      summary: Makes a specific tag invisible to unauthorized readers
+      contentType: application/json
+      payload:
+        type: object
+        required: [command, command_id, payload]
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagProtect:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    const: enableTagProtection
+                  password:
+                    type: string
+                    description: 8-char hex password
+                  tagID:
+                    type: string
+                    description: Hex EPC of the target tag
+      examples:
+        - name: Enable protection
+          payload:
+            command: set_impinjGen2X
+            command_id: 345d9511-40ac-4aed-894f-006df1205b99
+            payload:
+              tagProtect:
+                action: enableTagProtection
+                password: "77777777"
+                tagID: "12348765a5050076c4d75211"
+
+    disableTagProtection:
+      name: disableTagProtection
+      title: Disable Tag Protection
+      summary: Makes a protected tag visible to all readers again
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagProtect:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    const: disableTagProtection
+                  password:
+                    type: string
+                  tagID:
+                    type: string
+      examples:
+        - name: Disable protection
+          payload:
+            command: set_impinjGen2X
+            command_id: a157818d-9667-4d9f-8181-114ab48306f6
+            payload:
+              tagProtect:
+                action: disableTagProtection
+                password: "77777777"
+                tagID: "12348765a5050076c4d75211"
+
+    enableTagVisibility:
+      name: enableTagVisibility
+      title: Enable Tag Visibility
+      summary: Allows the reader to see protected tags using the access password
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagProtect:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    const: enableTagVisibility
+                  password:
+                    type: string
+      examples:
+        - name: Enable visibility
+          payload:
+            command: set_impinjGen2X
+            command_id: eb8db4d8-f641-4bdb-9858-302c4dbec101
+            payload:
+              tagProtect:
+                action: enableTagVisibility
+                password: "77777777"
+
+    disableTagVisibility:
+      name: disableTagVisibility
+      title: Disable Tag Visibility
+      summary: Revokes the reader ability to see protected tags
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagProtect:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    const: disableTagVisibility
+                  password:
+                    type: string
+      examples:
+        - name: Disable visibility
+          payload:
+            command: set_impinjGen2X
+            command_id: 3f27e129-a532-488d-8fc8-8699245de663
+            payload:
+              tagProtect:
+                action: disableTagVisibility
+                password: "77777777"
+
+    enableShortRange:
+      name: enableShortRange
+      title: Enable Short Range
+      summary: Protects tag and restricts it to respond only at close proximity
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagProtect:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    const: enableTagProtection
+                  password:
+                    type: string
+                  tagID:
+                    type: string
+                  enableShortRange:
+                    type: boolean
+      examples:
+        - name: Enable short range
+          payload:
+            command: set_impinjGen2X
+            command_id: ea05d934-16cf-4fa4-9fa7-4c01f4bd4bea
+            payload:
+              tagProtect:
+                action: enableTagProtection
+                password: "77777777"
+                tagID: "e28011b0a5050076c4d7521a"
+                enableShortRange: true
+
+    enableFastID:
+      name: enableFastID
+      title: Enable FastID
+      summary: Tags return both EPC and TID in a single inventory response
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              fastID:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+      examples:
+        - name: Enable FastID
+          payload:
+            command: set_impinjGen2X
+            command_id: 657298d3-98de-421c-9b7c-ad3b53b7474f
+            payload:
+              fastID:
+                enabled: true
+
+    disableFastID:
+      name: disableFastID
+      title: Disable FastID
+      summary: Tags return only EPC per scan
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              fastID:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+      examples:
+        - name: Disable FastID
+          payload:
+            command: set_impinjGen2X
+            command_id: b35808c8-0e10-42a1-8f81-799e7843e5c9
+            payload:
+              fastID:
+                enabled: false
+
+    enableTagFocus:
+      name: enableTagFocus
+      title: Enable TagFocus
+      summary: Already-read tags stay quiet so reader finds unread tags faster
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagFocus:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+      examples:
+        - name: Enable TagFocus
+          payload:
+            command: set_impinjGen2X
+            command_id: a3987547-62a8-4005-a064-485524e25bff
+            payload:
+              tagFocus:
+                enabled: true
+
+    disableTagFocus:
+      name: disableTagFocus
+      title: Disable TagFocus
+      summary: All tags respond normally again
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagFocus:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+      examples:
+        - name: Disable TagFocus
+          payload:
+            command: set_impinjGen2X
+            command_id: 331c364f-ba53-4529-a150-d786f134b27b
+            payload:
+              tagFocus:
+                enabled: false
+
+    quietTags:
+      name: quietTags
+      title: Quiet Tags
+      summary: Silence specific tags so they do not respond during inventory
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagQuieting:
+                type: object
+                properties:
+                  basic:
+                    type: object
+                    properties:
+                      action:
+                        type: string
+                        enum: [quiet, unquiet]
+                      tagIDs:
+                        type: array
+                        items:
+                          type: string
+      examples:
+        - name: Quiet 5 tags
+          payload:
+            command: set_impinjGen2X
+            command_id: 43505552-cb1b-406c-a027-cf101f576034
+            payload:
+              tagQuieting:
+                basic:
+                  action: quiet
+                  tagIDs:
+                    - "e28011b0a5050076c4d751e9"
+                    - "e28011b0a5050076c4d77307"
+                    - "e28011b0a5050076c4d751ec"
+                    - "e28011b0a5050076c4d7530a"
+                    - "e28011b0a5050076c4d751e4"
+
+    unquietTags:
+      name: unquietTags
+      title: Unquiet Tags
+      summary: Restore silenced tags back to inventory
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: set_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              tagQuieting:
+                type: object
+                properties:
+                  basic:
+                    type: object
+                    properties:
+                      action:
+                        type: string
+                      tagIDs:
+                        type: array
+                        items:
+                          type: string
+      examples:
+        - name: Unquiet 5 tags
+          payload:
+            command: set_impinjGen2X
+            command_id: 4c352333-3869-43e1-bba8-eda8692d8c40
+            payload:
+              tagQuieting:
+                basic:
+                  action: unquiet
+                  tagIDs:
+                    - "e28011b0a5050076c4d751e9"
+                    - "e28011b0a5050076c4d77307"
+                    - "e28011b0a5050076c4d751ec"
+                    - "e28011b0a5050076c4d7530a"
+                    - "e28011b0a5050076c4d751e4"
+
+    getGen2XConfig:
+      name: getGen2XConfig
+      title: Get Gen2X Configuration
+      summary: Retrieve current Gen2X configuration from the reader
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: get_impinjGen2X
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+      examples:
+        - name: Get config
+          payload:
+            command: get_impinjGen2X
+            command_id: 9d744286-7b97-40b8-9e91-190df0334557
+            payload: {}
+
+    startWithGen2X:
+      name: startWithGen2X
+      title: Start Radio with Gen2X
+      summary: Start the radio with Gen2X config applied (stop radio first)
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+            const: start
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              applyImpinjGen2X:
+                type: boolean
+      examples:
+        - name: Start with Gen2X
+          payload:
+            command: start
+            command_id: 81dd51a2-b0d3-4099-b46a-5a3f82796ba1
+            payload:
+              applyImpinjGen2X: true
+
+    gen2xSuccessResponse:
+      name: gen2xSuccessResponse
+      title: Gen2X Command Response
+      summary: Success response for set_impinjGen2X commands
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+            properties:
+              message:
+                type: string
+          response:
+            type: string
+            enum: [success, failure]
+      examples:
+        - name: Success response
+          payload:
+            command: set_impinjGen2X
+            command_id: 345d9511-40ac-4aed-894f-006df1205b99
+            payload:
+              message: "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+            response: success
+
+    getGen2XConfigResponse:
+      name: getGen2XConfigResponse
+      title: Get Config Response
+      summary: Returns the current Gen2X configuration
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+          response:
+            type: string
+      examples:
+        - name: Config with tagQuieting
+          payload:
+            command: get_impinjGen2X
+            command_id: 9d744286-7b97-40b8-9e91-190df0334557
+            payload:
+              tagQuieting:
+                basic:
+                  action: unquiet
+                  tagIDs:
+                    - "e28011b0a5050076c4d751e9"
+                    - "e28011b0a5050076c4d77307"
+                    - "e28011b0a5050076c4d751ec"
+                    - "e28011b0a5050076c4d7530a"
+                    - "e28011b0a5050076c4d751e4"
+            response: success
+
+    startSuccessResponse:
+      name: startSuccessResponse
+      title: Start Response
+      summary: Response for the start command
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          command:
+            type: string
+          command_id:
+            type: string
+            format: uuid
+          payload:
+            type: object
+          response:
+            type: string
+      examples:
+        - name: Start success
+          payload:
+            command: start
+            command_id: 81dd51a2-b0d3-4099-b46a-5a3f82796ba1
+            payload: {}
+            response: success
+
+    tagDataEvent:
+      name: tagDataEvent
+      title: Tag Data Event
+      summary: Real-time RFID tag read event
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          data:
+            type: object
+            properties:
+              CRC:
+                type: string
+                description: Tag CRC value (hex)
+              PC:
+                type: string
+                description: Protocol Control word (hex)
+              antenna:
+                type: integer
+                description: Antenna number
+              channel:
+                type: number
+                description: RF channel in MHz
+              eventNum:
+                type: integer
+                description: Event sequence number
+              format:
+                type: string
+                description: Data format (epc)
+              idHex:
+                type: string
+                description: Tag EPC in hex
+              peakRssi:
+                type: number
+                description: Peak RSSI in dBm
+              phase:
+                type: number
+                description: RF phase in radians
+              reads:
+                type: integer
+                description: Number of reads
+          timestamp:
+            type: string
+            format: date-time
+          type:
+            type: string
+      examples:
+        - name: Tag read event
+          payload:
+            data:
+              CRC: "715f"
+              PC: "3000"
+              antenna: 5
+              channel: 920.75
+              eventNum: 2845128
+              format: epc
+              idHex: "12348765a5050076c4d75211"
+              peakRssi: -41
+              phase: -89.89
+              reads: 1
+            timestamp: "2026-04-01T05:40:35.721+0000"
+            type: CUSTOM
+`;
+
+    AsyncApiStandalone.render({
+      schema: schema,
+      config: {
+        show: {
+          sidebar: true,
+          info: true,
+          servers: true,
+          operations: true,
+          messages: true,
+          schemas: true,
+          errors: false,
+        },
+      },
+    }, document.getElementById('asyncapi'));
+  </script>
+</body>
+</html>

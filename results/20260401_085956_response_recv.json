@@ -1,0 +1,12 @@
+{
+  "topic": "controlresponse",
+  "payload": {
+    "command": "set_impinjGen2X",
+    "command_id": "3929cd3e-83d2-4334-a5d6-ebe084b3beca",
+    "payload": {
+      "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+    },
+    "response": "success"
+  },
+  "received_at": "2026-04-01T08:59:56.444046"
+}

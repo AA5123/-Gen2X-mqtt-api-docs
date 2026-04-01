@@ -1,0 +1,2218 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Impinj Gen2X MQTT API",
+        "version": "1.0.0",
+        "description": "MQTT-based API for controlling Impinj Gen2X features on RFID readers.\n\n## Features\n- **Protected Mode** — Makes tags invisible unless the correct password is provided\n- **FastID** — Tags return EPC + TID in a single inventory response\n- **TagFocus** — Already-inventoried tags stay unresponsive to help find unread tags\n- **TagQuieting** — Selectively silence/restore specific tags by EPC"
+    },
+    "tags": [
+        {
+            "name": "Tag Protection",
+            "description": "Impinj TagProtect prevents unauthorized cloning and reading of tags using a password-based protection mechanism. It renders a tag invisible to an RFID reader unless the correct 32-bit password is provided."
+        },
+        {
+            "name": "FastID",
+            "description": "Impinj FastID embeds the tag TID along with the EPC in every inventory response, eliminating the need for separate TID read operations and improving throughput."
+        },
+        {
+            "name": "TagFocus",
+            "description": "Impinj TagFocus instructs tags that have already been inventoried to remain unresponsive, enabling the reader to focus on other unread tags. Targets tags in session S1."
+        },
+        {
+            "name": "Tag Quieting",
+            "description": "Impinj TagQuieting selectively silences individual tags to reduce tag churn and improve read accuracy in dense tag environments."
+        },
+        {
+            "name": "Configuration",
+            "description": "Retrieve the current Gen2X feature configuration from the reader."
+        },
+        {
+            "name": "Radio Control",
+            "description": "Start and stop the radio with Gen2X configuration applied."
+        }
+    ],
+    "x-tagGroups": [
+        {
+            "name": "Tag Protection",
+            "tags": [
+                "Tag Protection"
+            ]
+        },
+        {
+            "name": "Inventory Features",
+            "tags": [
+                "FastID",
+                "TagFocus",
+                "Tag Quieting"
+            ]
+        },
+        {
+            "name": "Configuration & Control",
+            "tags": [
+                "Configuration",
+                "Radio Control"
+            ]
+        }
+    ],
+    "paths": {
+        "/enable_tag_protection": {
+            "post": {
+                "tags": [
+                    "Tag Protection"
+                ],
+                "summary": "enable_tag_protection",
+                "description": "Makes a specific tag invisible to unauthorized readers using Impinj TagProtect.\n\nThe tag becomes RF silent and does not respond to Gen2 commands unless the reader first provides the correct 32-bit password.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagProtect"
+                                        ],
+                                        "properties": {
+                                            "tagProtect": {
+                                                "type": "object",
+                                                "required": [
+                                                    "action",
+                                                    "password",
+                                                    "tagID"
+                                                ],
+                                                "properties": {
+                                                    "action": {
+                                                        "type": "string",
+                                                        "const": "enableTagProtection",
+                                                        "description": "Sets the tag to protected mode"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "minLength": 8,
+                                                        "maxLength": 8,
+                                                        "pattern": "^[0-9A-Fa-f]{8}$",
+                                                        "description": "8-character hexadecimal 32-bit password"
+                                                    },
+                                                    "tagID": {
+                                                        "type": "string",
+                                                        "pattern": "^[0-9A-Fa-f]+$",
+                                                        "description": "Hexadecimal tagID (EPC) of the target tag"
+                                                    }
+                                                },
+                                                "description": "Tag protection configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Enable protection on a specific tag using password-based mechanism",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "345d9511-40ac-4aed-894f-006df1205b99",
+                                        "payload": {
+                                            "tagProtect": {
+                                                "action": "enableTagProtection",
+                                                "password": "77777777",
+                                                "tagID": "12348765a5050076c4d75211"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "enable_tag_protection response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "345d9511-40ac-4aed-894f-006df1205b99",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 2,
+                        "description": "Invalid password",
+                        "iot_status_code": "INVALID_PASSWORD",
+                        "cause": "Password is not a valid 8-character hex string",
+                        "recommended_action": "Provide a valid 8-character hexadecimal password"
+                    },
+                    {
+                        "code": 3,
+                        "description": "Tag not found",
+                        "iot_status_code": "TAG_NOT_FOUND",
+                        "cause": "Target tag EPC not found in inventory",
+                        "recommended_action": "Verify the tag is in range and the EPC is correct"
+                    }
+                ]
+            }
+        },
+        "/disable_tag_protection": {
+            "post": {
+                "tags": [
+                    "Tag Protection"
+                ],
+                "summary": "disable_tag_protection",
+                "description": "Removes protection from a specific tag, making it visible to all readers again.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagProtect"
+                                        ],
+                                        "properties": {
+                                            "tagProtect": {
+                                                "type": "object",
+                                                "required": [
+                                                    "action",
+                                                    "password",
+                                                    "tagID"
+                                                ],
+                                                "properties": {
+                                                    "action": {
+                                                        "type": "string",
+                                                        "const": "disableTagProtection",
+                                                        "description": "Removes protection from the tag"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "minLength": 8,
+                                                        "maxLength": 8,
+                                                        "pattern": "^[0-9A-Fa-f]{8}$",
+                                                        "description": "8-character hexadecimal 32-bit password"
+                                                    },
+                                                    "tagID": {
+                                                        "type": "string",
+                                                        "pattern": "^[0-9A-Fa-f]+$",
+                                                        "description": "Hexadecimal tagID (EPC) of the target tag"
+                                                    }
+                                                },
+                                                "description": "Tag protection configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Remove protection from a specific tag",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "a157818d-9667-4d9f-8181-114ab48306f6",
+                                        "payload": {
+                                            "tagProtect": {
+                                                "action": "disableTagProtection",
+                                                "password": "77777777",
+                                                "tagID": "12348765a5050076c4d75211"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "disable_tag_protection response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "a157818d-9667-4d9f-8181-114ab48306f6",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 2,
+                        "description": "Invalid password",
+                        "iot_status_code": "INVALID_PASSWORD",
+                        "cause": "Password is not a valid 8-character hex string",
+                        "recommended_action": "Provide a valid 8-character hexadecimal password"
+                    },
+                    {
+                        "code": 3,
+                        "description": "Tag not found",
+                        "iot_status_code": "TAG_NOT_FOUND",
+                        "cause": "Target tag EPC not found in inventory",
+                        "recommended_action": "Verify the tag is in range and the EPC is correct"
+                    }
+                ]
+            }
+        },
+        "/enable_tag_visibility": {
+            "post": {
+                "tags": [
+                    "Tag Protection"
+                ],
+                "summary": "enable_tag_visibility",
+                "description": "Allows the reader to see protected tags by providing the access password.\n\nWhen enabled, the reader can inventory tags that were previously made invisible via `enable_tag_protection`.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagProtect"
+                                        ],
+                                        "properties": {
+                                            "tagProtect": {
+                                                "type": "object",
+                                                "required": [
+                                                    "action",
+                                                    "password"
+                                                ],
+                                                "properties": {
+                                                    "action": {
+                                                        "type": "string",
+                                                        "const": "enableTagVisibility",
+                                                        "description": "Enables the reader to read protected tags"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "minLength": 8,
+                                                        "maxLength": 8,
+                                                        "pattern": "^[0-9A-Fa-f]{8}$",
+                                                        "description": "8-character hexadecimal 32-bit password"
+                                                    }
+                                                },
+                                                "description": "Tag protection configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Enable the reader to see protected tags",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "eb8db4d8-f641-4bdb-9858-302c4dbec101",
+                                        "payload": {
+                                            "tagProtect": {
+                                                "action": "enableTagVisibility",
+                                                "password": "77777777"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "enable_tag_visibility response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "eb8db4d8-f641-4bdb-9858-302c4dbec101",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 2,
+                        "description": "Invalid password",
+                        "iot_status_code": "INVALID_PASSWORD",
+                        "cause": "Password is not a valid 8-character hex string",
+                        "recommended_action": "Provide a valid 8-character hexadecimal password"
+                    }
+                ]
+            }
+        },
+        "/disable_tag_visibility": {
+            "post": {
+                "tags": [
+                    "Tag Protection"
+                ],
+                "summary": "disable_tag_visibility",
+                "description": "Revokes the reader's ability to see protected tags.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagProtect"
+                                        ],
+                                        "properties": {
+                                            "tagProtect": {
+                                                "type": "object",
+                                                "required": [
+                                                    "action",
+                                                    "password"
+                                                ],
+                                                "properties": {
+                                                    "action": {
+                                                        "type": "string",
+                                                        "const": "disableTagVisibility",
+                                                        "description": "Disables reading of protected tags"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "minLength": 8,
+                                                        "maxLength": 8,
+                                                        "pattern": "^[0-9A-Fa-f]{8}$",
+                                                        "description": "8-character hexadecimal 32-bit password"
+                                                    }
+                                                },
+                                                "description": "Tag protection configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Revoke the reader's ability to see protected tags",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "3f27e129-a532-488d-8fc8-8699245de663",
+                                        "payload": {
+                                            "tagProtect": {
+                                                "action": "disableTagVisibility",
+                                                "password": "77777777"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "disable_tag_visibility response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "3f27e129-a532-488d-8fc8-8699245de663",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 2,
+                        "description": "Invalid password",
+                        "iot_status_code": "INVALID_PASSWORD",
+                        "cause": "Password is not a valid 8-character hex string",
+                        "recommended_action": "Provide a valid 8-character hexadecimal password"
+                    }
+                ]
+            }
+        },
+        "/enable_short_range": {
+            "post": {
+                "tags": [
+                    "Tag Protection"
+                ],
+                "summary": "enable_short_range",
+                "description": "Protects a tag and restricts it to respond only at close proximity (short-range mode).\n\nThis is an enhanced version of `enable_tag_protection` with the `enableShortRange` flag set to `true`, providing higher security by limiting the read range.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagProtect"
+                                        ],
+                                        "properties": {
+                                            "tagProtect": {
+                                                "type": "object",
+                                                "required": [
+                                                    "action",
+                                                    "password",
+                                                    "tagID",
+                                                    "enableShortRange"
+                                                ],
+                                                "properties": {
+                                                    "action": {
+                                                        "type": "string",
+                                                        "const": "enableTagProtection",
+                                                        "description": "Sets the tag to protected mode"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "minLength": 8,
+                                                        "maxLength": 8,
+                                                        "pattern": "^[0-9A-Fa-f]{8}$",
+                                                        "description": "8-character hexadecimal 32-bit password"
+                                                    },
+                                                    "tagID": {
+                                                        "type": "string",
+                                                        "pattern": "^[0-9A-Fa-f]+$",
+                                                        "description": "Hexadecimal tagID (EPC) of the target tag"
+                                                    },
+                                                    "enableShortRange": {
+                                                        "type": "boolean",
+                                                        "description": "true to enable short-range protection mode for higher security"
+                                                    }
+                                                },
+                                                "description": "Tag protection configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Protect a tag with short-range mode enabled",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "ea05d934-16cf-4fa4-9fa7-4c01f4bd4bea",
+                                        "payload": {
+                                            "tagProtect": {
+                                                "action": "enableTagProtection",
+                                                "password": "77777777",
+                                                "tagID": "e28011b0a5050076c4d7521a",
+                                                "enableShortRange": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "enable_short_range response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "ea05d934-16cf-4fa4-9fa7-4c01f4bd4bea",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 2,
+                        "description": "Invalid password",
+                        "iot_status_code": "INVALID_PASSWORD",
+                        "cause": "Password is not a valid 8-character hex string",
+                        "recommended_action": "Provide a valid 8-character hexadecimal password"
+                    },
+                    {
+                        "code": 3,
+                        "description": "Tag not found",
+                        "iot_status_code": "TAG_NOT_FOUND",
+                        "cause": "Target tag EPC not found in inventory",
+                        "recommended_action": "Verify the tag is in range and the EPC is correct"
+                    }
+                ]
+            }
+        },
+        "/enable_fastid": {
+            "post": {
+                "tags": [
+                    "FastID"
+                ],
+                "summary": "enable_fastid",
+                "description": "Enables Impinj FastID so tags return both EPC and TID in a single inventory response.\n\nThis eliminates the need for separate TID read operations and improves throughput.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "fastID"
+                                        ],
+                                        "properties": {
+                                            "fastID": {
+                                                "type": "object",
+                                                "required": [
+                                                    "enabled"
+                                                ],
+                                                "properties": {
+                                                    "enabled": {
+                                                        "type": "boolean",
+                                                        "const": true,
+                                                        "description": "Enable FastID feature"
+                                                    }
+                                                },
+                                                "description": "FastID feature configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Enable FastID feature",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "657298d3-98de-421c-9b7c-ad3b53b7474f",
+                                        "payload": {
+                                            "fastID": {
+                                                "enabled": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "enable_fastid response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "657298d3-98de-421c-9b7c-ad3b53b7474f",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/disable_fastid": {
+            "post": {
+                "tags": [
+                    "FastID"
+                ],
+                "summary": "disable_fastid",
+                "description": "Disables FastID. Tags return only EPC per scan (normal mode).",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "fastID"
+                                        ],
+                                        "properties": {
+                                            "fastID": {
+                                                "type": "object",
+                                                "required": [
+                                                    "enabled"
+                                                ],
+                                                "properties": {
+                                                    "enabled": {
+                                                        "type": "boolean",
+                                                        "const": false,
+                                                        "description": "Disable FastID feature"
+                                                    }
+                                                },
+                                                "description": "FastID feature configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Disable FastID feature",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "b35808c8-0e10-42a1-8f81-799e7843e5c9",
+                                        "payload": {
+                                            "fastID": {
+                                                "enabled": false
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "disable_fastid response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "b35808c8-0e10-42a1-8f81-799e7843e5c9",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/enable_tagfocus": {
+            "post": {
+                "tags": [
+                    "TagFocus"
+                ],
+                "summary": "enable_tagfocus",
+                "description": "Enables Impinj TagFocus so already-inventoried tags stay unresponsive.\n\nThis allows the reader to focus on unread tags. By reducing tag chatter, TagFocus improves read rates and accuracy in dense tag environments. Targets tags inventoried in session S1.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagFocus"
+                                        ],
+                                        "properties": {
+                                            "tagFocus": {
+                                                "type": "object",
+                                                "required": [
+                                                    "enabled"
+                                                ],
+                                                "properties": {
+                                                    "enabled": {
+                                                        "type": "boolean",
+                                                        "const": true,
+                                                        "description": "Enable TagFocus feature"
+                                                    }
+                                                },
+                                                "description": "TagFocus feature configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Enable TagFocus feature",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "a3987547-62a8-4005-a064-485524e25bff",
+                                        "payload": {
+                                            "tagFocus": {
+                                                "enabled": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "enable_tagfocus response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "a3987547-62a8-4005-a064-485524e25bff",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/disable_tagfocus": {
+            "post": {
+                "tags": [
+                    "TagFocus"
+                ],
+                "summary": "disable_tagfocus",
+                "description": "Disables TagFocus. All tags respond normally whether previously read or not.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagFocus"
+                                        ],
+                                        "properties": {
+                                            "tagFocus": {
+                                                "type": "object",
+                                                "required": [
+                                                    "enabled"
+                                                ],
+                                                "properties": {
+                                                    "enabled": {
+                                                        "type": "boolean",
+                                                        "const": false,
+                                                        "description": "Disable TagFocus feature"
+                                                    }
+                                                },
+                                                "description": "TagFocus feature configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Disable TagFocus feature",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "331c364f-ba53-4529-a150-d786f134b27b",
+                                        "payload": {
+                                            "tagFocus": {
+                                                "enabled": false
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "disable_tagfocus response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "331c364f-ba53-4529-a150-d786f134b27b",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/quiet_tags": {
+            "post": {
+                "tags": [
+                    "Tag Quieting"
+                ],
+                "summary": "quiet_tags",
+                "description": "Selectively silences specific tags so they do not participate in inventory rounds.\n\nUse this to reduce tag churn and focus on a subset of tags. Provide an array of tag EPCs to quiet.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagQuieting"
+                                        ],
+                                        "properties": {
+                                            "tagQuieting": {
+                                                "type": "object",
+                                                "required": [
+                                                    "basic"
+                                                ],
+                                                "properties": {
+                                                    "basic": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "action",
+                                                            "tagIDs"
+                                                        ],
+                                                        "properties": {
+                                                            "action": {
+                                                                "type": "string",
+                                                                "const": "quiet",
+                                                                "description": "Silence the specified tags"
+                                                            },
+                                                            "tagIDs": {
+                                                                "type": "array",
+                                                                "minItems": 1,
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "pattern": "^[0-9A-Fa-f]+$"
+                                                                },
+                                                                "description": "List of tag EPCs (hex strings) to quiet"
+                                                            }
+                                                        },
+                                                        "description": "Basic tag quieting settings"
+                                                    }
+                                                },
+                                                "description": "Tag quieting configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Quiet 5 tags by EPC",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "43505552-cb1b-406c-a027-cf101f576034",
+                                        "payload": {
+                                            "tagQuieting": {
+                                                "basic": {
+                                                    "action": "quiet",
+                                                    "tagIDs": [
+                                                        "e28011b0a5050076c4d751e9",
+                                                        "e28011b0a5050076c4d77307",
+                                                        "e28011b0a5050076c4d751ec",
+                                                        "e28011b0a5050076c4d7530a",
+                                                        "e28011b0a5050076c4d751e4"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "quiet_tags response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "43505552-cb1b-406c-a027-cf101f576034",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/unquiet_tags": {
+            "post": {
+                "tags": [
+                    "Tag Quieting"
+                ],
+                "summary": "unquiet_tags",
+                "description": "Restores previously silenced tags back to inventory participation.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "set_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "tagQuieting"
+                                        ],
+                                        "properties": {
+                                            "tagQuieting": {
+                                                "type": "object",
+                                                "required": [
+                                                    "basic"
+                                                ],
+                                                "properties": {
+                                                    "basic": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "action",
+                                                            "tagIDs"
+                                                        ],
+                                                        "properties": {
+                                                            "action": {
+                                                                "type": "string",
+                                                                "const": "unquiet",
+                                                                "description": "Restore the specified tags"
+                                                            },
+                                                            "tagIDs": {
+                                                                "type": "array",
+                                                                "minItems": 1,
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "pattern": "^[0-9A-Fa-f]+$"
+                                                                },
+                                                                "description": "List of tag EPCs (hex strings) to unquiet"
+                                                            }
+                                                        },
+                                                        "description": "Basic tag quieting settings"
+                                                    }
+                                                },
+                                                "description": "Tag quieting configuration"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Unquiet 5 tags by EPC",
+                                    "value": {
+                                        "command": "set_impinjGen2X",
+                                        "command_id": "4c352333-3869-43e1-bba8-eda8692d8c40",
+                                        "payload": {
+                                            "tagQuieting": {
+                                                "basic": {
+                                                    "action": "unquiet",
+                                                    "tagIDs": [
+                                                        "e28011b0a5050076c4d751e9",
+                                                        "e28011b0a5050076c4d77307",
+                                                        "e28011b0a5050076c4d751ec",
+                                                        "e28011b0a5050076c4d7530a",
+                                                        "e28011b0a5050076c4d751e4"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "unquiet_tags response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "set_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Human-readable result message"
+                                                }
+                                            },
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "set_impinjGen2X",
+                                            "command_id": "4c352333-3869-43e1-bba8-eda8692d8c40",
+                                            "payload": {
+                                                "message": "Success: Gen2X configured. Use applyImpinjGen2X flag in start command to apply features."
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/get_gen2x_config": {
+            "post": {
+                "tags": [
+                    "Configuration"
+                ],
+                "summary": "get_gen2x_config",
+                "description": "Retrieves the current Gen2X configuration from the reader.\n\nReturns an empty object if no Gen2X configuration has been set yet. Only feature objects that were previously configured are included in the response.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "get_impinjGen2X",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "description": "Empty payload for get commands"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Retrieve current Gen2X configuration",
+                                    "value": {
+                                        "command": "get_impinjGen2X",
+                                        "command_id": "9d744286-7b97-40b8-9e91-190df0334557",
+                                        "payload": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "get_gen2x_config response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "get_impinjGen2X",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "description": "Current Gen2X configuration. Only previously configured feature objects are included.",
+                                            "properties": {
+                                                "fastID": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "enabled": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "description": "FastID configuration (present only if previously configured)"
+                                                },
+                                                "tagProtect": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "action": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "enableTagProtection",
+                                                                "disableTagProtection",
+                                                                "enableTagVisibility",
+                                                                "disableTagVisibility"
+                                                            ]
+                                                        },
+                                                        "password": {
+                                                            "type": "string"
+                                                        },
+                                                        "tagID": {
+                                                            "type": "string"
+                                                        },
+                                                        "enableShortRange": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "description": "Tag protection configuration (present only if previously configured)"
+                                                },
+                                                "tagFocus": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "enabled": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "description": "TagFocus configuration (present only if previously configured)"
+                                                },
+                                                "tagQuieting": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "basic": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "action": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "quiet",
+                                                                        "unquiet"
+                                                                    ]
+                                                                },
+                                                                "tagIDs": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "description": "Tag quieting configuration (present only if previously configured)"
+                                                }
+                                            }
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "get_impinjGen2X",
+                                            "command_id": "9d744286-7b97-40b8-9e91-190df0334557",
+                                            "payload": {
+                                                "tagQuieting": {
+                                                    "basic": {
+                                                        "action": "unquiet",
+                                                        "tagIDs": [
+                                                            "e28011b0a5050076c4d751e9",
+                                                            "e28011b0a5050076c4d77307",
+                                                            "e28011b0a5050076c4d751ec",
+                                                            "e28011b0a5050076c4d7530a",
+                                                            "e28011b0a5050076c4d751e4"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    }
+                ]
+            }
+        },
+        "/start_with_gen2x": {
+            "post": {
+                "tags": [
+                    "Radio Control"
+                ],
+                "summary": "start_with_gen2x",
+                "description": "Starts the radio with Gen2X configuration applied.\n\n**Important:** Stop the radio first before issuing this command.\n\n\n\n**Workflow:**\n1. Configure Gen2X features using the set commands\n2. Verify configuration using `get_gen2x_config`\n3. Stop the radio if running\n4. Send this command with `applyImpinjGen2X: true`",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "command",
+                                    "command_id",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "command": {
+                                        "type": "string",
+                                        "const": "start",
+                                        "description": "MQTT command name"
+                                    },
+                                    "command_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "description": "Unique identifier to correlate request with response"
+                                    },
+                                    "payload": {
+                                        "type": "object",
+                                        "required": [
+                                            "applyImpinjGen2X"
+                                        ],
+                                        "properties": {
+                                            "applyImpinjGen2X": {
+                                                "type": "boolean",
+                                                "const": true,
+                                                "description": "true to apply Gen2X config when starting the radio"
+                                            }
+                                        },
+                                        "description": "Command payload containing the feature configuration"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "Tested example": {
+                                    "description": "Start radio with Gen2X features applied",
+                                    "value": {
+                                        "command": "start",
+                                        "command_id": "81dd51a2-b0d3-4099-b46a-5a3f82796ba1",
+                                        "payload": {
+                                            "applyImpinjGen2X": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "default": {
+                        "description": "start_with_gen2x response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "command",
+                                        "command_id",
+                                        "payload",
+                                        "response"
+                                    ],
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "const": "start",
+                                            "description": "MQTT command name that was executed"
+                                        },
+                                        "command_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "description": "Unique identifier correlating this response to the original request"
+                                        },
+                                        "payload": {
+                                            "type": "object",
+                                            "description": "Response payload data"
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success",
+                                                "failure"
+                                            ],
+                                            "description": "Response status indicating success or failure"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "command": "start",
+                                            "command_id": "81dd51a2-b0d3-4099-b46a-5a3f82796ba1",
+                                            "payload": {},
+                                            "response": "success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-error-codes": [
+                    {
+                        "code": 0,
+                        "description": "Success",
+                        "iot_status_code": "SUCCESS",
+                        "cause": "",
+                        "recommended_action": ""
+                    },
+                    {
+                        "code": 1,
+                        "description": "General failure",
+                        "iot_status_code": "GENERAL_FAILURE",
+                        "cause": "Internal error or invalid payload",
+                        "recommended_action": "Check the payload format and retry"
+                    },
+                    {
+                        "code": 4,
+                        "description": "Radio busy",
+                        "iot_status_code": "RADIO_BUSY",
+                        "cause": "Radio is already running an operation",
+                        "recommended_action": "Stop the radio first, then retry"
+                    }
+                ]
+            }
+        }
+    }
+}

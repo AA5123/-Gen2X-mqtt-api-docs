@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - Impinj Gen2X MQTT API</title>
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/docs.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <header class="doc-header" role="banner">
+    <button id="toc-toggle" class="toc-toggle" type="button" aria-label="Hide navigation" aria-expanded="true">◀</button>
+    <div class="doc-header-title">Impinj Gen2X MQTT API</div>
+  </header>
+  <div id="toc-backdrop" class="toc-backdrop" aria-hidden="true"></div>
+  <div class="layout-shell">
+    <div class="layout">
+<div class="sidebar">
+  <div class="nav-title"><div class="nav-title-main">Impinj Gen2X MQTT API</div><div class="nav-title-sub">MQTT API Reference</div></div>
+  <a href="index.html" class="active"><span class="nav-label-text">Home</span></a>
+  <a href="api-reference.html"><span class="nav-label-text">API Reference</span></a>
+</div>
+      <main id="main-content" class="main" role="main">
+<h1>Impinj Gen2X MQTT API</h1>
+<p>MQTT-based API for controlling Impinj Gen2X features on RFID readers.</p>
+<hr>
+
+<h2>Features</h2>
+<ul>
+  <li><a href="api-reference.html">API Reference</a> — Interactive reference with schemas, examples, and response codes for all 13 Gen2X commands</li>
+</ul>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var body = document.body;
+      var tocToggle = document.getElementById('toc-toggle');
+      var tocBackdrop = document.getElementById('toc-backdrop');
+      var mobileMedia = window.matchMedia('(max-width: 768px)');
+      var storageKey = 'gen2x.tocCollapsed';
+
+      function readPref() {
+        try { return window.localStorage.getItem(storageKey) === '1'; }
+        catch(e) { return false; }
+      }
+      function writePref(collapsed) {
+        try { window.localStorage.setItem(storageKey, collapsed ? '1' : '0'); }
+        catch(e) {}
+      }
+      function setCollapsed(collapsed, persist) {
+        body.classList.toggle('sidebar-collapsed', collapsed);
+        if (tocBackdrop) {
+          var show = mobileMedia.matches && !collapsed;
+          tocBackdrop.classList.toggle('visible', show);
+          tocBackdrop.setAttribute('aria-hidden', (!show).toString());
+        }
+        if (tocToggle) {
+          tocToggle.textContent = collapsed ? '\u2630' : '\u25C0';
+          tocToggle.setAttribute('aria-expanded', (!collapsed).toString());
+        }
+        if (persist && !mobileMedia.matches) writePref(collapsed);
+      }
+
+      setCollapsed(mobileMedia.matches ? true : readPref(), false);
+
+      if (tocToggle) {
+        tocToggle.addEventListener('click', function() {
+          setCollapsed(!body.classList.contains('sidebar-collapsed'), true);
+        });
+      }
+      if (tocBackdrop) {
+        tocBackdrop.addEventListener('click', function() { setCollapsed(true, false); });
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMedia.matches && !body.classList.contains('sidebar-collapsed'))
+          setCollapsed(true, false);
+      });
+      if (mobileMedia.addEventListener) {
+        mobileMedia.addEventListener('change', function(e) {
+          setCollapsed(e.matches ? true : readPref(), false);
+        });
+      }
+      document.querySelectorAll('.sidebar a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (mobileMedia.matches) setCollapsed(true, false);
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

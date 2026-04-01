@@ -1,0 +1,42 @@
+{
+    "tag_groups": {
+        "Tag Protection": ["Tag Protection"],
+        "Inventory Features": ["FastID", "TagFocus", "Tag Quieting"],
+        "Configuration & Control": ["Configuration", "Radio Control"]
+    },
+    "tag_descriptions": {
+        "Tag Protection": "Impinj TagProtect prevents unauthorized cloning and reading of tags using a password-based protection mechanism. It renders a tag invisible to an RFID reader unless the correct 32-bit password is provided.",
+        "FastID": "Impinj FastID embeds the tag TID along with the EPC in every inventory response, eliminating the need for separate TID read operations and improving throughput.",
+        "TagFocus": "Impinj TagFocus instructs tags that have already been inventoried to remain unresponsive, enabling the reader to focus on other unread tags. Targets tags in session S1.",
+        "Tag Quieting": "Impinj TagQuieting selectively silences individual tags to reduce tag churn and improve read accuracy in dense tag environments.",
+        "Configuration": "Retrieve the current Gen2X feature configuration from the reader.",
+        "Radio Control": "Start and stop the radio with Gen2X configuration applied."
+    },
+    "operation_order": {
+        "Tag Protection": [
+            "enable_tag_protection",
+            "disable_tag_protection",
+            "enable_tag_visibility",
+            "disable_tag_visibility",
+            "enable_short_range"
+        ],
+        "FastID": [
+            "enable_fastid",
+            "disable_fastid"
+        ],
+        "TagFocus": [
+            "enable_tagfocus",
+            "disable_tagfocus"
+        ],
+        "Tag Quieting": [
+            "quiet_tags",
+            "unquiet_tags"
+        ],
+        "Configuration": [
+            "get_gen2x_config"
+        ],
+        "Radio Control": [
+            "start_with_gen2x"
+        ]
+    }
+}
