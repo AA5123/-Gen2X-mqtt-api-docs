@@ -1,8 +1,6 @@
-Starts the radio with Gen2X configuration applied.
+﻿Applies all staged Gen2X settings and starts the radio. The `applyImpinjGen2X` flag must be set to `true` for the Gen2X configuration to take effect.
 
-**Important:** Stop the radio first before issuing this command.
-
-
+**Important:** Stop the radio before calling this command — starting with Gen2X active while the radio is already running will return an error.
 
 **Workflow:**
 1. Configure Gen2X features using the set commands

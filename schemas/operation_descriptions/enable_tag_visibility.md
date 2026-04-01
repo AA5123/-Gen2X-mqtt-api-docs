@@ -1,4 +1,3 @@
-Allows the reader to see protected tags by providing the access password.
+﻿Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password — the reader uses it to unmask protected tags in inventory rounds.
 
-When enabled, the reader can inventory tags that were previously made invisible via `enable_tag_protection`.
-
+The tag itself does not need to be specified; all protected tags matching the password become visible to the reader.

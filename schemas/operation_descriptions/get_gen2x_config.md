@@ -1,4 +1,3 @@
-Retrieves the current Gen2X configuration from the reader.
+﻿Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio.
 
-Returns an empty object if no Gen2X configuration has been set yet. Only feature objects that were previously configured are included in the response.
-
+The response payload mirrors the last applied configuration. Returns an empty object if no Gen2X configuration has been set yet.

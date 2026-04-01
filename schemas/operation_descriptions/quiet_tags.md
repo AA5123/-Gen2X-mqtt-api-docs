@@ -1,4 +1,3 @@
-Selectively silences specific tags so they do not participate in inventory rounds.
+﻿Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active.
 
-Use this to reduce tag churn and focus on a subset of tags. Provide an array of tag EPCs to quiet.
-
+Other tags are unaffected. Use `unquiet_tags` to restore them.

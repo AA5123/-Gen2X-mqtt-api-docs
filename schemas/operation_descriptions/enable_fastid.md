@@ -1,4 +1,3 @@
-Enables Impinj FastID so tags return both EPC and TID in a single inventory response.
+﻿Enables Impinj FastID. Tags return both their EPC and TID (Tag Identifier) in a single inventory response instead of requiring a second read.
 
-This eliminates the need for separate TID read operations and improves throughput.
-
+This speeds up inventory and eliminates the extra round-trip needed to read the TID separately.

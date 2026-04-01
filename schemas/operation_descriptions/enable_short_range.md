@@ -1,4 +1,3 @@
-Protects a tag and restricts it to respond only at close proximity (short-range mode).
+﻿Protects a specific tag AND restricts it to only respond when physically very close to the antenna (short-range mode).
 
-This is an enhanced version of `enable_tag_protection` with the `enableShortRange` flag set to `true`, providing higher security by limiting the read range.
-
+Useful for precise picking, point-of-sale, or any scenario where you need to ensure only a nearby tag is read. Requires the tag ID, password, and the `enableShortRange` flag set to `true`.
