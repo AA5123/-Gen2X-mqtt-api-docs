@@ -8,12 +8,44 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775074605" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775074875" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
-    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: #fff; }
-    rapi-doc { width: 100%; height: 100%; }
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: #fff; display: flex; flex-direction: column; }
+    .doc-banner {
+      flex-shrink: 0;
+      background: #003d6b;
+      color: #ffffff;
+      padding: 28px 36px 22px;
+      border-bottom: 4px solid #0073bb;
+    }
+    .doc-banner h1 {
+      margin: 0 0 4px 0;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .doc-banner .version-badge {
+      display: inline-block;
+      background: #0073bb;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 3px 14px;
+      border-radius: 4px;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
+    .doc-banner .subtitle {
+      margin: 10px 0 0 0;
+      font-size: 17px;
+      font-weight: 400;
+      color: #c5ddf0;
+      line-height: 1.4;
+    }
+    rapi-doc { flex: 1 1 auto; width: 100%; min-height: 0; }
     rapi-doc::part(section-endpoint-body-title) {
       font-size: 5rem !important;
       font-weight: 900 !important;
@@ -29,8 +61,13 @@
   </style>
 </head>
 <body>
+  <div class="doc-banner">
+    <h1>Impinj Gen2X MQTT API</h1>
+    <span class="version-badge">v1.0.0</span>
+    <p class="subtitle">MQTT-based API for controlling Impinj Gen2X features on Zebra RFID readers</p>
+  </div>
   <rapi-doc
-    spec-url="openapi.json?v=1775074605"
+    spec-url="openapi.json?v=1775074875"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +96,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775074605"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775074875"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -436,5 +473,6 @@
   </script>
 </body>
 </html>
+
 
 
