@@ -250,17 +250,7 @@ def build_openapi():
          "Includes enable/disable protection, enable/disable visibility, and short-range mode\n"
          "- **FastID** — Tags return both EPC and TID in a single inventory response, eliminating extra read operations\n"
          "- **TagFocus** — Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags\n"
-         "- **Tag Quieting** — Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory\n\n"
-         "## How It Works\n"
-         "1. **Configure** — Send `set_impinjGen2X` commands to stage one or more Gen2X features\n"
-         "2. **Verify** — Use `get_impinjGen2X` to read back the current configuration and confirm settings\n"
-         "3. **Apply** — Stop the radio, then send the `start` command with `applyImpinjGen2X: true` to start scanning with Gen2X active\n\n"
-         "## MQTT Topics\n"
-         "- **Command topic:** Send request payloads here\n"
-         "- **Response topic:** Receive command responses here\n"
-         "- **Data topic:** Receive tag read data (inventory events) here\n\n"
-         "All commands use `command`, `command_id`, and `payload` as the top-level JSON fields. "
-         "The `command_id` (UUID) correlates each response back to its original request."),
+         "- **Tag Quieting** — Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory"),
     ])
 
     # --- Tags ---
