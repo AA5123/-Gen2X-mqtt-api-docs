@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775045879" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775073293" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775045879"
+    spec-url="openapi.json?v=1775073293"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,10 +59,10 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775045879"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775073293"></script>
   <script>
   (function() {
-    /* ── CSS overrides injected into RapiDoc shadow DOM ── */
+    /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
     var mqttSheet = new CSSStyleSheet();
     var mqttCssText = [
       /* Hide unwanted elements */
@@ -196,41 +196,69 @@
       }
     }
 
+    function patchApiTitle(sr) {
+      if (!sr) return;
+      /* RapiDoc renders the API title as the first h2 inside the nav or info slot.
+         We scan all elements and pick text nodes matching the API name. */
+      var allEls = sr.querySelectorAll('*');
+      for (var i = 0; i < allEls.length; i++) {
+        var el = allEls[i];
+        if (el.getAttribute('data-title-patched')) continue;
+        var tag = el.tagName ? el.tagName.toLowerCase() : '';
+        var txt = (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3)
+          ? (el.textContent || '').trim() : '';
+        /* Title: element whose sole text content is the API name */
+        if (txt === 'Impinj Gen2X MQTT API' ||
+            el.classList.contains('title') ||
+            el.classList.contains('info-title') ||
+            (tag === 'h2' && txt.indexOf('Impinj') !== -1)) {
+          el.setAttribute('data-title-patched', '1');
+          el.style.setProperty('font-size', '36px', 'important');
+          el.style.setProperty('font-weight', '800', 'important');
+          el.style.setProperty('color', '#003d6b', 'important');
+          el.style.setProperty('line-height', '1.2', 'important');
+        }
+        /* Version: element whose sole text is a semver string */
+        if (/^\d+\.\d+/.test(txt) ||
+            el.classList.contains('version') ||
+            el.classList.contains('info-version')) {
+          el.setAttribute('data-title-patched', '1');
+          el.style.setProperty('font-size', '26px', 'important');
+          el.style.setProperty('font-weight', '700', 'important');
+          el.style.setProperty('color', '#0073bb', 'important');
+          el.style.setProperty('line-height', '1.2', 'important');
+        }
+      }
+      /* Also recurse into nested shadow roots */
+      allEls.forEach(function(el) {
+        if (el.shadowRoot) patchApiTitle(el.shadowRoot);
+      });
+    }
+
     function applyOverrides() {
       var rd = document.querySelector('rapi-doc');
       if (!rd || !rd.shadowRoot) return;
       injectSheet(rd.shadowRoot);
       walkAndInject(rd.shadowRoot);
-      /* Force title/version size directly on rendered elements */
-      var sr = rd.shadowRoot;
-      sr.querySelectorAll('h2.title, .title').forEach(function(el) {
-        el.style.setProperty('font-size', '36px', 'important');
-        el.style.setProperty('font-weight', '800', 'important');
-        el.style.setProperty('color', '#003d6b', 'important');
-      });
-      sr.querySelectorAll('.version, span.version').forEach(function(el) {
-        el.style.setProperty('font-size', '26px', 'important');
-        el.style.setProperty('font-weight', '700', 'important');
-        el.style.setProperty('color', '#0073bb', 'important');
-      });
+      patchApiTitle(rd.shadowRoot);
     }
 
     /* Breadcrumb map auto-generated from spec */
     var breadcrumbMap = {"enable_tag_protection": {"group": "Tag Protection", "tag": "Tag Protection"}, "disable_tag_protection": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_tag_visibility": {"group": "Tag Protection", "tag": "Tag Protection"}, "disable_tag_visibility": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_short_range": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_fastid": {"group": "Inventory Features", "tag": "FastID"}, "disable_fastid": {"group": "Inventory Features", "tag": "FastID"}, "enable_tagfocus": {"group": "Inventory Features", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Inventory Features", "tag": "TagFocus"}, "quiet_tags": {"group": "Inventory Features", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Inventory Features", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Configuration & Control", "tag": "Configuration"}, "start_with_gen2x": {"group": "Configuration & Control", "tag": "Radio Control"}};
     var commandOverviewMap = {
-      "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password — the tag stops responding to standard inventory until protection is explicitly removed.",
+      "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password â€” the tag stops responding to standard inventory until protection is explicitly removed.",
       "disable_tag_protection": "Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password. Send the same tag ID and password that were used when protection was enabled.",
-      "enable_tag_visibility": "Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password — the reader uses it to unmask protected tags in inventory rounds. The tag itself does not need to be specified; all protected tags matching the password become visible.",
+      "enable_tag_visibility": "Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password â€” the reader uses it to unmask protected tags in inventory rounds. The tag itself does not need to be specified; all protected tags matching the password become visible.",
       "disable_tag_visibility": "Revokes the reader's ability to see protected tags. Even if the password was configured previously, the reader will no longer surface protected tags in inventory results after this command.",
       "enable_short_range": "Protects a specific tag AND restricts it to only respond when the tag is physically very close to the antenna (short-range mode). Useful for precise picking, point-of-sale, or any scenario where you need to ensure only a nearby tag is read. Requires tag ID, password, and the enableShortRange flag set to true.",
       "enable_fastid": "Enables Impinj FastID. Tags return both their EPC and TID (Tag Identifier) in a single inventory response instead of requiring a second read. This speeds up inventory and eliminates the extra round-trip needed to read the TID separately.",
-      "disable_fastid": "Disables FastID. Tags revert to standard behaviour — only the EPC is returned in each scan response. The TID must be retrieved in a separate operation if needed.",
+      "disable_fastid": "Disables FastID. Tags revert to standard behaviour â€” only the EPC is returned in each scan response. The TID must be retrieved in a separate operation if needed.",
       "enable_tagfocus": "Enables Impinj TagFocus. Tags that have already been read stay quiet and stop responding in subsequent inventory rounds. The reader focuses on finding new or unread tags, which is ideal for dense tag environments where some tags are difficult to detect.",
       "disable_tagfocus": "Disables TagFocus. All tags respond normally again in every inventory round, regardless of whether they have been read before.",
       "quiet_tags": "Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active. Other tags are unaffected. Use unquiet_tags to restore them.",
-      "unquiet_tags": "Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted — they will resume responding in inventory rounds normally.",
+      "unquiet_tags": "Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted â€” they will resume responding in inventory rounds normally.",
       "get_gen2x_config": "Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio. The response payload mirrors the last applied configuration.",
-      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command — starting with Gen2X active while the radio is running will return an error."
+      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command â€” starting with Gen2X active while the radio is running will return an error."
     };
 
     function styleHeadings(root) {
@@ -300,7 +328,7 @@
     function addCopyButtons(root) {
       if (!root) return;
       
-      /* Rename REQUEST/RESPONSE headers using innerHTML — no label, just payload heading */
+      /* Rename REQUEST/RESPONSE headers using innerHTML â€” no label, just payload heading */
       var reqResTitles = root.querySelectorAll('.req-res-title');
       for (var r = 0; r < reqResTitles.length; r++) {
         if (reqResTitles[r].getAttribute('data-mqtt-styled')) continue;
