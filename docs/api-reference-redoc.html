@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775078157" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775078366" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,11 +30,10 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775078157"
+    spec-url="openapi.json?v=1775078366"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
-    show-info="false"
     show-side-nav="true"
     nav-bg-color="#ffffff"
     nav-text-color="#333333"
@@ -58,51 +57,9 @@
     allow-server-selection="false"
     allow-authentication="false"
   >
-    <div slot="overview" style="padding: 0 24px;">
-      <h1 style="font-size: 48px; font-weight: 900; color: #003d6b; margin: 24px 0 6px 0; border-bottom: 3px solid #003d6b; padding-bottom: 10px; letter-spacing: -0.5px;">
-        Impinj Gen2X MQTT API
-        <span style="font-size: 24px; font-weight: 700; color: #0073bb; margin-left: 12px;">v1.0.0</span>
-      </h1>
-      <p style="font-size: 1.375rem; color: #333; margin: 12px 0 20px 0; line-height: 1.6;">
-        MQTT-based API for controlling Impinj Gen2X features on Zebra RFID readers.
-        Send JSON command payloads to the MQTT command topic and receive responses on the response topic.
-      </p>
-
-      <h2 style="font-size: 2rem; font-weight: 700; color: #003d6b; margin: 24px 0 8px 0; border-bottom: 2px solid #003d6b; padding-bottom: 6px;">About This Document</h2>
-      <p style="font-size: 1.375rem; color: #1a1a1a; line-height: 1.7;">
-        This API reference covers all 13 Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed and handheld RFID readers.
-        Each command section includes the request payload schema, response payload schema, field descriptions, and JSON examples.
-      </p>
-
-      <h2 style="font-size: 2rem; font-weight: 700; color: #003d6b; margin: 24px 0 8px 0; border-bottom: 2px solid #003d6b; padding-bottom: 6px;">Supported Gen2X Features</h2>
-      <ul style="font-size: 1.375rem; color: #1a1a1a; line-height: 1.8; padding-left: 24px;">
-        <li><strong>Tag Protection (Protected Mode)</strong> &mdash; Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers. Includes enable/disable protection, enable/disable visibility, and short-range mode</li>
-        <li><strong>FastID</strong> &mdash; Tags return both EPC and TID in a single inventory response, eliminating extra read operations</li>
-        <li><strong>TagFocus</strong> &mdash; Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags</li>
-        <li><strong>Tag Quieting</strong> &mdash; Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory</li>
-      </ul>
-
-      <h2 style="font-size: 2rem; font-weight: 700; color: #003d6b; margin: 24px 0 8px 0; border-bottom: 2px solid #003d6b; padding-bottom: 6px;">How It Works</h2>
-      <ol style="font-size: 1.375rem; color: #1a1a1a; line-height: 1.8; padding-left: 24px;">
-        <li><strong>Configure</strong> &mdash; Send <code>set_impinjGen2X</code> commands to stage one or more Gen2X features</li>
-        <li><strong>Verify</strong> &mdash; Use <code>get_impinjGen2X</code> to read back the current configuration and confirm settings</li>
-        <li><strong>Apply</strong> &mdash; Stop the radio, then send the <code>start</code> command with <code>applyImpinjGen2X: true</code> to start scanning with Gen2X active</li>
-      </ol>
-
-      <h2 style="font-size: 2rem; font-weight: 700; color: #003d6b; margin: 24px 0 8px 0; border-bottom: 2px solid #003d6b; padding-bottom: 6px;">MQTT Topics</h2>
-      <ul style="font-size: 1.375rem; color: #1a1a1a; line-height: 1.8; padding-left: 24px;">
-        <li><strong>Command topic:</strong> Send request payloads here</li>
-        <li><strong>Response topic:</strong> Receive command responses here</li>
-        <li><strong>Data topic:</strong> Receive tag read data (inventory events) here</li>
-      </ul>
-      <p style="font-size: 1.375rem; color: #1a1a1a; line-height: 1.7; margin: 12px 0 24px 0;">
-        All commands use <code>command</code>, <code>command_id</code>, and <code>payload</code> as the top-level JSON fields.
-        The <code>command_id</code> (UUID) correlates each response back to its original request.
-      </p>
-    </div>
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775078157"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775078366"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -479,6 +436,7 @@
   </script>
 </body>
 </html>
+
 
 
 
