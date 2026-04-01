@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775074202" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775074605" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775074202"
+    spec-url="openapi.json?v=1775074605"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +59,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775074202"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775074605"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -88,6 +88,9 @@
       '.nav-bar-info .info-version, .nav-bar-info .version, .api-info .info-version, .api-info .version, span.version { font-size: 26px !important; font-weight: 700 !important; line-height: 1.2 !important; color: #0073bb !important; }',
       'h2.title { font-size: 36px !important; }',
       'span.version { font-size: 26px !important; }',
+      /* Main content area title + version override */
+      '.section-gap--read-mode h2, .section-gap h2, .section-gap--read-mode .title, .main-content h2:first-of-type { font-size: 42px !important; font-weight: 900 !important; color: #003d6b !important; border-bottom: 3px solid #003d6b !important; padding-bottom: 8px !important; }',
+      '.section-gap--read-mode .version, .main-content .version, .api-info .version { font-size: 28px !important; font-weight: 700 !important; color: #0073bb !important; }',
 
       /* Content area: full width with generous padding */
       '.main-content { max-width: 100% !important; width: 100% !important; padding: 0 24px !important; }',
@@ -213,17 +216,20 @@
             el.classList.contains('info-title') ||
             (tag === 'h2' && txt.indexOf('Impinj') !== -1)) {
           el.setAttribute('data-title-patched', '1');
-          el.style.setProperty('font-size', '36px', 'important');
-          el.style.setProperty('font-weight', '800', 'important');
+          el.style.setProperty('font-size', '42px', 'important');
+          el.style.setProperty('font-weight', '900', 'important');
           el.style.setProperty('color', '#003d6b', 'important');
           el.style.setProperty('line-height', '1.2', 'important');
+          el.style.setProperty('border-bottom', '3px solid #003d6b', 'important');
+          el.style.setProperty('padding-bottom', '8px', 'important');
+          el.style.setProperty('display', 'block', 'important');
         }
         /* Version: element whose sole text is a semver string */
         if (/^\d+\.\d+/.test(txt) ||
             el.classList.contains('version') ||
             el.classList.contains('info-version')) {
           el.setAttribute('data-title-patched', '1');
-          el.style.setProperty('font-size', '26px', 'important');
+          el.style.setProperty('font-size', '28px', 'important');
           el.style.setProperty('font-weight', '700', 'important');
           el.style.setProperty('color', '#0073bb', 'important');
           el.style.setProperty('line-height', '1.2', 'important');
@@ -430,4 +436,5 @@
   </script>
 </body>
 </html>
+
 
