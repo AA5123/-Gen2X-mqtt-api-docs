@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>API Reference - Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775079466" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775079639" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775079466"
+    spec-url="openapi.json?v=1775079639"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +59,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775079466"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775079639"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -203,16 +203,15 @@
       for (var i = 0; i < allEls.length; i++) {
         var el = allEls[i];
         if (el.getAttribute('data-title-patched')) continue;
-        var tag = el.tagName ? el.tagName.toLowerCase() : '';
-        var txt = (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3)
-          ? (el.textContent || '').trim() : '';
-        /* Title: hide only the exact small RapiDoc title text */
-        if (txt === 'Impinj Gen2X MQTT API' && el.children.length === 0) {
+        var txt = (el.textContent || '').trim();
+        var childCount = el.children ? el.children.length : 0;
+        /* Title: hide only the exact small RapiDoc title text (leaf element) */
+        if (txt === 'Impinj Gen2X MQTT API' && childCount === 0) {
           el.setAttribute('data-title-patched', '1');
           el.style.setProperty('display', 'none', 'important');
         }
-        /* Version: hide only the exact small version text */
-        if (txt === '1.0.0' && el.children.length === 0) {
+        /* Version: hide only the exact small version text (leaf element) */
+        if (txt === '1.0.0' && childCount === 0) {
           el.setAttribute('data-title-patched', '1');
           el.style.setProperty('display', 'none', 'important');
         }
@@ -418,6 +417,7 @@
   </script>
 </body>
 </html>
+
 
 
 
