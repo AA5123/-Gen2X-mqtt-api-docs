@@ -623,9 +623,9 @@
 
         <!-- Overview -->
         <h2 id="rest-overview">Overview</h2>
-        <p>This tutorial provides a walk-through of the steps to use Impinj Gen2X tag features via the REST API on Zebra fixed RFID readers, including:</p>
+        <p>This tutorial provides a walk-through of the steps to use Impinj Gen2X tag features via the <strong>IoT Connector REST API</strong> on Zebra fixed RFID readers, including:</p>
         <ul>
-          <li>Protected Mode</li>
+          <li>Protected Mode (TagProtect)</li>
           <li>TagFocus</li>
           <li>Tag Quieting</li>
           <li>FastID</li>
@@ -634,201 +634,306 @@
         <h3>Details</h3>
         <p>Impinj Gen2X is an enhancement to Gen2's radio and logical layers. Impinj Gen2X tags are required to leverage these features with Gen2X-enabled Zebra RFID Readers.</p>
         <p>Users should verify whether their tags support these operations by referring to Impinj Gen2X tag specifications: <a href="http://www.impinj.com/Gen2X" target="_blank">http://www.impinj.com/Gen2X</a></p>
-        <p>All Gen2X commands are sent as HTTP POST requests with JSON bodies to the reader's REST endpoint. Each request uses the same top-level structure:</p>
-<pre><code>POST /api/v1/impinjGen2X HTTP/1.1
-Host: &lt;reader-ip&gt;
-Content-Type: application/json
+        <p>The REST API uses a single endpoint <code>/cloud/impinjGen2X</code> with two methods:</p>
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>GET</strong></td><td><code>/cloud/impinjGen2X</code></td><td>Retrieve current Gen2X configuration</td></tr>
+            <tr><td><strong>PUT</strong></td><td><code>/cloud/impinjGen2X</code></td><td>Set Gen2X configuration (at least one feature object required)</td></tr>
+          </tbody>
+        </table>
 
-{
-  <span class="key">"action"</span>: <span class="str">"&lt;action-name&gt;"</span>,
-  <span class="key">"payload"</span>: { ... }
-}</code></pre>
+        <!-- Authentication -->
+        <h2 id="rest-authentication">Authentication</h2>
+        <p>The REST API requires <strong>Bearer token</strong> authentication. To obtain a token:</p>
+        <ol>
+          <li>If a bearer token was previously copied from the dashboard page, use it directly in the <code>Authorization</code> header.</li>
+          <li>If not, use Admin login credentials with <strong>Basic Auth</strong>, execute <code>POST /cloud/localRestLogin</code>, and copy the bearer token from the response.</li>
+        </ol>
+        <p>Include the token in every request:</p>
+<pre><code>Authorization: Bearer &lt;your-token&gt;</code></pre>
 
         <!-- Setting it up -->
         <h2 id="rest-setting-it-up">Setting it up</h2>
-        <p>Make sure the reader's REST interface is enabled. All requests are sent as <code>POST</code> or <code>GET</code> to the reader's IP address on the configured port (default: 443 with HTTPS). Authenticate using Basic Auth or API key depending on reader configuration.</p>
+        <p>All requests are sent to the reader's IP over HTTPS (default port 443). Configuration is done via <code>PUT /cloud/impinjGen2X</code> with a JSON body containing at least one feature object (<code>fastID</code>, <code>tagProtect</code>, <code>tagFocus</code>, or <code>tagQuieting</code>).</p>
+        <p>After configuring the desired features, use the <strong>start command with the <code>applyImpinjGen2X</code> flag</strong> to begin Gen2X operations.</p>
 
         <div class="callout note">
-          <strong>NOTE:</strong> The radio must be stopped before applying Gen2X configuration. Starting with Gen2X active while the radio is already running will return an error.
+          <strong>NOTE:</strong> The radio must be stopped before applying Gen2X configuration. The start command with <code>applyImpinjGen2X</code> flag should be used to start Gen2X operations.
         </div>
 
         <!-- Protected Mode -->
         <h2 id="rest-protected-mode">Protected Mode</h2>
-        <p>Protected mode renders a tag invisible to an RFID reader unless the reader first provides the correct 32-bit PIN/Password.</p>
+        <p>Impinj TagProtect prevents unauthorized cloning and reading of tags using a password-based protection mechanism. It renders a tag invisible to an RFID reader — the tag becomes RF silent and does not respond to Gen2 commands unless the reader first provides the correct 32-bit password.</p>
+        <p>The required fields depend on the action: <code>tagID</code> is required for <code>enableTagProtection</code>/<code>disableTagProtection</code> and must be omitted for <code>enableTagVisibility</code>/<code>disableTagVisibility</code>.</p>
 
-        <h4>Enable Impinj Protected Mode</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagProtect HTTP/1.1
+        <h4>Enable Tag Protection</h4>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"enableTagProtection"</span>,
-  <span class="key">"password"</span>: <span class="str">"77777777"</span>,
-  <span class="key">"tagID"</span>: <span class="str">"12348765a5050076c4d75211"</span>
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"enableTagProtection"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>,
+    <span class="key">"tagID"</span>: <span class="str">"e2801191a5030069073b426d"</span>,
+    <span class="key">"enableShortRange"</span>: <span class="bool">true</span>
+  }
 }</code></pre>
 
         <h4>cURL Example</h4>
-<pre><code>curl -X POST https://&lt;reader-ip&gt;/api/v1/impinjGen2X/tagProtect \
+<pre><code>curl -X PUT https://&lt;reader-ip&gt;/cloud/impinjGen2X \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer &lt;token&gt;" \
   -d '{
-    "action": "enableTagProtection",
-    "password": "77777777",
-    "tagID": "12348765a5050076c4d75211"
+    "tagProtect": {
+      "action": "enableTagProtection",
+      "password": "77777777",
+      "tagID": "e2801191a5030069073b426d",
+      "enableShortRange": true
+    }
   }'</code></pre>
 
-        <h4>Disable Impinj Protected Mode</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagProtect HTTP/1.1
+        <h4>Disable Tag Protection</h4>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"disableTagProtection"</span>,
-  <span class="key">"password"</span>: <span class="str">"77777777"</span>,
-  <span class="key">"tagID"</span>: <span class="str">"12348765a5050076c4d75211"</span>
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"disableTagProtection"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>,
+    <span class="key">"tagID"</span>: <span class="str">"e2801191a5030069073b426d"</span>
+  }
 }</code></pre>
 
         <!-- Tag Visibility -->
         <h2 id="rest-tag-visibility">Tag Visibility</h2>
 
         <h4>Enable Inventory of Protected Tags</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagProtect HTTP/1.1
+        <p>Enables the reader to read protected tags by providing the correct password. No <code>tagID</code> is needed.</p>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"enableTagVisibility"</span>,
-  <span class="key">"password"</span>: <span class="str">"77777777"</span>
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"enableTagVisibility"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>
+  }
 }</code></pre>
 
-        <h4>Clear Protected Mode Configuration</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagProtect HTTP/1.1
+        <h4>Disable Inventory of Protected Tags</h4>
+        <p>Disables the reader's ability to read protected tags.</p>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"disableTagVisibility"</span>,
-  <span class="key">"password"</span>: <span class="str">"77777777"</span>
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"disableTagVisibility"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>
+  }
 }</code></pre>
 
         <!-- Short Range -->
         <h2 id="rest-short-range">Short Range</h2>
-        <h4>Enable Short Range</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagProtect HTTP/1.1
+        <h4>Enable Short Range Protection</h4>
+        <p>Protects a tag AND restricts it to respond only at close proximity by setting <code>enableShortRange: true</code> with the <code>enableTagProtection</code> action.</p>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"enableShortRange"</span>,
-  <span class="key">"password"</span>: <span class="str">"77777777"</span>,
-  <span class="key">"tagID"</span>: <span class="str">"12348765a5050076c4d75211"</span>
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"enableTagProtection"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>,
+    <span class="key">"tagID"</span>: <span class="str">"e2801191a5030069073b426d"</span>,
+    <span class="key">"enableShortRange"</span>: <span class="bool">true</span>
+  }
 }</code></pre>
 
         <!-- TagFocus -->
         <h2 id="rest-tagfocus">TagFocus</h2>
-        <p>TagFocus allows readers to silence already-inventoried tags to reduce redundant reads.</p>
+        <p>Impinj TagFocus instructs tags that have already been inventoried to remain unresponsive, enabling the reader to focus on other tags. TagFocus targets tags inventoried in session S1.</p>
 
         <h4>Enable TagFocus</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagFocus HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"enabled"</span>: <span class="bool">true</span>
+  <span class="key">"tagFocus"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">true</span>
+  }
 }</code></pre>
 
         <h4>Disable TagFocus</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagFocus HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"enabled"</span>: <span class="bool">false</span>
+  <span class="key">"tagFocus"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">false</span>
+  }
 }</code></pre>
 
         <!-- Tag Quieting -->
         <h2 id="rest-tag-quieting">Tag Quieting</h2>
-        <p>Tag quieting selectively silences individual tags so they do not participate in inventory rounds.</p>
+        <p>Impinj TagQuieting selectively silences individual tags to reduce tag churn and improve read accuracy.</p>
 
         <h4>Quiet Tags</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagQuieting HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"quiet"</span>,
-  <span class="key">"tagIDs"</span>: [<span class="str">"12348765a5050076c4d75211"</span>]
+  <span class="key">"tagQuieting"</span>: {
+    <span class="key">"basic"</span>: {
+      <span class="key">"action"</span>: <span class="str">"quiet"</span>,
+      <span class="key">"tagIDs"</span>: [
+        <span class="str">"e2801191a5030069073b426d"</span>,
+        <span class="str">"e2801191a5030069073b426e"</span>
+      ]
+    }
+  }
 }</code></pre>
 
         <h4>Unquiet Tags</h4>
-<pre><code>POST /api/v1/impinjGen2X/tagQuieting HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"action"</span>: <span class="str">"unquiet"</span>,
-  <span class="key">"tagIDs"</span>: [<span class="str">"12348765a5050076c4d75211"</span>]
+  <span class="key">"tagQuieting"</span>: {
+    <span class="key">"basic"</span>: {
+      <span class="key">"action"</span>: <span class="str">"unquiet"</span>,
+      <span class="key">"tagIDs"</span>: [
+        <span class="str">"e2801191a5030069073b426d"</span>
+      ]
+    }
+  }
 }</code></pre>
 
         <!-- FastID -->
         <h2 id="rest-fastid">FastID</h2>
-        <p>FastID enables Impinj tags to backscatter their EPC and TID in a single response.</p>
+        <p>Impinj FastID embeds the tag TID along with the EPC in every inventory response, eliminating the need for separate TID read operations and improving throughput.</p>
 
         <h4>Enable FastID</h4>
-<pre><code>POST /api/v1/impinjGen2X/fastID HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"enabled"</span>: <span class="bool">true</span>
+  <span class="key">"fastID"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">true</span>
+  }
+}</code></pre>
+
+        <h4>Enable FastID with TID Selector</h4>
+        <p>Optionally specify a TID word selector mask (<code>TID[0]</code> through <code>TID[3]</code>) to embed only a specific TID word in the response.</p>
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
+Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
+
+{
+  <span class="key">"fastID"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">true</span>,
+    <span class="key">"tidSelector"</span>: <span class="str">"TID[0]"</span>
+  }
 }</code></pre>
 
         <h4>Disable FastID</h4>
-<pre><code>POST /api/v1/impinjGen2X/fastID HTTP/1.1
+<pre><code>PUT /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
 Content-Type: application/json
+Authorization: Bearer &lt;token&gt;
 
 {
-  <span class="key">"enabled"</span>: <span class="bool">false</span>
+  <span class="key">"fastID"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">false</span>
+  }
 }</code></pre>
 
         <!-- Get Configuration -->
         <h2 id="rest-get-config">Get Configuration</h2>
-        <p>Retrieves the current Gen2X configuration from the reader.</p>
-<pre><code>GET /api/v1/impinjGen2X HTTP/1.1
-Host: &lt;reader-ip&gt;</code></pre>
+        <p>Retrieves the current Impinj Gen2X feature configuration as last saved via <code>PUT /cloud/impinjGen2X</code>. Returns an empty object if no Gen2X configuration has been set yet. Only feature objects that were previously configured are included in the response.</p>
+<pre><code>GET /cloud/impinjGen2X HTTP/1.1
+Host: &lt;reader-ip&gt;
+Authorization: Bearer &lt;token&gt;</code></pre>
 
         <h4>cURL Example</h4>
-<pre><code>curl -X GET https://&lt;reader-ip&gt;/api/v1/impinjGen2X</code></pre>
+<pre><code>curl -X GET https://&lt;reader-ip&gt;/cloud/impinjGen2X \
+  -H "Authorization: Bearer &lt;token&gt;"</code></pre>
+
+        <h4>Example Response (200 OK)</h4>
+<pre><code>{
+  <span class="key">"fastID"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">true</span>,
+    <span class="key">"tidSelector"</span>: <span class="str">"TID[0]"</span>
+  },
+  <span class="key">"tagProtect"</span>: {
+    <span class="key">"action"</span>: <span class="str">"enableTagProtection"</span>,
+    <span class="key">"password"</span>: <span class="str">"77777777"</span>,
+    <span class="key">"tagID"</span>: <span class="str">"e2801191a5030069073b426d"</span>,
+    <span class="key">"enableShortRange"</span>: <span class="bool">true</span>
+  },
+  <span class="key">"tagFocus"</span>: {
+    <span class="key">"enabled"</span>: <span class="bool">true</span>
+  },
+  <span class="key">"tagQuieting"</span>: {
+    <span class="key">"basic"</span>: {
+      <span class="key">"action"</span>: <span class="str">"quiet"</span>,
+      <span class="key">"tagIDs"</span>: [<span class="str">"e2801191a5030069073b426d"</span>]
+    }
+  }
+}</code></pre>
 
         <!-- Start with Gen2X -->
         <h2 id="rest-start-gen2x">Start with Gen2X</h2>
-        <p>After configuring the desired Gen2X features, stop the radio and send a start command with the Gen2X flag.</p>
-<pre><code>POST /api/v1/start HTTP/1.1
-Content-Type: application/json
-
-{
-  <span class="key">"applyImpinjGen2X"</span>: <span class="bool">true</span>
-}</code></pre>
-
-        <h4>cURL Example</h4>
-<pre><code>curl -X POST https://&lt;reader-ip&gt;/api/v1/start \
-  -H "Content-Type: application/json" \
-  -d '{"applyImpinjGen2X": true}'</code></pre>
+        <p>After configuring the desired Gen2X features, stop the radio and send the start command with the <code>applyImpinjGen2X</code> flag to apply all staged Gen2X settings and begin inventory.</p>
 
         <div class="callout warning">
-          <strong>Important:</strong> The radio must be stopped before applying Gen2X configuration.
+          <strong>Important:</strong> The radio must be stopped before applying Gen2X configuration. Starting with Gen2X active while the radio is already running will return an error.
         </div>
 
-        <h3>Success Response</h3>
-<pre><code>HTTP/1.1 200 OK
-Content-Type: application/json
+        <h3>Error Responses</h3>
+        <table>
+          <thead><tr><th>Status</th><th>Description</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>422</code></td>
+              <td>Unprocessable Entity</td>
+              <td><code>{"message": "Invalid payload for set_impinjGen2X api"}</code></td>
+            </tr>
+            <tr>
+              <td><code>500</code></td>
+              <td>Internal Server Error</td>
+              <td><code>{"code": 1, "message": "problem getting response for set_impinjGen2X"}</code></td>
+            </tr>
+          </tbody>
+        </table>
 
-{
-  <span class="key">"status"</span>: <span class="str">"success"</span>,
-  <span class="key">"message"</span>: <span class="str">"Gen2X configured."</span>
-}</code></pre>
-
-        <h3>Command Summary</h3>
+        <h3>API Summary</h3>
         <table>
           <thead>
-            <tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
+            <tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>/api/v1/impinjGen2X/tagProtect</code></td><td>POST</td><td>Enable/disable tag protection, visibility, short range</td></tr>
-            <tr><td><code>/api/v1/impinjGen2X/fastID</code></td><td>POST</td><td>Enable/disable FastID</td></tr>
-            <tr><td><code>/api/v1/impinjGen2X/tagFocus</code></td><td>POST</td><td>Enable/disable TagFocus</td></tr>
-            <tr><td><code>/api/v1/impinjGen2X/tagQuieting</code></td><td>POST</td><td>Quiet/unquiet specific tags</td></tr>
-            <tr><td><code>/api/v1/impinjGen2X</code></td><td>GET</td><td>Read current Gen2X configuration</td></tr>
-            <tr><td><code>/api/v1/start</code></td><td>POST</td><td>Start radio with Gen2X applied</td></tr>
+            <tr><td><strong>GET</strong></td><td><code>/cloud/impinjGen2X</code></td><td>Bearer</td><td>Retrieve current Gen2X configuration</td></tr>
+            <tr><td><strong>PUT</strong></td><td><code>/cloud/impinjGen2X</code></td><td>Bearer</td><td>Set Gen2X configuration (fastID, tagProtect, tagFocus, tagQuieting)</td></tr>
           </tbody>
         </table>
 
@@ -864,7 +969,8 @@ Content-Type: application/json
           {text:'Get Configuration', href:'#get-config'}, {text:'Start with Gen2X', href:'#start-gen2x'}
         ],
         rest: [
-          {text:'Overview', href:'#rest-overview'}, {text:'Setting it up', href:'#rest-setting-it-up'},
+          {text:'Overview', href:'#rest-overview'}, {text:'Authentication', href:'#rest-authentication'},
+          {text:'Setting it up', href:'#rest-setting-it-up'},
           {text:'Protected Mode', href:'#rest-protected-mode'}, {text:'Tag Visibility', href:'#rest-tag-visibility'},
           {text:'Short Range', href:'#rest-short-range'}, {text:'TagFocus', href:'#rest-tagfocus'},
           {text:'Tag Quieting', href:'#rest-tag-quieting'}, {text:'FastID', href:'#rest-fastid'},
