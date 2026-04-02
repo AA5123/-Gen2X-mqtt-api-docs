@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>API Reference - Impinj Gen2X MQTT API</title>
+  <title>API Reference - Impinj Gen2X APIs</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/redoc-zebra.css?v=1775080411" />
   <style>
@@ -17,9 +17,9 @@
     rapi-doc::part(section-endpoint-body-title) {
       font-size: 5rem !important;
       font-weight: 900 !important;
-      color: #003d6b !important;
+      color: #111111 !important;
       letter-spacing: 0.3px !important;
-      border-bottom: 3px solid #003d6b !important;
+      border-bottom: 3px solid #111111 !important;
       padding-bottom: 10px !important;
       display: block !important;
       margin-bottom: 12px !important;
@@ -38,9 +38,9 @@
     nav-bg-color="#ffffff"
     nav-text-color="#333333"
     nav-hover-bg-color="#f2f3f3"
-    nav-hover-text-color="#0073bb"
-    nav-accent-color="#0073bb"
-    primary-color="#2563eb"
+    nav-hover-text-color="#111111"
+    nav-accent-color="#111111"
+    primary-color="#111111"
     bg-color="#ffffff"
     text-color="#333333"
     header-color="#1e293b"
@@ -79,18 +79,20 @@
       '.obj-type { display: none !important; }',
 
       /* Navigation styling */
-      '.nav-bar-tag { font-size: 22px !important; font-weight: 600 !important; }',
-      '.nav-bar-path { padding-left: 16px !important; font-size: 20px !important; }',
-      '.nav-bar-info { font-size: 20px !important; }',
+      '.nav-bar-tag { font-size: 22px !important; font-weight: 700 !important; color: #111111 !important; }',
+      '.nav-bar-path { padding: 10px 18px 10px 24px !important; font-size: 18px !important; color: #666666 !important; border-left: 3px solid transparent !important; }',
+      '.nav-bar-info { font-size: 24px !important; font-weight: 700 !important; color: #111111 !important; padding: 4px 24px 8px !important; }',
       '.nav-bar-section { font-size: 20px !important; }',
-      '[data-tag-group-header] { font-size: 19px !important; }',
+      '[data-tag-group-header] { font-size: 19px !important; color: #111111 !important; }',
+      '.nav-bar-path:hover { color: #111111 !important; background: #f5f5f5 !important; }',
+      '.nav-bar-path.active, .nav-bar-path.focused { color: #111111 !important; font-weight: 700 !important; background: #ffffff !important; border-left-color: #111111 !important; }',
 
       /* Hide RapiDoc small title/version: they are direct children (h1/h2/span/div) of the overview section, NOT inside .m-markdown */
       '.section-gap--read-mode > h1, .section-gap--read-mode > h2, .section-gap--read-mode > span, .section-gap > h1, .section-gap > h2, .section-gap > span { display: none !important; }',
       '#overview > h1, #overview > h2, #overview > span, #api-title, #api-info > h1, #api-info > h2, #api-info > span { display: none !important; }',
 
       /* Style the h1 we put in the markdown description */
-      '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #003d6b !important; border-bottom: 3px solid #003d6b !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; letter-spacing: -0.5px !important; line-height: 1.2 !important; }',
+      '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 3px solid #111111 !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; letter-spacing: -0.5px !important; line-height: 1.2 !important; }',
 
       /* Content area: full width with generous padding */
       '.main-content { max-width: 100% !important; width: 100% !important; padding: 0 24px !important; }',
@@ -110,26 +112,26 @@
       '.m-markdown { margin: 0 !important; }',
       '.m-markdown p { margin: 0 0 8px 0 !important; }',
       '.m-markdown table { margin: 4px 0 8px 0 !important; }',
-      '.m-markdown h2 { margin: 16px 0 8px 0 !important; font-weight: 700 !important; font-size: 2.5rem !important; color: #003d6b !important; padding-bottom: 6px !important; }',
-      '.m-markdown h3 { margin: 12px 0 6px 0 !important; font-weight: 600 !important; font-size: 2rem !important; color: #003d6b !important; padding-bottom: 4px !important; }',
+      '.m-markdown h2 { margin: 16px 0 8px 0 !important; font-weight: 700 !important; font-size: 2.5rem !important; color: #111111 !important; padding-bottom: 6px !important; }',
+      '.m-markdown h3 { margin: 12px 0 6px 0 !important; font-weight: 600 !important; font-size: 2rem !important; color: #111111 !important; padding-bottom: 4px !important; }',
 
       /* Headings: navy accent */
       '.summary { overflow: visible !important; }',
-      '.endpoint-body .summary .title, .summary .title, div.summary div.title, .only-large-font { font-size: 5rem !important; font-weight: 900 !important; color: #003d6b !important; letter-spacing: 0.3px !important; border-bottom: 3px solid #003d6b !important; box-shadow: 0 3px 0 0 #003d6b !important; padding-bottom: 10px !important; display: block !important; width: 100% !important; margin-bottom: 8px !important; }',
+      '.endpoint-body .summary .title, .summary .title, div.summary div.title, .only-large-font { font-size: 5rem !important; font-weight: 900 !important; color: #111111 !important; letter-spacing: 0.3px !important; border-bottom: 3px solid #111111 !important; box-shadow: 0 3px 0 0 #111111 !important; padding-bottom: 10px !important; display: block !important; width: 100% !important; margin-bottom: 8px !important; }',
       '.endpoint-head .descr { display: none !important; }',
-      '.api-content h2, .section-gap h2, .section-gap--read-mode h2 { color: #003d6b !important; font-weight: 700 !important; padding-bottom: 6px !important; margin-top: 16px !important; margin-bottom: 8px !important; font-size: 2.5rem !important; }',
-      '.api-content h3, .section-gap h3 { color: #003d6b !important; font-weight: 600 !important; margin-top: 12px !important; margin-bottom: 6px !important; font-size: 2rem !important; }',
+      '.api-content h2, .section-gap h2, .section-gap--read-mode h2 { color: #111111 !important; font-weight: 700 !important; padding-bottom: 6px !important; margin-top: 16px !important; margin-bottom: 8px !important; font-size: 2.5rem !important; }',
+      '.api-content h3, .section-gap h3 { color: #111111 !important; font-weight: 600 !important; margin-top: 12px !important; margin-bottom: 6px !important; font-size: 2rem !important; }',
 
       /* Tables: Zebra navy headers + alternating rows */
-      'table { border-collapse: collapse !important; width: 100% !important; border: 1.5px solid #003d6b !important; border-radius: 0 !important; table-layout: fixed !important; }',
+      'table { border-collapse: collapse !important; width: 100% !important; border: 1.5px solid #111111 !important; border-radius: 0 !important; table-layout: fixed !important; }',
       'th:first-child, td:first-child { width: 30% !important; }',
-      'th { background: #003d6b !important; color: #fff !important; font-weight: 600 !important; font-size: 1.375rem !important; letter-spacing: 0.3px !important; padding: 10px 14px !important; text-align: left !important; border-color: #002d50 !important; }',
+      'th { background: #111111 !important; color: #fff !important; font-weight: 600 !important; font-size: 1.375rem !important; letter-spacing: 0.3px !important; padding: 10px 14px !important; text-align: left !important; border-color: #111111 !important; }',
       'td { padding: 10px 14px !important; vertical-align: top !important; font-size: 1.375rem !important; border: 1px solid #8a94a6 !important; word-break: break-word !important; }',
       'tr:nth-child(odd) td { background: #ffffff !important; }',
       'tr:nth-child(even) td { background: #f7f9fb !important; }',
 
       /* Code blocks */
-      'pre { background: #f5f5f5 !important; border-left: 4px solid #003d6b !important; border-radius: 4px !important; padding: 14px 16px !important; font-size: 1.25rem !important; line-height: 1.6 !important; max-height: 400px !important; overflow: auto !important; }',
+      'pre { background: #f5f5f5 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 14px 16px !important; font-size: 1.25rem !important; line-height: 1.6 !important; max-height: 400px !important; overflow: auto !important; }',
       'code { background: #f4f4f4 !important; border-radius: 3px !important; padding: 2px 6px !important; font-size: 1.25rem !important; color: #1a1a1a !important; }',
       'pre code { background: none !important; border: none !important; padding: 0 !important; font-size: 1.25rem !important; }',
 
@@ -165,7 +167,7 @@
       '.schema-table-header { display: grid !important; grid-template-columns: minmax(160px, 1fr) minmax(80px, auto) 3fr !important; width: 100% !important; }',
 
       /* Blockquote callouts */
-      '.m-markdown blockquote { background: #e8f0f8 !important; border-left: 4px solid #003d6b !important; border-radius: 4px !important; padding: 12px 16px !important; margin: 16px 0 16px !important; font-size: 1.375rem !important; }',
+      '.m-markdown blockquote { background: #f3f3f3 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 12px 16px !important; margin: 16px 0 16px !important; font-size: 1.375rem !important; }',
       '.m-markdown blockquote p { margin: 0 !important; }'
 
     ].join('\n');
@@ -235,7 +237,37 @@
     }
 
     /* Breadcrumb map auto-generated from spec */
-    var breadcrumbMap = {"enable_tag_protection": {"group": "Tag Protection", "tag": "Tag Protection"}, "disable_tag_protection": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_tag_visibility": {"group": "Tag Protection", "tag": "Tag Protection"}, "disable_tag_visibility": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_short_range": {"group": "Tag Protection", "tag": "Tag Protection"}, "enable_fastid": {"group": "Inventory Features", "tag": "FastID"}, "disable_fastid": {"group": "Inventory Features", "tag": "FastID"}, "enable_tagfocus": {"group": "Inventory Features", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Inventory Features", "tag": "TagFocus"}, "quiet_tags": {"group": "Inventory Features", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Inventory Features", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Configuration & Control", "tag": "Configuration"}, "start_with_gen2x": {"group": "Configuration & Control", "tag": "Radio Control"}};
+    var displayNameMap = {
+      "enable_tag_protection": "Enable Tag Protection",
+      "disable_tag_protection": "Disable Tag Protection",
+      "enable_tag_visibility": "Enable Tag Visibility",
+      "disable_tag_visibility": "Disable Tag Visibility",
+      "enable_short_range": "Enable Short Range",
+      "enable_fastid": "Enable FastID",
+      "disable_fastid": "Disable FastID",
+      "enable_tagfocus": "Enable TagFocus",
+      "disable_tagfocus": "Disable TagFocus",
+      "quiet_tags": "Quiet Tags",
+      "unquiet_tags": "Unquiet Tags",
+      "get_gen2x_config": "Get Gen2X Configuration",
+      "start_with_gen2x": "Start With Gen2X"
+    };
+    var aliasToKeyMap = {
+      "Enable Tag Protection": "enable_tag_protection",
+      "Disable Tag Protection": "disable_tag_protection",
+      "Enable Tag Visibility": "enable_tag_visibility",
+      "Disable Tag Visibility": "disable_tag_visibility",
+      "Enable Short Range": "enable_short_range",
+      "Enable FastID": "enable_fastid",
+      "Disable FastID": "disable_fastid",
+      "Enable TagFocus": "enable_tagfocus",
+      "Disable TagFocus": "disable_tagfocus",
+      "Quiet Tags": "quiet_tags",
+      "Unquiet Tags": "unquiet_tags",
+      "Get Gen2X Configuration": "get_gen2x_config",
+      "Start With Gen2X": "start_with_gen2x"
+    };
+    var breadcrumbMap = {"enable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_short_range": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_fastid": {"group": "Setting it up", "tag": "FastID"}, "disable_fastid": {"group": "Setting it up", "tag": "FastID"}, "enable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "quiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Setting it up", "tag": "Overview"}, "start_with_gen2x": {"group": "Setting it up", "tag": "Overview"}};
     var commandOverviewMap = {
       "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password â€” the tag stops responding to standard inventory until protection is explicitly removed.",
       "disable_tag_protection": "Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password. Send the same tag ID and password that were used when protection was enabled.",
@@ -252,6 +284,10 @@
       "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command â€” starting with Gen2X active while the radio is running will return an error."
     };
 
+    function lookupCommandKey(text) {
+      return aliasToKeyMap[text] || text;
+    }
+
     function styleHeadings(root) {
       if (!root) return;
       var titles = root.querySelectorAll('.summary .title');
@@ -260,24 +296,54 @@
         var txt = (titles[t].textContent || '').trim();
         if (!txt || txt.length > 80) continue;
         titles[t].setAttribute('data-styled', '1');
-        titles[t].style.cssText = 'font-size: 4.5rem !important; font-weight: 900 !important; color: #003d6b !important; display: block !important; width: 100% !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; border-bottom: 3px solid #003d6b !important; box-shadow: 0 3px 0 0 #003d6b !important; line-height: 1.1 !important;';
+        var key = lookupCommandKey(txt);
+        var displayTxt = displayNameMap[key] || txt.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+        titles[t].textContent = displayTxt;
+        titles[t].style.cssText = 'font-size: 4.5rem !important; font-weight: 900 !important; color: #111111 !important; display: block !important; width: 100% !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; border-bottom: 3px solid #111111 !important; box-shadow: 0 3px 0 0 #111111 !important; line-height: 1.1 !important;';
         var parent = titles[t].closest('.summary') || titles[t].parentElement;
         if (parent) parent.style.overflow = 'visible';
-        var bc = breadcrumbMap[txt];
+        var bc = breadcrumbMap[key];
         if (bc && !titles[t].parentElement.querySelector('[data-breadcrumb]')) {
           var crumb = document.createElement('div');
           crumb.setAttribute('data-breadcrumb', '1');
           crumb.style.cssText = 'font-size: 0.875rem; color: #666; margin-bottom: 8px; display: none;';
-          crumb.innerHTML = '<span style="color:#888;">' + bc.group + '</span> <span style="color:#aaa;margin:0 4px;">\u203A</span> <span style="color:#888;">' + bc.tag + '</span> <span style="color:#aaa;margin:0 4px;">\u203A</span> <span style="color:#003d6b;font-weight:600;">' + txt + '</span>';
+          crumb.innerHTML = '<span style="color:#888;">' + bc.group + '</span> <span style="color:#aaa;margin:0 4px;">\u203A</span> <span style="color:#888;">' + bc.tag + '</span> <span style="color:#aaa;margin:0 4px;">\u203A</span> <span style="color:#111111;font-weight:600;">' + displayTxt + '</span>';
           titles[t].parentElement.insertBefore(crumb, titles[t].nextSibling);
         }
-        var overview = commandOverviewMap[txt];
+        var overview = commandOverviewMap[key];
         if (overview && !titles[t].parentElement.querySelector('[data-command-overview]')) {
           var overviewEl = document.createElement('div');
           overviewEl.setAttribute('data-command-overview', '1');
-          overviewEl.style.cssText = 'margin: 10px 0 14px 0; padding: 10px 14px; background: #f3f8fd; border-left: 4px solid #003d6b; border-radius: 4px; color: #1a1a1a;';
-          overviewEl.innerHTML = '<div style="font-size:1.125rem;font-weight:700;color:#003d6b;margin-bottom:4px;">Overview</div><div style="font-size:1.125rem;line-height:1.55;">' + overview + '</div>';
+          overviewEl.style.cssText = 'margin: 10px 0 14px 0; padding: 10px 14px; background: #f3f3f3; border-left: 4px solid #111111; border-radius: 4px; color: #1a1a1a;';
+          overviewEl.innerHTML = '<div style="font-size:1.125rem;font-weight:700;color:#111111;margin-bottom:4px;">Overview</div><div style="font-size:1.125rem;line-height:1.55;">' + overview + '</div>';
           titles[t].parentElement.insertBefore(overviewEl, titles[t].nextSibling);
+        }
+      }
+    }
+
+    function applyFriendlyNav(root) {
+      if (!root) return;
+      var navItems = root.querySelectorAll('.nav-bar-info, .nav-bar-tag, .nav-bar-path');
+      for (var i = 0; i < navItems.length; i++) {
+        var item = navItems[i];
+        if (item.getAttribute('data-friendly-nav')) continue;
+        var txt = (item.textContent || '').trim();
+        if (!txt) continue;
+        if (txt === 'Impinj Gen2X MQTT API') {
+          item.textContent = 'Impinj Gen2X APIs';
+          item.style.fontWeight = '700';
+          item.style.color = '#111111';
+          item.setAttribute('data-friendly-nav', '1');
+          continue;
+        }
+        if (displayNameMap[txt]) {
+          item.textContent = displayNameMap[txt];
+          item.setAttribute('data-friendly-nav', '1');
+          continue;
+        }
+        if (txt === 'Impinj Gen2X') {
+          item.textContent = 'Setting it up';
+          item.setAttribute('data-friendly-nav', '1');
         }
       }
     }
@@ -385,6 +451,7 @@
         addCopyButtons(node.shadowRoot);
         hideLabels(node.shadowRoot);
         styleHeadings(node.shadowRoot);
+        applyFriendlyNav(node.shadowRoot);
         var children = node.shadowRoot.querySelectorAll('*');
         for (var c = 0; c < children.length; c++) {
           if (children[c].shadowRoot) walkShadowRoots(children[c]);
@@ -397,7 +464,10 @@
       if (!rd) return;
       applyOverrides();
       walkShadowRoots(rd);
-      if (rd.shadowRoot) styleHeadings(rd.shadowRoot);
+      if (rd.shadowRoot) {
+        styleHeadings(rd.shadowRoot);
+        applyFriendlyNav(rd.shadowRoot);
+      }
     }
 
     /* Poll until loaded, then use MutationObserver */
