@@ -1,13 +1,13 @@
-{
+﻿{
     "openapi": "3.0.0",
     "info": {
         "title": "Impinj Gen2X APIs",
         "version": "1.0.0",
-        "description": "# Impinj Gen2X MQTT API &nbsp; v1.0.0\n\nMQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. Send JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n## About This Document\nThis API reference covers the Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed RFID readers. Each command section includes the request payload schema, response payload schema, field descriptions, and JSON examples.\n\n## Supported Gen2X Features\n- **Tag Protection (Protected Mode)** — Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers. Includes enable/disable protection, enable/disable visibility, and short-range mode\n- **FastID** — Tags return both EPC and TID in a single inventory response, eliminating extra read operations\n- **TagFocus** — Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags\n- **Tag Quieting** — Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory"
+        "description": "# Impinj Gen2X MQTT API &nbsp; v1.0.0\n\nMQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. Send JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n## About This Document\nThis API reference covers the Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed RFID readers. Each command section includes the request payload schema, response payload schema, field descriptions, and JSON examples.\n\n## Supported Gen2X Features\n- **Tag Protection (Protected Mode)** â€” Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers. Includes enable/disable protection, enable/disable visibility, and short-range mode\n- **FastID** â€” Tags return both EPC and TID in a single inventory response, eliminating extra read operations\n- **TagFocus** â€” Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags\n- **Tag Quieting** â€” Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory"
     },
     "tags": [
         {
-            "name": "Tag Protection",
+            "name": "Protected Mode",
             "description": "Impinj TagProtect prevents unauthorized cloning and reading of tags using a password-based protection mechanism. It renders a tag invisible to an RFID reader unless the correct 32-bit password is provided."
         },
         {
@@ -33,17 +33,12 @@
     ],
     "x-tagGroups": [
         {
-            "name": "Tag Protection",
+            "name": "Setting it up",
             "tags": [
-                "Tag Protection"
-            ]
-        },
-        {
-            "name": "Inventory Features",
-            "tags": [
-                "FastID",
+                "Protected Mode",
                 "TagFocus",
-                "Tag Quieting"
+                "Tag Quieting",
+                "FastID"
             ]
         },
         {
@@ -55,13 +50,13 @@
         }
     ],
     "paths": {
-        "/enable_tag_protection": {
+        "/set_impinjGen2X/enable_tag_protection": {
             "post": {
                 "tags": [
-                    "Tag Protection"
+                    "Protected Mode"
                 ],
                 "summary": "Enable Tag Protection",
-                "description": "﻿Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password.\n\nSend the tag's EPC ID and 32-bit access password — the tag stops responding to standard inventory until protection is explicitly removed. The tag becomes RF silent and does not respond to Gen2 commands unless the reader first provides the correct password.",
+                "description": "ï»¿Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password.\n\nSend the tag's EPC ID and 32-bit access password â€” the tag stops responding to standard inventory until protection is explicitly removed. The tag becomes RF silent and does not respond to Gen2 commands unless the reader first provides the correct password.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -234,13 +229,13 @@
                 ]
             }
         },
-        "/disable_tag_protection": {
+        "/set_impinjGen2X/disable_tag_protection": {
             "post": {
                 "tags": [
-                    "Tag Protection"
+                    "Protected Mode"
                 ],
                 "summary": "Disable Tag Protection",
-                "description": "﻿Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password.\n\nSend the same tag ID and password that were used when protection was enabled.",
+                "description": "ï»¿Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password.\n\nSend the same tag ID and password that were used when protection was enabled.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -413,13 +408,13 @@
                 ]
             }
         },
-        "/enable_tag_visibility": {
+        "/set_impinjGen2X/enable_tag_visibility": {
             "post": {
                 "tags": [
-                    "Tag Protection"
+                    "Protected Mode"
                 ],
                 "summary": "Enable Tag Visibility",
-                "description": "﻿Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password — the reader uses it to unmask protected tags in inventory rounds.\n\nThe tag itself does not need to be specified; all protected tags matching the password become visible to the reader.",
+                "description": "ï»¿Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password â€” the reader uses it to unmask protected tags in inventory rounds.\n\nThe tag itself does not need to be specified; all protected tags matching the password become visible to the reader.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -578,13 +573,13 @@
                 ]
             }
         },
-        "/disable_tag_visibility": {
+        "/set_impinjGen2X/disable_tag_visibility": {
             "post": {
                 "tags": [
-                    "Tag Protection"
+                    "Protected Mode"
                 ],
                 "summary": "Disable Tag Visibility",
-                "description": "﻿Revokes the reader's ability to see protected tags. Even if the password was configured previously, the reader will no longer surface protected tags in inventory results after this command.",
+                "description": "ï»¿Revokes the reader's ability to see protected tags. Even if the password was configured previously, the reader will no longer surface protected tags in inventory results after this command.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -743,13 +738,13 @@
                 ]
             }
         },
-        "/enable_short_range": {
+        "/set_impinjGen2X/enable_short_range": {
             "post": {
                 "tags": [
-                    "Tag Protection"
+                    "Protected Mode"
                 ],
                 "summary": "Enable Short Range",
-                "description": "﻿Protects a specific tag AND restricts it to only respond when physically very close to the antenna (short-range mode).\n\nUseful for precise picking, point-of-sale, or any scenario where you need to ensure only a nearby tag is read. Requires the tag ID, password, and the `enableShortRange` flag set to `true`.",
+                "description": "ï»¿Protects a specific tag AND restricts it to only respond when physically very close to the antenna (short-range mode).\n\nUseful for precise picking, point-of-sale, or any scenario where you need to ensure only a nearby tag is read. Requires the tag ID, password, and the `enableShortRange` flag set to `true`.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -928,13 +923,13 @@
                 ]
             }
         },
-        "/enable_fastid": {
+        "/set_impinjGen2X/enable_fastid": {
             "post": {
                 "tags": [
                     "FastID"
                 ],
                 "summary": "Enable FastID",
-                "description": "﻿Enables Impinj FastID. Tags return both their EPC and TID (Tag Identifier) in a single inventory response instead of requiring a second read.\n\nThis speeds up inventory and eliminates the extra round-trip needed to read the TID separately.",
+                "description": "ï»¿Enables Impinj FastID. Tags return both their EPC and TID (Tag Identifier) in a single inventory response instead of requiring a second read.\n\nThis speeds up inventory and eliminates the extra round-trip needed to read the TID separately.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1077,13 +1072,13 @@
                 ]
             }
         },
-        "/disable_fastid": {
+        "/set_impinjGen2X/disable_fastid": {
             "post": {
                 "tags": [
                     "FastID"
                 ],
                 "summary": "Disable FastID",
-                "description": "﻿Disables FastID. Tags revert to standard behaviour — only the EPC is returned in each scan response.\n\nThe TID must be retrieved in a separate operation if needed.",
+                "description": "ï»¿Disables FastID. Tags revert to standard behaviour â€” only the EPC is returned in each scan response.\n\nThe TID must be retrieved in a separate operation if needed.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1226,13 +1221,13 @@
                 ]
             }
         },
-        "/enable_tagfocus": {
+        "/set_impinjGen2X/enable_tagfocus": {
             "post": {
                 "tags": [
                     "TagFocus"
                 ],
                 "summary": "Enable TagFocus",
-                "description": "﻿Enables Impinj TagFocus. Tags that have already been read stay quiet and stop responding in subsequent inventory rounds.\n\nThe reader focuses on finding new or unread tags, which is ideal for dense tag environments where some tags are difficult to detect. Targets tags inventoried in session S1.",
+                "description": "ï»¿Enables Impinj TagFocus. Tags that have already been read stay quiet and stop responding in subsequent inventory rounds.\n\nThe reader focuses on finding new or unread tags, which is ideal for dense tag environments where some tags are difficult to detect. Targets tags inventoried in session S1.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1375,13 +1370,13 @@
                 ]
             }
         },
-        "/disable_tagfocus": {
+        "/set_impinjGen2X/disable_tagfocus": {
             "post": {
                 "tags": [
                     "TagFocus"
                 ],
                 "summary": "Disable TagFocus",
-                "description": "﻿Disables TagFocus. All tags respond normally again in every inventory round, regardless of whether they have been read before.",
+                "description": "ï»¿Disables TagFocus. All tags respond normally again in every inventory round, regardless of whether they have been read before.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1524,13 +1519,13 @@
                 ]
             }
         },
-        "/quiet_tags": {
+        "/set_impinjGen2X/quiet_tags": {
             "post": {
                 "tags": [
                     "Tag Quieting"
                 ],
                 "summary": "Quiet Tags",
-                "description": "﻿Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active.\n\nOther tags are unaffected. Use `unquiet_tags` to restore them.",
+                "description": "ï»¿Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active.\n\nOther tags are unaffected. Use `unquiet_tags` to restore them.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1701,13 +1696,13 @@
                 ]
             }
         },
-        "/unquiet_tags": {
+        "/set_impinjGen2X/unquiet_tags": {
             "post": {
                 "tags": [
                     "Tag Quieting"
                 ],
                 "summary": "Unquiet Tags",
-                "description": "﻿Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted — they will resume responding in inventory rounds normally.",
+                "description": "ï»¿Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted â€” they will resume responding in inventory rounds normally.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1878,13 +1873,13 @@
                 ]
             }
         },
-        "/get_gen2x_config": {
+        "/get_impinjGen2X": {
             "post": {
                 "tags": [
                     "Configuration"
                 ],
                 "summary": "Get Gen2X Configuration",
-                "description": "﻿Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio.\n\nThe response payload mirrors the last applied configuration. Returns an empty object if no Gen2X configuration has been set yet.",
+                "description": "ï»¿Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio.\n\nThe response payload mirrors the last applied configuration. Returns an empty object if no Gen2X configuration has been set yet.",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2077,13 +2072,13 @@
                 ]
             }
         },
-        "/start_with_gen2x": {
+        "/start/gen2x": {
             "post": {
                 "tags": [
                     "Radio Control"
                 ],
                 "summary": "Start With Gen2X",
-                "description": "﻿Applies all staged Gen2X settings and starts the radio. The `applyImpinjGen2X` flag must be set to `true` for the Gen2X configuration to take effect.\n\n**Important:** Stop the radio before calling this command — starting with Gen2X active while the radio is already running will return an error.\n\n**Workflow:**\n1. Configure Gen2X features using the set commands\n2. Verify configuration using `get_gen2x_config`\n3. Stop the radio if running\n4. Send this command with `applyImpinjGen2X: true`",
+                "description": "ï»¿Applies all staged Gen2X settings and starts the radio. The `applyImpinjGen2X` flag must be set to `true` for the Gen2X configuration to take effect.\n\n**Important:** Stop the radio before calling this command â€” starting with Gen2X active while the radio is already running will return an error.\n\n**Workflow:**\n1. Configure Gen2X features using the set commands\n2. Verify configuration using `get_gen2x_config`\n3. Stop the radio if running\n4. Send this command with `applyImpinjGen2X: true`",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2216,3 +2211,4 @@
         }
     }
 }
+
