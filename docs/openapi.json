@@ -7,6 +7,10 @@
     },
     "tags": [
         {
+            "name": "Overview",
+            "description": "MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers.\n\nSend JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n## Supported Gen2X Features\n- **Protected Mode** — Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers\n- **FastID** — Tags return both EPC and TID in a single inventory response, eliminating extra read operations\n- **TagFocus** — Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags\n- **Tag Quieting** — Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory\n\n## MQTT Topics\n| Direction | Topic |\n|-----------|-------|\n| Command | `rfid/gen2x/command` |\n| Response | `rfid/gen2x/response` |"
+        },
+        {
             "name": "Protected Mode",
             "description": "Impinj TagProtect prevents unauthorized cloning and reading of tags using a password-based protection mechanism. It renders a tag invisible to an RFID reader unless the correct 32-bit password is provided."
         },
@@ -32,6 +36,12 @@
         }
     ],
     "x-tagGroups": [
+        {
+            "name": "Overview",
+            "tags": [
+                "Overview"
+            ]
+        },
         {
             "name": "Setting it up",
             "tags": [
