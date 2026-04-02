@@ -30,7 +30,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775080412"
+    spec-url="openapi.json?v=1775080413"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -168,7 +168,14 @@
 
       /* Blockquote callouts */
       '.m-markdown blockquote { background: #f3f3f3 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 12px 16px !important; margin: 16px 0 16px !important; font-size: 1.375rem !important; }',
-      '.m-markdown blockquote p { margin: 0 !important; }'
+      '.m-markdown blockquote p { margin: 0 !important; }',
+
+      /* Hide RapiDoc raw path display — replaced by JS-injected command path */
+      '.url { display: none !important; }',
+      'div.url { display: none !important; }',
+      'span.url { display: none !important; }',
+      '.endpoint-path { display: none !important; }',
+      '.api-path { display: none !important; }'
 
     ].join('\n');
 
@@ -302,6 +309,15 @@
         titles[t].style.cssText = 'font-size: 4.5rem !important; font-weight: 900 !important; color: #111111 !important; display: block !important; width: 100% !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; border-bottom: 3px solid #111111 !important; box-shadow: 0 3px 0 0 #111111 !important; line-height: 1.1 !important;';
         var parent = titles[t].closest('.summary') || titles[t].parentElement;
         if (parent) parent.style.overflow = 'visible';
+        /* Inject command path badge */
+        if (!titles[t].parentElement.querySelector('[data-cmd-path]')) {
+          var cmdPath = document.createElement('div');
+          cmdPath.setAttribute('data-cmd-path', '1');
+          var pathText = (key === 'get_gen2x_config') ? '/get_impinjGen2X' : (key === 'start_with_gen2x') ? '/start/gen2x' : '/set_impinjGen2X';
+          cmdPath.style.cssText = 'font-family: Consolas, Monaco, monospace; font-size: 1.1rem; color: #555; margin: 6px 0 10px 0; background: #f0f0f0; display: inline-block; padding: 3px 10px; border-radius: 3px;';
+          cmdPath.textContent = pathText;
+          titles[t].parentElement.insertBefore(cmdPath, titles[t].nextSibling);
+        }
         var bc = breadcrumbMap[key];
         if (bc && !titles[t].parentElement.querySelector('[data-breadcrumb]')) {
           var crumb = document.createElement('div');
@@ -329,8 +345,8 @@
         if (item.getAttribute('data-friendly-nav')) continue;
         var txt = (item.textContent || '').trim();
         if (!txt) continue;
-        if (txt === 'Impinj Gen2X MQTT API') {
-          item.textContent = 'Impinj Gen2X APIs';
+        if (txt === 'Impinj Gen2X MQTT API' || txt === 'Impinj Gen2X APIs') {
+          item.textContent = 'Overview';
           item.style.fontWeight = '700';
           item.style.color = '#111111';
           item.setAttribute('data-friendly-nav', '1');
@@ -344,6 +360,26 @@
         if (txt === 'Impinj Gen2X') {
           item.textContent = 'Setting it up';
           item.setAttribute('data-friendly-nav', '1');
+        }
+        /* Bold Protected Mode tag */
+        if (txt === 'Protected Mode') {
+          item.style.fontWeight = '700';
+          item.style.color = '#111111';
+          item.setAttribute('data-friendly-nav', '1');
+        }
+      }
+      /* Inject "Setting it up" group header before Protected Mode */
+      var navTags = root.querySelectorAll('.nav-bar-tag');
+      for (var ng = 0; ng < navTags.length; ng++) {
+        var tagTxt = (navTags[ng].textContent || '').trim();
+        if (tagTxt === 'Protected Mode' && !navTags[ng].getAttribute('data-group-injected')) {
+          navTags[ng].setAttribute('data-group-injected', '1');
+          var groupHdr = document.createElement('div');
+          groupHdr.setAttribute('data-group-header', '1');
+          groupHdr.style.cssText = 'font-size: 0.95rem; font-weight: 700; color: #333; padding: 12px 16px 4px 16px; margin-top: 4px; text-transform: none;';
+          groupHdr.textContent = 'Setting it up';
+          navTags[ng].parentElement.insertBefore(groupHdr, navTags[ng]);
+          break;
         }
       }
     }
