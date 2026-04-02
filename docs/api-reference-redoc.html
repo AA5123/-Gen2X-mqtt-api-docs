@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,31 +6,31 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>API Reference - Impinj Gen2X APIs</title>
+  <title>Impinj Gen2X IOT Tutorial</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775080411" />
+  <link rel="stylesheet" href="css/redoc-zebra.css?v=1775082001" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
     body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: #fff; }
     rapi-doc { width: 100%; height: 100%; }
     rapi-doc::part(section-endpoint-body-title) {
-      font-size: 5rem !important;
-      font-weight: 900 !important;
+      font-size: 1.8rem !important;
+      font-weight: 700 !important;
       color: #111111 !important;
       letter-spacing: 0.3px !important;
-      border-bottom: 3px solid #111111 !important;
-      padding-bottom: 10px !important;
+      border-bottom: 2px solid #111111 !important;
+      padding-bottom: 8px !important;
       display: block !important;
-      margin-bottom: 12px !important;
+      margin-bottom: 10px !important;
     }
-    rapi-doc::part(section-operation-summary) { font-size: 1.5rem; }
+    rapi-doc::part(section-operation-summary) { font-size: 1.2rem; }
     rapi-doc::part(section-navbar-path) { padding-left: 16px !important; }
   </style>
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775080413"
+    spec-url="openapi.json?v=1775082100"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -59,7 +59,7 @@
   >
   </rapi-doc>
 
-  <script type="module" src="js/rapidoc-min.js?v=1775080411"></script>
+  <script type="module" src="js/rapidoc-min.js?v=1775082001"></script>
   <script>
   (function() {
     /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
@@ -79,20 +79,25 @@
       '.obj-type { display: none !important; }',
 
       /* Navigation styling */
-      '.nav-bar-tag { font-size: 22px !important; font-weight: 700 !important; color: #111111 !important; }',
-      '.nav-bar-path { padding: 10px 18px 10px 24px !important; font-size: 18px !important; color: #666666 !important; border-left: 3px solid transparent !important; }',
-      '.nav-bar-info { font-size: 24px !important; font-weight: 700 !important; color: #111111 !important; padding: 4px 24px 8px !important; }',
-      '.nav-bar-section { font-size: 20px !important; }',
-      '[data-tag-group-header] { font-size: 19px !important; color: #111111 !important; }',
-      '.nav-bar-path:hover { color: #111111 !important; background: #f5f5f5 !important; }',
-      '.nav-bar-path.active, .nav-bar-path.focused { color: #111111 !important; font-weight: 700 !important; background: #ffffff !important; border-left-color: #111111 !important; }',
+      '.nav-bar, .nav-scroll { width: 320px !important; min-width: 320px !important; }',
+      '.nav-bar-info { font-size: 22px !important; font-weight: 900 !important; color: #111111 !important; padding: 18px 18px 14px !important; line-height: 1.15 !important; border-bottom: 2px solid #111111 !important; margin-bottom: 8px !important; }',
+      '.nav-bar-tag { font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; padding: 10px 18px !important; line-height: 1.3 !important; }',
+      '.nav-bar-path { max-height: 0 !important; overflow: hidden !important; opacity: 0 !important; padding: 0 18px 0 32px !important; margin: 0 !important; font-size: 14px !important; color: #555 !important; transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.25s ease !important; display: block !important; border-left: 2px solid #ddd !important; margin-left: 22px !important; }',
+      '.nav-bar-tag:hover + .nav-bar-path, .nav-bar-tag:hover ~ .nav-bar-path, .nav-bar-path:hover { max-height: 400px !important; opacity: 1 !important; padding: 6px 18px 6px 32px !important; }',
+      '.nav-bar-section { display: none !important; }',
+      '[data-tag-group-header] { font-size: 16px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; color: #777777 !important; padding: 14px 18px 6px !important; line-height: 1.2 !important; }',
+      '.nav-bar-tag:hover { color: #111111 !important; background: #f5f5f5 !important; }',
+      '.nav-bar-tag.active, .nav-bar-tag.focused { color: #111111 !important; font-weight: 700 !important; background: #ffffff !important; border-left: 3px solid #111111 !important; }',
+      '.nav-search, .nav-search input, input.nav-search { font-size: 15px !important; height: 34px !important; }',
 
-      /* Hide RapiDoc small title/version: they are direct children (h1/h2/span/div) of the overview section, NOT inside .m-markdown */
-      '.section-gap--read-mode > h1, .section-gap--read-mode > h2, .section-gap--read-mode > span, .section-gap > h1, .section-gap > h2, .section-gap > span { display: none !important; }',
-      '#overview > h1, #overview > h2, #overview > span, #api-title, #api-info > h1, #api-info > h2, #api-info > span { display: none !important; }',
+      /* Hide RapiDoc native title (we use h1 in markdown description instead) */
+      '#api-title { display: none !important; }',
+      '.section-gap--read-mode > span, .section-gap > span { display: none !important; }',
+      '#api-info > span { display: none !important; }',
+      '#api-info > div:not(.m-markdown):not(.m-markdown-small) { display: none !important; }',
 
       /* Style the h1 we put in the markdown description */
-      '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 3px solid #111111 !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; letter-spacing: -0.5px !important; line-height: 1.2 !important; }',
+      '.m-markdown h1 { font-size: 3rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 3px solid #111111 !important; padding-bottom: 12px !important; margin: 0 0 18px 0 !important; letter-spacing: -0.3px !important; line-height: 1.15 !important; }',
 
       /* Content area: full width with generous padding */
       '.main-content { max-width: 100% !important; width: 100% !important; padding: 0 24px !important; }',
@@ -112,31 +117,31 @@
       '.m-markdown { margin: 0 !important; }',
       '.m-markdown p { margin: 0 0 8px 0 !important; }',
       '.m-markdown table { margin: 4px 0 8px 0 !important; }',
-      '.m-markdown h2 { margin: 16px 0 8px 0 !important; font-weight: 700 !important; font-size: 2.5rem !important; color: #111111 !important; padding-bottom: 6px !important; }',
-      '.m-markdown h3 { margin: 12px 0 6px 0 !important; font-weight: 600 !important; font-size: 2rem !important; color: #111111 !important; padding-bottom: 4px !important; }',
+      '.m-markdown h2 { margin: 16px 0 8px 0 !important; font-weight: 700 !important; font-size: 2.4rem !important; color: #111111 !important; padding-bottom: 6px !important; }',
+      '.m-markdown h3 { margin: 12px 0 6px 0 !important; font-weight: 600 !important; font-size: 1.8rem !important; color: #111111 !important; padding-bottom: 4px !important; }',
 
       /* Headings: navy accent */
       '.summary { overflow: visible !important; }',
-      '.endpoint-body .summary .title, .summary .title, div.summary div.title, .only-large-font { font-size: 5rem !important; font-weight: 900 !important; color: #111111 !important; letter-spacing: 0.3px !important; border-bottom: 3px solid #111111 !important; box-shadow: 0 3px 0 0 #111111 !important; padding-bottom: 10px !important; display: block !important; width: 100% !important; margin-bottom: 8px !important; }',
+      '.endpoint-body .summary .title, .summary .title, div.summary div.title, .only-large-font { font-size: 1.8rem !important; font-weight: 700 !important; color: #111111 !important; letter-spacing: 0.2px !important; border-bottom: 2px solid #111111 !important; box-shadow: none !important; padding-bottom: 8px !important; display: block !important; width: 100% !important; margin-bottom: 8px !important; }',
       '.endpoint-head .descr { display: none !important; }',
-      '.api-content h2, .section-gap h2, .section-gap--read-mode h2 { color: #111111 !important; font-weight: 700 !important; padding-bottom: 6px !important; margin-top: 16px !important; margin-bottom: 8px !important; font-size: 2.5rem !important; }',
-      '.api-content h3, .section-gap h3 { color: #111111 !important; font-weight: 600 !important; margin-top: 12px !important; margin-bottom: 6px !important; font-size: 2rem !important; }',
+      '.api-content h2, .section-gap h2, .section-gap--read-mode h2 { color: #111111 !important; font-weight: 700 !important; padding-bottom: 6px !important; margin-top: 16px !important; margin-bottom: 8px !important; font-size: 2.4rem !important; }',
+      '.api-content h3, .section-gap h3 { color: #111111 !important; font-weight: 600 !important; margin-top: 12px !important; margin-bottom: 6px !important; font-size: 1.8rem !important; }',
 
       /* Tables: Zebra navy headers + alternating rows */
       'table { border-collapse: collapse !important; width: 100% !important; border: 1.5px solid #111111 !important; border-radius: 0 !important; table-layout: fixed !important; }',
       'th:first-child, td:first-child { width: 30% !important; }',
-      'th { background: #111111 !important; color: #fff !important; font-weight: 600 !important; font-size: 1.375rem !important; letter-spacing: 0.3px !important; padding: 10px 14px !important; text-align: left !important; border-color: #111111 !important; }',
-      'td { padding: 10px 14px !important; vertical-align: top !important; font-size: 1.375rem !important; border: 1px solid #8a94a6 !important; word-break: break-word !important; }',
+      'th { background: #111111 !important; color: #fff !important; font-weight: 600 !important; font-size: 1.05rem !important; letter-spacing: 0.3px !important; padding: 10px 14px !important; text-align: left !important; border-color: #111111 !important; }',
+      'td { padding: 10px 14px !important; vertical-align: top !important; font-size: 1.05rem !important; border: 1px solid #8a94a6 !important; word-break: break-word !important; }',
       'tr:nth-child(odd) td { background: #ffffff !important; }',
       'tr:nth-child(even) td { background: #f7f9fb !important; }',
 
       /* Code blocks */
-      'pre { background: #f5f5f5 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 14px 16px !important; font-size: 1.25rem !important; line-height: 1.6 !important; max-height: 400px !important; overflow: auto !important; }',
-      'code { background: #f4f4f4 !important; border-radius: 3px !important; padding: 2px 6px !important; font-size: 1.25rem !important; color: #1a1a1a !important; }',
-      'pre code { background: none !important; border: none !important; padding: 0 !important; font-size: 1.25rem !important; }',
+      'pre { background: #f5f5f5 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 14px 16px !important; font-size: 1.05rem !important; line-height: 1.6 !important; max-height: 400px !important; overflow: auto !important; }',
+      'code { background: #f4f4f4 !important; border-radius: 3px !important; padding: 2px 6px !important; font-size: 1.05rem !important; color: #1a1a1a !important; }',
+      'pre code { background: none !important; border: none !important; padding: 0 !important; font-size: 1.05rem !important; }',
 
       /* Textareas */
-      'textarea { min-height: 40px !important; max-height: 200px !important; height: auto !important; resize: vertical !important; font-size: 1.25rem !important; padding: 10px !important; }',
+      'textarea { min-height: 40px !important; max-height: 200px !important; height: auto !important; resize: vertical !important; font-size: 1.05rem !important; padding: 10px !important; }',
 
       /* Tab & misc spacing */
       '.tab-content { padding: 0 !important; }',
@@ -144,30 +149,30 @@
       '.table-title { padding: 6px 0 !important; }',
 
       /* Description text */
-      '.m-markdown p, .m-markdown li { font-size: 1.5rem !important; line-height: 1.7 !important; color: #1a1a1a !important; }',
+      '.m-markdown p, .m-markdown li { font-size: 1.2rem !important; line-height: 1.7 !important; color: #1a1a1a !important; }',
       '.m-markdown strong { color: #1a1a1a !important; }',
 
       /* Schema table: widen and improve readability */
-      ':host { --font-size-small: 1.375rem !important; --font-size-regular: 1.5rem !important; --font-size-mono: 1.25rem !important; }',
+      ':host { --font-size-small: 1.05rem !important; --font-size-regular: 1.2rem !important; --font-size-mono: 1.05rem !important; }',
       '.schema-table { width: 100% !important; max-width: 100% !important; }',
       '.schema-table .tr { display: grid !important; grid-template-columns: minmax(160px, 1fr) minmax(80px, auto) 3fr !important; width: 100% !important; }',
-      '.schema-table .td { padding: 10px 14px !important; font-size: 1.5rem !important; word-break: break-word !important; min-width: 0 !important; }',
-      '.schema-table .key { min-width: 140px !important; font-size: 1.5rem !important; }',
-      '.schema-table .key-type { min-width: 70px !important; white-space: nowrap !important; font-size: 1.5rem !important; }',
-      '.schema-table .key-descr { min-width: 0 !important; flex: 1 !important; font-size: 1.5rem !important; }',
-      '.obj-descr { font-size: 1.5rem !important; }',
-      '.descr-text { font-size: 1.5rem !important; }',
-      'span.descr-text { font-size: 1.5rem !important; }',
-      '.schema-description { font-size: 1.5rem !important; }',
-      '.toolbar-btn { font-size: 1.25rem !important; }',
-      '.request-body-container *, .response-body-container * { --font-size-small: 1.375rem !important; --font-size-regular: 1.5rem !important; }',
+      '.schema-table .td { padding: 10px 14px !important; font-size: 1.05rem !important; word-break: break-word !important; min-width: 0 !important; }',
+      '.schema-table .key { min-width: 140px !important; font-size: 1.05rem !important; }',
+      '.schema-table .key-type { min-width: 70px !important; white-space: nowrap !important; font-size: 1.05rem !important; }',
+      '.schema-table .key-descr { min-width: 0 !important; flex: 1 !important; font-size: 1.05rem !important; }',
+      '.obj-descr { font-size: 1.05rem !important; }',
+      '.descr-text { font-size: 1.05rem !important; }',
+      'span.descr-text { font-size: 1.05rem !important; }',
+      '.schema-description { font-size: 1.05rem !important; }',
+      '.toolbar-btn { font-size: 1.05rem !important; }',
+      '.request-body-container *, .response-body-container * { --font-size-small: 1.05rem !important; --font-size-regular: 1.2rem !important; }',
       '.tree { width: 100% !important; max-width: 100% !important; overflow-x: auto !important; }',
       '.req-res-info { width: 100% !important; max-width: 100% !important; }',
       '.request-body-container, .response-body-container { width: 100% !important; max-width: 100% !important; }',
       '.schema-table-header { display: grid !important; grid-template-columns: minmax(160px, 1fr) minmax(80px, auto) 3fr !important; width: 100% !important; }',
 
       /* Blockquote callouts */
-      '.m-markdown blockquote { background: #f3f3f3 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 12px 16px !important; margin: 16px 0 16px !important; font-size: 1.375rem !important; }',
+      '.m-markdown blockquote { background: #f3f3f3 !important; border-left: 4px solid #111111 !important; border-radius: 4px !important; padding: 12px 16px !important; margin: 16px 0 16px !important; font-size: 1.2rem !important; }',
       '.m-markdown blockquote p { margin: 0 !important; }',
 
       /* Hide RapiDoc raw path display — replaced by JS-injected command path */
@@ -175,7 +180,16 @@
       'div.url { display: none !important; }',
       'span.url { display: none !important; }',
       '.endpoint-path { display: none !important; }',
-      '.api-path { display: none !important; }'
+      '.api-path { display: none !important; }',
+      '.path { display: none !important; }',
+      '.only-large-font .method-fg + span { display: none !important; }',
+      '.mono-font:not(.nav-bar-path) { display: none !important; }',
+      '.main-content [class*="path"]:not(.nav-bar-path) { display: none !important; }',
+
+      /* Bold tag section headings in content area */
+      '.tag-description { font-size: 1.2rem !important; }',
+      '.tag-description .m-markdown > p:first-child { font-weight: 700 !important; font-size: 1.35rem !important; color: #111111 !important; }',
+      '.section-gap--read-mode > h2, .section-gap > h2, .tag-title { font-size: 2.1rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 2px solid #111111 !important; padding-bottom: 8px !important; }'
 
     ].join('\n');
 
@@ -210,21 +224,17 @@
 
     function patchApiTitle(sr) {
       if (!sr) return;
-      /* RapiDoc renders the API title as the first h2 inside the nav or info slot.
-         We scan all elements and pick text nodes matching the API name. */
+      /* Hide native RapiDoc title — we use h1 in markdown description */
+      var titleById = sr.querySelector('#api-title');
+      if (titleById) titleById.style.setProperty('display', 'none', 'important');
+      /* Hide version text */
       var allEls = sr.querySelectorAll('*');
       for (var i = 0; i < allEls.length; i++) {
         var el = allEls[i];
         if (el.getAttribute('data-title-patched')) continue;
         var txt = (el.textContent || '').trim();
         var childCount = el.children ? el.children.length : 0;
-        /* Title: hide only the exact small RapiDoc title text (leaf element) */
-        if (txt === 'Impinj Gen2X MQTT API' && childCount === 0) {
-          el.setAttribute('data-title-patched', '1');
-          el.style.setProperty('display', 'none', 'important');
-        }
-        /* Version: hide only the exact small version text (leaf element) */
-        if (txt === '1.0.0' && childCount === 0) {
+        if ((txt === '1.0.0' || txt === '1.0') && childCount === 0) {
           el.setAttribute('data-title-patched', '1');
           el.style.setProperty('display', 'none', 'important');
         }
@@ -276,19 +286,19 @@
     };
     var breadcrumbMap = {"enable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_short_range": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_fastid": {"group": "Setting it up", "tag": "FastID"}, "disable_fastid": {"group": "Setting it up", "tag": "FastID"}, "enable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "quiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Setting it up", "tag": "Overview"}, "start_with_gen2x": {"group": "Setting it up", "tag": "Overview"}};
     var commandOverviewMap = {
-      "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password â€” the tag stops responding to standard inventory until protection is explicitly removed.",
+      "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password  - the tag stops responding to standard inventory until protection is explicitly removed.",
       "disable_tag_protection": "Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password. Send the same tag ID and password that were used when protection was enabled.",
-      "enable_tag_visibility": "Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password â€” the reader uses it to unmask protected tags in inventory rounds. The tag itself does not need to be specified; all protected tags matching the password become visible.",
+      "enable_tag_visibility": "Grants the reader permission to see protected (hidden) tags during scanning. Provide the correct access password  - the reader uses it to unmask protected tags in inventory rounds. The tag itself does not need to be specified; all protected tags matching the password become visible.",
       "disable_tag_visibility": "Revokes the reader's ability to see protected tags. Even if the password was configured previously, the reader will no longer surface protected tags in inventory results after this command.",
       "enable_short_range": "Protects a specific tag AND restricts it to only respond when the tag is physically very close to the antenna (short-range mode). Useful for precise picking, point-of-sale, or any scenario where you need to ensure only a nearby tag is read. Requires tag ID, password, and the enableShortRange flag set to true.",
       "enable_fastid": "Enables Impinj FastID. Tags return both their EPC and TID (Tag Identifier) in a single inventory response instead of requiring a second read. This speeds up inventory and eliminates the extra round-trip needed to read the TID separately.",
-      "disable_fastid": "Disables FastID. Tags revert to standard behaviour â€” only the EPC is returned in each scan response. The TID must be retrieved in a separate operation if needed.",
+      "disable_fastid": "Disables FastID. Tags revert to standard behaviour  - only the EPC is returned in each scan response. The TID must be retrieved in a separate operation if needed.",
       "enable_tagfocus": "Enables Impinj TagFocus. Tags that have already been read stay quiet and stop responding in subsequent inventory rounds. The reader focuses on finding new or unread tags, which is ideal for dense tag environments where some tags are difficult to detect.",
       "disable_tagfocus": "Disables TagFocus. All tags respond normally again in every inventory round, regardless of whether they have been read before.",
       "quiet_tags": "Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active. Other tags are unaffected. Use unquiet_tags to restore them.",
-      "unquiet_tags": "Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted â€” they will resume responding in inventory rounds normally.",
+      "unquiet_tags": "Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted  - they will resume responding in inventory rounds normally.",
       "get_gen2x_config": "Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio. The response payload mirrors the last applied configuration.",
-      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command â€” starting with Gen2X active while the radio is running will return an error."
+      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command  - starting with Gen2X active while the radio is running will return an error."
     };
 
     function lookupCommandKey(text) {
@@ -306,15 +316,15 @@
         var key = lookupCommandKey(txt);
         var displayTxt = displayNameMap[key] || txt.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
         titles[t].textContent = displayTxt;
-        titles[t].style.cssText = 'font-size: 4.5rem !important; font-weight: 900 !important; color: #111111 !important; display: block !important; width: 100% !important; padding-bottom: 10px !important; margin: 0 0 12px 0 !important; border-bottom: 3px solid #111111 !important; box-shadow: 0 3px 0 0 #111111 !important; line-height: 1.1 !important;';
+        titles[t].style.cssText = 'font-size: 1.8rem !important; font-weight: 700 !important; color: #111111 !important; display: block !important; width: 100% !important; padding-bottom: 8px !important; margin: 0 0 10px 0 !important; border-bottom: 2px solid #111111 !important; box-shadow: none !important; line-height: 1.2 !important;';
         var parent = titles[t].closest('.summary') || titles[t].parentElement;
         if (parent) parent.style.overflow = 'visible';
         /* Inject command path badge */
         if (!titles[t].parentElement.querySelector('[data-cmd-path]')) {
           var cmdPath = document.createElement('div');
           cmdPath.setAttribute('data-cmd-path', '1');
-          var pathText = (key === 'get_gen2x_config') ? '/get_impinjGen2X' : (key === 'start_with_gen2x') ? '/start/gen2x' : '/set_impinjGen2X';
-          cmdPath.style.cssText = 'font-family: Consolas, Monaco, monospace; font-size: 1.1rem; color: #555; margin: 6px 0 10px 0; background: #f0f0f0; display: inline-block; padding: 3px 10px; border-radius: 3px;';
+          var pathText = (key === 'start_with_gen2x') ? '/start/gen2x' : '/cloud/impinjGen2X';
+          cmdPath.style.cssText = 'font-family: Consolas, Monaco, monospace; font-size: 0.9rem; color: #555; margin: 4px 0 8px 0; background: #f0f0f0; display: inline-block; padding: 2px 8px; border-radius: 3px;';
           cmdPath.textContent = pathText;
           titles[t].parentElement.insertBefore(cmdPath, titles[t].nextSibling);
         }
@@ -331,7 +341,7 @@
           var overviewEl = document.createElement('div');
           overviewEl.setAttribute('data-command-overview', '1');
           overviewEl.style.cssText = 'margin: 10px 0 14px 0; padding: 10px 14px; background: #f3f3f3; border-left: 4px solid #111111; border-radius: 4px; color: #1a1a1a;';
-          overviewEl.innerHTML = '<div style="font-size:1.125rem;font-weight:700;color:#111111;margin-bottom:4px;">Overview</div><div style="font-size:1.125rem;line-height:1.55;">' + overview + '</div>';
+          overviewEl.innerHTML = '<div style="font-size:1.05rem;font-weight:700;color:#111111;margin-bottom:4px;">Overview</div><div style="font-size:1.05rem;line-height:1.55;">' + overview + '</div>';
           titles[t].parentElement.insertBefore(overviewEl, titles[t].nextSibling);
         }
       }
@@ -345,10 +355,16 @@
         if (item.getAttribute('data-friendly-nav')) continue;
         var txt = (item.textContent || '').trim();
         if (!txt) continue;
-        if (txt === 'Impinj Gen2X MQTT API' || txt === 'Impinj Gen2X APIs') {
-          item.textContent = 'Overview';
-          item.style.fontWeight = '700';
+        /* Show tutorial title in nav */
+        if (txt === 'Impinj Gen2X MQTT API' || txt === 'Impinj Gen2X APIs' || txt === 'Impinj Gen2X IOT Tutorial') {
+          item.textContent = 'Impinj Gen2X IOT Tutorial';
+          item.style.fontWeight = '900';
+          item.style.fontSize = '22px';
           item.style.color = '#111111';
+          item.style.padding = '18px 18px 14px';
+          item.style.lineHeight = '1.15';
+          item.style.borderBottom = '2px solid #111111';
+          item.style.marginBottom = '8px';
           item.setAttribute('data-friendly-nav', '1');
           continue;
         }
@@ -361,27 +377,161 @@
           item.textContent = 'Setting it up';
           item.setAttribute('data-friendly-nav', '1');
         }
-        /* Bold Protected Mode tag */
         if (txt === 'Protected Mode') {
           item.style.fontWeight = '700';
           item.style.color = '#111111';
           item.setAttribute('data-friendly-nav', '1');
         }
       }
-      /* Inject "Setting it up" group header before Protected Mode */
-      var navTags = root.querySelectorAll('.nav-bar-tag');
-      for (var ng = 0; ng < navTags.length; ng++) {
-        var tagTxt = (navTags[ng].textContent || '').trim();
-        if (tagTxt === 'Protected Mode' && !navTags[ng].getAttribute('data-group-injected')) {
-          navTags[ng].setAttribute('data-group-injected', '1');
-          var groupHdr = document.createElement('div');
-          groupHdr.setAttribute('data-group-header', '1');
-          groupHdr.style.cssText = 'font-size: 0.95rem; font-weight: 700; color: #333; padding: 12px 16px 4px 16px; margin-top: 4px; text-transform: none;';
-          groupHdr.textContent = 'Setting it up';
-          navTags[ng].parentElement.insertBefore(groupHdr, navTags[ng]);
-          break;
+
+      /* Inject Overview and Setting it up nav items if missing */
+      var navScroll = root.querySelector('.nav-scroll') || root.querySelector('[class*="nav"]');
+      if (navScroll && !root.querySelector('[data-injected-nav="overview"]')) {
+        /* Find the first nav-bar-tag element to insert before it */
+        var firstTag = root.querySelector('.nav-bar-tag');
+        var infoEl = root.querySelector('.nav-bar-info');
+        var insertParent = firstTag ? firstTag.parentElement : (infoEl ? infoEl.parentElement : null);
+        if (insertParent && firstTag) {
+          /* Check if Overview already exists as a nav-bar-tag */
+          var existingOverview = false;
+          var existingSetting = false;
+          var allTags = root.querySelectorAll('.nav-bar-tag');
+          allTags.forEach(function(t) {
+            var tTxt = (t.textContent || '').trim();
+            if (tTxt === 'Overview') existingOverview = true;
+            if (tTxt === 'Setting it up') existingSetting = true;
+          });
+
+          if (!existingOverview) {
+            var overviewNav = document.createElement('div');
+            overviewNav.className = 'nav-bar-tag';
+            overviewNav.setAttribute('data-injected-nav', 'overview');
+            overviewNav.textContent = 'Overview';
+            overviewNav.style.cssText = 'font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; padding: 10px 18px !important; line-height: 1.3 !important; cursor: pointer !important;';
+            overviewNav.addEventListener('click', function() {
+              /* Scroll to the overview section */
+              var apiInfo = root.querySelector('#overview-section') || root.querySelector('#api-info') || root.querySelector('.section-gap--read-mode') || root.querySelector('.main-content');
+              if (apiInfo) apiInfo.scrollIntoView({ behavior: 'smooth' });
+            });
+            insertParent.insertBefore(overviewNav, firstTag);
+          }
+
+          if (!existingSetting) {
+            var settingNav = document.createElement('div');
+            settingNav.className = 'nav-bar-tag';
+            settingNav.setAttribute('data-injected-nav', 'setting');
+            settingNav.textContent = 'Setting it up';
+            settingNav.style.cssText = 'font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; padding: 10px 18px !important; line-height: 1.3 !important; cursor: pointer !important;';
+            settingNav.addEventListener('click', function() {
+              /* Scroll to the injected Setting it up section */
+              var settingSec = root.querySelector('#setting-it-up-section');
+              if (settingSec) { settingSec.scrollIntoView({ behavior: 'smooth' }); return; }
+              /* Fallback: look for h2 with that text */
+              var allH2 = root.querySelectorAll('h2, .divider, [data-tag-heading-styled]');
+              for (var i = 0; i < allH2.length; i++) {
+                if ((allH2[i].textContent || '').trim() === 'Setting it up') {
+                  allH2[i].scrollIntoView({ behavior: 'smooth' });
+                  return;
+                }
+              }
+            });
+            /* Insert after Overview nav item */
+            var overviewItem = root.querySelector('[data-injected-nav="overview"]');
+            var insertBefore = overviewItem ? overviewItem.nextElementSibling : firstTag;
+            insertParent.insertBefore(settingNav, insertBefore);
+          }
         }
       }
+
+      /* JS hover: find all nav-bar-path elements and group them by their preceding tag.
+         RapiDoc may nest paths inside tag containers or as siblings - handle both. */
+      var allPaths = root.querySelectorAll('.nav-bar-path');
+      if (allPaths.length === 0) return;
+
+      /* Build a map: tag element -> its path children */
+      var tagPathMap = new Map();
+      allPaths.forEach(function(p) {
+        if (p.getAttribute('data-hover-ready')) return;
+        p.setAttribute('data-hover-ready', '1');
+        /* Walk up to find the closest .nav-bar-tag or traverse siblings backwards */
+        var ownerTag = null;
+        /* Strategy 1: path is inside the same parent as tags - find preceding tag sibling */
+        var prev = p.previousElementSibling;
+        while (prev) {
+          if (prev.classList && prev.classList.contains('nav-bar-tag')) { ownerTag = prev; break; }
+          if (prev.hasAttribute && prev.hasAttribute('data-tag-wrapper')) { ownerTag = prev.querySelector('.nav-bar-tag'); break; }
+          prev = prev.previousElementSibling;
+        }
+        /* Strategy 2: path is nested inside a parent that also contains the tag */
+        if (!ownerTag) {
+          var parent = p.parentElement;
+          while (parent && parent !== root) {
+            var sibTag = parent.querySelector('.nav-bar-tag');
+            if (sibTag) { ownerTag = sibTag; break; }
+            parent = parent.parentElement;
+          }
+        }
+        if (ownerTag) {
+          if (!tagPathMap.has(ownerTag)) tagPathMap.set(ownerTag, []);
+          tagPathMap.get(ownerTag).push(p);
+        }
+      });
+
+      /* Apply hover behavior to each tag-paths group */
+      tagPathMap.forEach(function(paths, tag) {
+        if (tag.getAttribute('data-hover-bound')) return;
+        tag.setAttribute('data-hover-bound', '1');
+
+        /* Hide paths initially via inline styles (overrides the CSS) */
+        paths.forEach(function(p) {
+          p.style.setProperty('max-height', '0', 'important');
+          p.style.setProperty('overflow', 'hidden', 'important');
+          p.style.setProperty('opacity', '0', 'important');
+          p.style.setProperty('padding', '0 18px 0 32px', 'important');
+          p.style.setProperty('margin', '0', 'important');
+          p.style.setProperty('transition', 'max-height 0.3s ease, opacity 0.25s ease, padding 0.25s ease', 'important');
+          p.style.setProperty('display', 'block', 'important');
+          p.style.setProperty('font-size', '14px', 'important');
+          p.style.setProperty('color', '#555', 'important');
+          p.style.setProperty('border-left', '2px solid #ccc', 'important');
+          p.style.setProperty('margin-left', '22px', 'important');
+        });
+
+        function showPaths() {
+          paths.forEach(function(p) {
+            p.style.setProperty('max-height', '500px', 'important');
+            p.style.setProperty('opacity', '1', 'important');
+            p.style.setProperty('padding', '6px 18px 6px 32px', 'important');
+          });
+        }
+        function hidePaths() {
+          paths.forEach(function(p) {
+            p.style.setProperty('max-height', '0', 'important');
+            p.style.setProperty('opacity', '0', 'important');
+            p.style.setProperty('padding', '0 18px 0 32px', 'important');
+          });
+        }
+
+        /* Attach hover to the tag */
+        tag.addEventListener('mouseenter', showPaths);
+        tag.addEventListener('mouseleave', function() {
+          /* Delay hide so user can move to a path item */
+          setTimeout(function() {
+            var anyHovered = paths.some(function(p) { return p.matches(':hover'); });
+            if (!anyHovered && !tag.matches(':hover')) hidePaths();
+          }, 200);
+        });
+        /* Keep paths visible while hovering them */
+        paths.forEach(function(p) {
+          p.addEventListener('mouseenter', showPaths);
+          p.addEventListener('mouseleave', function() {
+            setTimeout(function() {
+              var anyHovered = paths.some(function(pp) { return pp.matches(':hover'); });
+              if (!anyHovered && !tag.matches(':hover')) hidePaths();
+            }, 200);
+          });
+        });
+      });
     }
 
     /* Hide unwanted UI labels */
@@ -421,7 +571,7 @@
     function addCopyButtons(root) {
       if (!root) return;
       
-      /* Rename REQUEST/RESPONSE headers using innerHTML â€” no label, just payload heading */
+      /* Rename REQUEST/RESPONSE headers using innerHTML  - no label, just payload heading */
       var reqResTitles = root.querySelectorAll('.req-res-title');
       for (var r = 0; r < reqResTitles.length; r++) {
         if (reqResTitles[r].getAttribute('data-mqtt-styled')) continue;
@@ -429,10 +579,10 @@
         var txt = reqResTitles[r].textContent.trim().toUpperCase();
         if (txt.indexOf('REQUEST') !== -1) {
           reqResTitles[r].style.cssText = 'border:none !important; background:none !important; padding:0 !important; margin:0 !important;';
-          reqResTitles[r].innerHTML = '<div style="font-size:1.75rem;font-weight:700;color:#003d6b;padding-bottom:6px;margin-top:16px;margin-bottom:8px;">Command Payload</div>';
+          reqResTitles[r].innerHTML = '<div style="font-size:1.35rem;font-weight:700;color:#003d6b;padding-bottom:6px;margin-top:14px;margin-bottom:6px;">MQTT Command Payload</div>';
         } else if (txt.indexOf('RESPONSE') !== -1) {
           reqResTitles[r].style.cssText = 'border:none !important; background:none !important; padding:0 !important; margin:0 !important;';
-          reqResTitles[r].innerHTML = '<div style="font-size:1.75rem;font-weight:700;color:#003d6b;padding-bottom:6px;margin-top:16px;margin-bottom:8px;">Response Payload</div>';
+          reqResTitles[r].innerHTML = '<div style="font-size:1.35rem;font-weight:700;color:#003d6b;padding-bottom:6px;margin-top:14px;margin-bottom:6px;">MQTT Response Payload</div>';
         }
       }
       
@@ -488,9 +638,59 @@
         hideLabels(node.shadowRoot);
         styleHeadings(node.shadowRoot);
         applyFriendlyNav(node.shadowRoot);
+        boldTagDescriptions(node.shadowRoot);
+        hideRawPaths(node.shadowRoot);
         var children = node.shadowRoot.querySelectorAll('*');
         for (var c = 0; c < children.length; c++) {
           if (children[c].shadowRoot) walkShadowRoots(children[c]);
+        }
+      }
+    }
+
+    /* Bold the tag-level description text and style tag section headings */
+    function boldTagDescriptions(root) {
+      if (!root) return;
+      /* Style tag name headings (e.g. "PROTECTED MODE", "FASTID") */
+      var tagHeaders = root.querySelectorAll('.tag-description');
+      tagHeaders.forEach(function(td) {
+        if (td.getAttribute('data-bold-done')) return;
+        td.setAttribute('data-bold-done', '1');
+        var firstP = td.querySelector('.m-markdown > p:first-child');
+        if (firstP) {
+          firstP.style.cssText = 'font-weight: 700 !important; font-size: 1.75rem !important; color: #111111 !important;';
+        }
+      });
+      /* Style the tag name heading text (h2-like elements with tag names) */
+      var allH2 = root.querySelectorAll('h2, .divider');
+      allH2.forEach(function(h) {
+        if (h.getAttribute('data-tag-heading-styled')) return;
+        var txt = (h.textContent || '').trim();
+        var knownTags = ['Protected Mode', 'FastID', 'TagFocus', 'Tag Quieting', 'Configuration', 'Radio Control', 'Overview', 'Setting it up'];
+        if (knownTags.indexOf(txt) !== -1 || knownTags.some(function(t) { return txt.toUpperCase() === t.toUpperCase(); })) {
+          h.setAttribute('data-tag-heading-styled', '1');
+          h.style.cssText = 'font-size: 2.1rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 2px solid #111111 !important; padding-bottom: 8px !important; margin: 20px 0 10px 0 !important; display: block !important; text-transform: capitalize !important;';
+        }
+      });
+    }
+
+    /* Hide any raw API path text RapiDoc renders in the content area */
+    function hideRawPaths(root) {
+      if (!root) return;
+      var allEls = root.querySelectorAll('*');
+      for (var i = 0; i < allEls.length; i++) {
+        var el = allEls[i];
+        if (el.getAttribute('data-path-hidden')) continue;
+        var txt = (el.textContent || '').trim();
+        if (el.children.length === 0 && txt.length < 80) {
+          if (/^\/set_impinjGen2X\//.test(txt) || /^\/get_impinjGen2X$/.test(txt) || /^\/start\//.test(txt)) {
+            el.setAttribute('data-path-hidden', '1');
+            el.style.display = 'none';
+            /* Also hide parent if it only wraps the path */
+            var par = el.parentElement;
+            if (par && (par.textContent || '').trim() === txt) {
+              par.style.display = 'none';
+            }
+          }
         }
       }
     }
@@ -503,6 +703,8 @@
       if (rd.shadowRoot) {
         styleHeadings(rd.shadowRoot);
         applyFriendlyNav(rd.shadowRoot);
+        boldTagDescriptions(rd.shadowRoot);
+        hideRawPaths(rd.shadowRoot);
       }
     }
 
