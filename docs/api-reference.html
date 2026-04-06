@@ -79,6 +79,11 @@
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function formatName(s) {
+      return s.replace(/^\//,'').replace(/_/g, ' ')
+        .replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    }
+
     /* ── Schema to flat table with inline expand/collapse ── */
     var schemaUid = 0;
     function schemaRows(schema, depth, parentUid) {
@@ -230,8 +235,8 @@
 
     function renderOperation(path, method, op) {
       var summary = op.summary || path;
+      var displaySummary = formatName(summary);
       var id = slugify(summary);
-      var desc = op.description || '';
       var mqttPath = path;
 
       /* Extract example JSONs for REST tabs */
@@ -294,7 +299,7 @@
       }
 
       return '<div class="operation" id="op-' + id + '">' +
-        '<h4 class="op-title">' + escHtml(summary) + '</h4>' +
+        '<h4 class="op-title">' + escHtml(displaySummary) + '</h4>' +
         '<div class="mqtt-path">' + escHtml(mqttPath) + '</div>' +
         '<div class="op-description md-content">' + md(desc) + '</div>' +
         reqHtml + resHtml +
@@ -362,7 +367,7 @@
           navHtml += '<a class="nav-tag" href="#tag-' + tagId + '">' + escHtml(tagName) + '</a>';
           tag.operations.forEach(function (entry) {
             var opId = slugify(entry.op.summary || entry.path);
-            navHtml += '<a class="nav-op" href="#op-' + opId + '">' + escHtml(entry.op.summary || entry.path) + '</a>';
+            navHtml += '<a class="nav-op" href="#op-' + opId + '">' + escHtml(formatName(entry.op.summary || entry.path)) + '</a>';
           });
 
           /* Main content for tag */
