@@ -146,12 +146,28 @@
       });
     }
 
+    /* Inject a <style> tag directly into a shadow root — beats everything including custom elements */
+    function injectTagTitleStyleTag(sr, color) {
+      if (!sr) return;
+      var id = 'data-tagtitle-style';
+      var css = '.tag-title { color: ' + color + ' !important; font-weight: 900 !important; font-size: 1.25rem !important; border-bottom: 2px solid ' + color + ' !important; padding-bottom: 8px !important; display: block !important; }'
+              + '.tag-title * { color: ' + color + ' !important; font-weight: 900 !important; }'
+              + '.tag-title span { color: ' + color + ' !important; }';
+      var existing = sr.querySelector('style[' + id + ']');
+      if (existing) { existing.textContent = css; return; }
+      var s = document.createElement('style');
+      s.setAttribute(id, '1');
+      s.textContent = css;
+      sr.appendChild(s);
+    }
+
     function applyOverrides() {
       var rd = document.querySelector('rapi-doc');
       if (!rd || !rd.shadowRoot) return;
       injectSheet(rd.shadowRoot);
       walkAndInject(rd.shadowRoot);
       patchApiTitle(rd.shadowRoot);
+      injectTagTitleStyleTag(rd.shadowRoot, '#ff0000');
     }
 
     /* Breadcrumb map auto-generated from spec */
