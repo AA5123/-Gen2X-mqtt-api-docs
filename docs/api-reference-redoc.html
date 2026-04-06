@@ -37,7 +37,7 @@
 </head>
 <body>
   <rapi-doc
-    spec-url="openapi.json?v=1775082100"
+    spec-url="openapi.json?v=1775100000"
     render-style="read"
     sort-endpoints-by="none"
     show-header="false"
@@ -69,12 +69,16 @@
   <script type="module" src="js/rapidoc-min.js?v=1775082001"></script>
   <script>
   (function() {
-    /* â”€â”€ CSS overrides injected into RapiDoc shadow DOM â”€â”€ */
+    /* CSS overrides injected into RapiDoc shadow DOM */
     var mqttSheet = new CSSStyleSheet();
     var mqttCssText = '';
+    var mqttCssReady = false;
 
-    fetch('css/rapidoc-theme.css?v=' + Date.now())
-      .then(function(r) { return r.text(); })
+    fetch('css/rapidoc-theme.css?v=1775100000')
+      .then(function(r) {
+        if (!r.ok) throw new Error('Failed to load rapidoc-theme.css: ' + r.status);
+        return r.text();
+      })
       .then(function(css) {
         /* Global Scale Factor: --scale resizes ALL fonts at once */
         mqttCssText = ':host { --scale: 1; }\n' + css
@@ -83,7 +87,12 @@
           .replace(/--(font-size-\w+):\s*([\d.]+px)\s*(!important)/g,
                    '--$1: calc($2 * var(--scale)) $3');
         mqttSheet.replaceSync(mqttCssText);
+        mqttCssReady = true;
         processAll();
+        waitAndApply();
+      })
+      .catch(function(err) {
+        console.error('[rapidoc-theme] CSS load failed:', err);
       });
     mqttSheet._isMqtt = true;
 
@@ -96,6 +105,7 @@
         return;
       }
       if (sr.querySelector('style[data-mqtt-style="1"]')) return;
+      if (!mqttCssReady) return; /* don't inject before fetch completes */
       var styleEl = document.createElement('style');
       styleEl.setAttribute('data-mqtt-style', '1');
       styleEl.textContent = mqttCssText;
@@ -618,7 +628,7 @@
     var attempts = 0;
     var poll = setInterval(function() {
       processAll();
-      if (++attempts > 150) clearInterval(poll);
+      if (++attempts > 30) clearInterval(poll); /* stop after 15 seconds */
     }, 500);
 
     function startObserver() {
@@ -660,10 +670,6 @@
       /* Update --scale inside RapiDoc shadow DOM */
       var rd = document.querySelector('rapi-doc');
       if (!rd || !rd.shadowRoot) return;
-      var host = rd.shadowRoot.host || rd;
-      rd.shadowRoot.querySelectorAll('style').forEach(function(s) {
-        /* no-op — we update via the sheet below */
-      });
       /* Find our mqtt CSSStyleSheet and rewrite --scale */
       var sheets = rd.shadowRoot.adoptedStyleSheets;
       if (sheets) {
@@ -683,16 +689,20 @@
     btnDown.addEventListener('click', function() { if (scale > MIN) { scale -= STEP; applyScale(); } });
     btnReset.addEventListener('click', function() { scale = 1; applyScale(); });
 
-    /* Apply saved scale once RapiDoc is ready */
+    /* Apply saved scale — called by fetch callback once CSS is loaded and injected */
     function waitAndApply() {
       var rd = document.querySelector('rapi-doc');
-      if (rd && rd.shadowRoot && rd.shadowRoot.adoptedStyleSheets && rd.shadowRoot.adoptedStyleSheets.length) {
-        applyScale();
-      } else {
-        setTimeout(waitAndApply, 300);
+      if (rd && rd.shadowRoot) {
+        var sheets = rd.shadowRoot.adoptedStyleSheets || [];
+        for (var i = 0; i < sheets.length; i++) {
+          if (sheets[i]._isMqtt && sheets[i].cssRules.length > 0) {
+            applyScale();
+            return;
+          }
+        }
       }
+      setTimeout(waitAndApply, 300);
     }
-    waitAndApply();
   })();
   </script>
 </body>
