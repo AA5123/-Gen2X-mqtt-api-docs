@@ -42,26 +42,6 @@ body {
 }
 .nav-tag:hover { background: #f0f0f0; color: #111; }
 .nav-tag.active { border-left-color: #111; color: #111; font-weight: 700; background: #fff; }
-.nav-tag-toggle {
-  width: 100%; background: none; border: none; padding: 0;
-  font-family: inherit; display: flex; align-items: center;
-  cursor: pointer; gap: 4px;
-}
-.nav-tag-toggle:hover { background: #f0f0f0; }
-.nav-toggle-arrow {
-  font-size: 9px; color: #999; padding: 0 4px 0 14px;
-  flex-shrink: 0; line-height: 1;
-}
-.nav-tag-link {
-  font-size: 15px; font-weight: 600; color: #333;
-  padding: 8px 18px 8px 2px; flex: 1; text-align: left;
-  text-decoration: none; display: block;
-  border-left: 3px solid transparent;
-}
-.nav-tag-toggle:hover .nav-tag-link { color: #111; }
-.nav-tag-link.active { border-left-color: #111; color: #111; font-weight: 700; }
-.nav-ops { overflow: hidden; transition: max-height 0.2s ease; max-height: 500px; }
-.nav-ops.collapsed { max-height: 0; }
 .nav-op {
   font-size: 13px; color: #666; padding: 5px 18px 5px 36px;
   cursor: pointer; display: block; text-decoration: none;
