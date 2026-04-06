@@ -231,6 +231,7 @@
     function renderOperation(path, method, op) {
       var summary = op.summary || path;
       var id = slugify(summary);
+      var desc = op.description || '';
       var mqttPath = path;
 
       /* Extract example JSONs for REST tabs */
