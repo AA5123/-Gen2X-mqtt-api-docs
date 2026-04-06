@@ -402,9 +402,9 @@
     }
 
     /* ── Load spec ────────────────────────────────────── */
-    fetch('openapi.json?v=' + Date.now())
+    fetch('openapi_md.json?v=' + Date.now())
       .then(function (r) {
-        if (!r.ok) throw new Error('Failed to load openapi.json: ' + r.status);
+        if (!r.ok) throw new Error('Failed to load openapi_md.json: ' + r.status);
         return r.json();
       })
       .then(render)

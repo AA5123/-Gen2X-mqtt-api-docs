@@ -41,7 +41,7 @@ _spec.loader.exec_module(_mod)
 
 PROJECT_ROOT = _mod.PROJECT_ROOT
 SCHEMAS_DIR = _mod.SCHEMAS_DIR
-OUTPUT_PATH = _mod.OUTPUT_PATH          # docs/openapi.json  (same output)
+OUTPUT_PATH = os.path.join(_mod.PROJECT_ROOT, "docs", "openapi_md.json")  # separate file — does not touch openapi.json
 
 TAG_DESCRIPTIONS_DIR = os.path.join(SCHEMAS_DIR, "tag_descriptions")
 
