@@ -657,7 +657,22 @@
         td.setAttribute('data-bold-done', '1');
         var firstP = td.querySelector('.m-markdown > p:first-child');
         if (firstP) {
-          firstP.style.cssText = 'font-weight: 700 !important; font-size: 1.5rem !important; color: #111111 !important;';
+          var raw = (firstP.textContent || '').trim();
+          var knownTagMap = {
+            'protected mode': 'Protected Mode',
+            'tagfocus': 'TagFocus',
+            'tag quieting': 'Tag Quieting',
+            'fastid': 'FastID',
+            'configuration': 'Configuration',
+            'radio control': 'Radio Control',
+            'overview': 'Overview',
+            'setting it up': 'Setting it up'
+          };
+          var normalized = raw.toLowerCase();
+          if (knownTagMap[normalized]) {
+            firstP.textContent = knownTagMap[normalized];
+          }
+          firstP.style.cssText = 'font-size: 1.5rem !important; font-weight: 700 !important; color: #111111 !important; border-bottom: 2px solid #111111 !important; padding-bottom: 8px !important; margin: 20px 0 10px 0 !important; display: block !important; line-height: 1.25 !important; text-transform: none !important;';
         }
       });
       /* Style the tag name heading text (h2-like elements with tag names) */
