@@ -549,6 +549,17 @@
     }
 
     /* Bold the tag-level description text and style tag section headings */
+    function applyTagHeadingStyle(el) {
+      el.style.setProperty('font-size', '1.25rem', 'important');
+      el.style.setProperty('font-weight', '900', 'important');
+      el.style.setProperty('color', '#111111', 'important');
+      el.style.setProperty('border-bottom', '2px solid #111111', 'important');
+      el.style.setProperty('padding-bottom', '8px', 'important');
+      el.style.setProperty('margin', '20px 0 10px 0', 'important');
+      el.style.setProperty('display', 'block', 'important');
+      el.style.setProperty('line-height', '1.25', 'important');
+      el.style.setProperty('text-transform', 'none', 'important');
+    }
     function boldTagDescriptions(root) {
       if (!root) return;
       /* Style tag name headings (e.g. "PROTECTED MODE", "FASTID") */
@@ -573,11 +584,25 @@
           if (knownTagMap[normalized]) {
             firstP.textContent = knownTagMap[normalized];
             firstP.classList.add('x-tag-title');
+            applyTagHeadingStyle(firstP);
           }
         }
       });
-      /* Style the tag name heading text (h2-like elements with tag names) */
-      var allH2 = root.querySelectorAll('h2, .divider');
+      /* Style ALL .tag-title elements — every one is a group heading in RapiDoc, no text matching needed */
+      var tagTitleEls = root.querySelectorAll('.tag-title');
+      console.log('[mqtt] .tag-title count:', tagTitleEls.length, 'in', root);
+      tagTitleEls.forEach(function(h) {
+        applyTagHeadingStyle(h);
+        /* Also force color on ALL child elements — RapiDoc wraps text in nested spans */
+        var children = h.querySelectorAll('*');
+        children.forEach(function(c) {
+          c.style.setProperty('color', '#111111', 'important');
+          c.style.setProperty('font-weight', '900', 'important');
+          c.style.setProperty('font-size', '1.25rem', 'important');
+        });
+      });
+      /* Also catch h2 and .divider elements that match known tag names */
+      var allH2 = root.querySelectorAll('h2, .divider, [class*="tag-title"]');
       allH2.forEach(function(h) {
         if (h.getAttribute('data-tag-heading-styled')) return;
         var txt = (h.textContent || '').trim();
@@ -585,6 +610,7 @@
         if (knownTags.indexOf(txt) !== -1 || knownTags.some(function(t) { return txt.toUpperCase() === t.toUpperCase(); })) {
           h.setAttribute('data-tag-heading-styled', '1');
           h.classList.add('x-tag-title');
+          applyTagHeadingStyle(h);
         }
       });
     }
