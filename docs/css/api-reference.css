@@ -4,6 +4,11 @@
  * Critical layout is also inlined in api-reference.html so iframe fills the page.
  */
 
+/* Lock base font size so 1rem = 16px in ALL browsers regardless of user font settings */
+html {
+  font-size: 16px;
+}
+
 html.layout-api-ref-page,
 html.layout-api-ref-page body {
   height: 100%;

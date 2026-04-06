@@ -53,6 +53,11 @@
   --content-padding-bottom: 2rem;
 }
 
+/* Lock base font size so 1rem = 16px in ALL browsers regardless of user font settings */
+html {
+  font-size: 16px;
+}
+
 * { box-sizing: border-box; }
 
 /* Skip-to-content link for keyboard accessibility */

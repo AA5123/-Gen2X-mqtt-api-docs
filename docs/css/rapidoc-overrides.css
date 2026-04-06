@@ -26,6 +26,11 @@
  */
 
 
+/* Lock base font size so 1rem = 16px in ALL browsers regardless of user font settings */
+html, :host {
+  font-size: 16px;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    1. HIDE UNWANTED ELEMENTS
    ═══════════════════════════════════════════════════════════════════════════ */

@@ -4,6 +4,11 @@
  * MQTT API: HTTP method badges (POST, GET, etc.) and path display hidden.
  */
 
+/* Lock base font size so 1rem = 16px in ALL browsers regardless of user font settings */
+html {
+  font-size: 16px;
+}
+
 /* Hide large logo in main content to prevent overlap with title and intro text */
 #redoc-container > div > div:nth-child(2) img {
   display: none !important;
