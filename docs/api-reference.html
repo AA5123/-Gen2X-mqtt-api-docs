@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <title>Impinj Gen2X IOT Tutorial</title>
+  <title>Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700,900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/custom-api.css" />
 </head>
 <body>
   <nav id="sidebar">
-    <div id="sidebar-title">Impinj Gen2X IOT Tutorial</div>
+    <div id="sidebar-title">Impinj Gen2X MQTT API</div>
     <div id="nav-content"></div>
   </nav>
   <main id="main">
@@ -45,7 +45,7 @@
         .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
         /* Headers */
         .replace(/^### (.+)$/gm, '<h5 style="font-size:1rem;font-weight:700;color:#111;margin:12px 0 6px;">$1</h5>')
-        .replace(/^## (.+)$/gm, '<h4 style="font-size:1.1rem;font-weight:700;color:#111;margin:16px 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px;">$1</h4>')
+        .replace(/^## (.+)$/gm, function(_, t) { return '<h4 id="info-' + t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '" style="font-size:1.1rem;font-weight:700;color:#111;margin:16px 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px;">' + t + '</h4>'; })
         /* Bold + inline code */
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -316,6 +316,18 @@
       html += '<h1 class="page-title">' + escHtml(spec.info.title) + '</h1>';
       if (spec.info && spec.info.description) {
         html += '<div class="info-description md-content">' + md(spec.info.description) + '</div>';
+        /* Nav links for ## headings in info description */
+        var infoSections = [];
+        spec.info.description.replace(/^## (.+)$/gm, function(_, t) {
+          infoSections.push(t);
+        });
+        if (infoSections.length) {
+          navHtml += '<div class="nav-group-header">Overview</div>';
+          infoSections.forEach(function(t) {
+            var id = 'info-' + t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+            navHtml += '<a class="nav-tag" href="#' + id + '">' + escHtml(t) + '</a>';
+          });
+        }
       }
 
       /* Build tag map: tag name -> { description, operations[] } */
