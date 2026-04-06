@@ -139,4 +139,5 @@ span.url { display: none !important; }
 /* ── Tag section headings ───────────────────────────────── */
 .tag-description { font-size: 0.9375rem !important; }
 .tag-description .m-markdown > p:first-child { font-weight: 900 !important; font-size: 1.5rem !important; color: #ff0000 !important; }
-.section-gap--read-mode > h2, .section-gap > h2, .tag-title { font-size: 1.5rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 2px solid #111111 !important; padding-bottom: 8px !important; }
+.section-gap--read-mode > h2, .section-gap > h2 { font-size: 1.5rem !important; font-weight: 900 !important; color: #111111 !important; border-bottom: 2px solid #111111 !important; padding-bottom: 8px !important; }
+.tag-title { font-size: 1.5rem !important; font-weight: 900 !important; color: #ff0000 !important; border-bottom: 2px solid #ff0000 !important; padding-bottom: 8px !important; }
