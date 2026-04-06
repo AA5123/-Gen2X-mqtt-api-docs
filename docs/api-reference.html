@@ -358,12 +358,16 @@
           if (!tag) return;
           var tagId = slugify(tagName);
 
-          /* Nav entry for tag */
-          navHtml += '<a class="nav-tag" href="#tag-' + tagId + '">' + escHtml(tagName) + '</a>';
+          /* Nav entry for tag — collapsible */
+          navHtml += '<div class="nav-tag-group">';
+          navHtml += '<button class="nav-tag nav-tag-toggle" data-target="nav-ops-' + tagId + '" href="#tag-' + tagId + '">' +
+            '<span class="nav-toggle-arrow">▾</span>' + escHtml(tagName) + '</button>';
+          navHtml += '<div class="nav-ops" id="nav-ops-' + tagId + '">';
           tag.operations.forEach(function (entry) {
             var opId = slugify(entry.op.summary || entry.path);
             navHtml += '<a class="nav-op" href="#op-' + opId + '">' + escHtml(entry.op.summary || entry.path) + '</a>';
           });
+          navHtml += '</div></div>';
 
           /* Main content for tag */
           html += '<div class="tag-section" id="tag-' + tagId + '">';
@@ -383,6 +387,20 @@
 
       content.innerHTML = html;
       nav.innerHTML = navHtml;
+
+      /* Wire up TOC expand/collapse */
+      document.querySelectorAll('.nav-tag-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          var targetId = btn.getAttribute('data-target');
+          var ops = document.getElementById(targetId);
+          var arrow = btn.querySelector('.nav-toggle-arrow');
+          var collapsed = ops.classList.toggle('collapsed');
+          arrow.textContent = collapsed ? '▸' : '▾';
+          /* Also navigate to section */
+          var href = btn.getAttribute('href');
+          if (href) { var el = document.querySelector(href); if (el) el.scrollIntoView({behavior:'smooth'}); }
+        });
+      });
 
       /* Wire up tabs */
       document.querySelectorAll('.tab-btn').forEach(function (btn) {
