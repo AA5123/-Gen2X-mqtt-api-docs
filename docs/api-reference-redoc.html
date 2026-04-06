@@ -74,7 +74,7 @@
     var mqttCssText = '';
     var mqttCssReady = false;
 
-    fetch('css/rapidoc-theme.css?v=1775100000')
+    fetch('css/rapidoc-theme.css?v=1775200000')
       .then(function(r) {
         if (!r.ok) throw new Error('Failed to load rapidoc-theme.css: ' + r.status);
         return r.text();
@@ -572,8 +572,8 @@
           var normalized = raw.toLowerCase();
           if (knownTagMap[normalized]) {
             firstP.textContent = knownTagMap[normalized];
+            firstP.classList.add('x-tag-title');
           }
-          firstP.classList.add('x-tag-title');
         }
       });
       /* Style the tag name heading text (h2-like elements with tag names) */
