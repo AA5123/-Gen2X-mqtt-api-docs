@@ -128,10 +128,10 @@
       /* Hide native RapiDoc title — we use h1 in markdown description */
       var titleById = sr.querySelector('#api-title');
       if (titleById) titleById.style.setProperty('display', 'none', 'important');
-      /* Hide version text */
-      var allEls = sr.querySelectorAll('*');
-      for (var i = 0; i < allEls.length; i++) {
-        var el = allEls[i];
+      /* Hide version text — target small text elements like span, div, p only */
+      var candidates = sr.querySelectorAll('span, div, p, small');
+      for (var i = 0; i < candidates.length; i++) {
+        var el = candidates[i];
         if (el.getAttribute('data-title-patched')) continue;
         var txt = (el.textContent || '').trim();
         var childCount = el.children ? el.children.length : 0;
@@ -140,10 +140,6 @@
           el.style.setProperty('display', 'none', 'important');
         }
       }
-      /* Also recurse into nested shadow roots */
-      allEls.forEach(function(el) {
-        if (el.shadowRoot) patchApiTitle(el.shadowRoot);
-      });
     }
 
     /* Inject a <style> tag directly into a shadow root — beats everything including custom elements */
@@ -167,7 +163,7 @@
       injectSheet(rd.shadowRoot);
       walkAndInject(rd.shadowRoot);
       patchApiTitle(rd.shadowRoot);
-      injectTagTitleStyleTag(rd.shadowRoot, '#ff0000');
+      injectTagTitleStyleTag(rd.shadowRoot, '#111111');
     }
 
     /* Breadcrumb map auto-generated from spec */
@@ -457,27 +453,28 @@
     /* Hide unwanted UI labels */
     function hideLabels(root) {
       if (!root) return;
-      var allEls = root.querySelectorAll('*');
+      /* Target only small text elements — avoid querySelectorAll('*') */
+      var allEls = root.querySelectorAll('span, div, p, small, label, .schema-object-type, .obj-type');
       for (var s = 0; s < allEls.length; s++) {
         var el = allEls[s];
         if (el.getAttribute('data-obj-hidden')) continue;
         var fullText = (el.textContent || '').trim();
+        if (fullText.length > 80) continue;
         if (fullText.length < 30 && el.children.length <= 1) {
           if (/^(OBJECT|ARRAY|object|array|default|Response)$/.test(fullText)) {
             el.setAttribute('data-obj-hidden', '1');
             el.style.display = 'none';
           }
         }
-        if (fullText.length < 80 && /REQUEST\s*BODY/i.test(fullText) && !/Field|Type|Description/i.test(fullText)) {
+        if (/REQUEST\s*BODY/i.test(fullText) && !/Field|Type|Description/i.test(fullText)) {
           el.setAttribute('data-obj-hidden', '1');
           el.style.display = 'none';
           continue;
         }
         /* Hide response schema name badge (e.g. "enable_tag_visibility response") */
-        if (/\s+response$/i.test(fullText) && el.children.length === 0 && fullText.length < 80) {
+        if (/\s+response$/i.test(fullText) && el.children.length === 0) {
           el.setAttribute('data-obj-hidden', '1');
           el.style.display = 'none';
-          /* Also hide the parent container if it only wraps this badge */
           var p = el.parentElement;
           if (p && (p.textContent || '').trim() === fullText) {
             p.setAttribute('data-obj-hidden', '1');
@@ -610,7 +607,6 @@
       });
       /* Style ALL .tag-title elements — every one is a group heading in RapiDoc, no text matching needed */
       var tagTitleEls = root.querySelectorAll('.tag-title');
-      console.log('[mqtt] .tag-title count:', tagTitleEls.length, 'in', root);
       tagTitleEls.forEach(function(h) {
         applyTagHeadingStyle(h);
         /* Also force color on ALL child elements — RapiDoc wraps text in nested spans */
@@ -638,16 +634,16 @@
     /* Hide any raw API path text RapiDoc renders in the content area */
     function hideRawPaths(root) {
       if (!root) return;
-      var allEls = root.querySelectorAll('*');
+      /* Target only leaf text elements — avoid querySelectorAll('*') */
+      var allEls = root.querySelectorAll('span, div, p, a, .mono-font, [class*="path"], [class*="url"]');
       for (var i = 0; i < allEls.length; i++) {
         var el = allEls[i];
         if (el.getAttribute('data-path-hidden')) continue;
         var txt = (el.textContent || '').trim();
         if (el.children.length === 0 && txt.length < 80) {
-          if (/^\/set_impinjGen2X\//.test(txt) || /^\/get_impinjGen2X$/.test(txt) || /^\/start\//.test(txt)) {
+          if (/^\/set_impinjGen2X\//.test(txt) || /^\/get_impinjGen2X$/.test(txt) || /^\/start\//.test(txt) || /^\/stop$/.test(txt)) {
             el.setAttribute('data-path-hidden', '1');
             el.style.display = 'none';
-            /* Also hide parent if it only wraps the path */
             var par = el.parentElement;
             if (par && (par.textContent || '').trim() === txt) {
               par.style.display = 'none';
@@ -662,19 +658,17 @@
       if (!rd) return;
       applyOverrides();
       walkShadowRoots(rd);
-      if (rd.shadowRoot) {
-        styleHeadings(rd.shadowRoot);
-        applyFriendlyNav(rd.shadowRoot);
-        boldTagDescriptions(rd.shadowRoot);
-        hideRawPaths(rd.shadowRoot);
-      }
     }
 
     /* Poll until loaded, then use MutationObserver */
     var attempts = 0;
     var poll = setInterval(function() {
       processAll();
-      if (++attempts > 30) clearInterval(poll); /* stop after 15 seconds */
+      /* Stop early once shadow root has content */
+      var rd = document.querySelector('rapi-doc');
+      if ((rd && rd.shadowRoot && rd.shadowRoot.querySelector('.section-gap')) || ++attempts > 30) {
+        clearInterval(poll);
+      }
     }, 500);
 
     function startObserver() {
@@ -683,7 +677,15 @@
         setTimeout(startObserver, 300);
         return;
       }
-      var observer = new MutationObserver(function() { processAll(); });
+      /* Debounce: batch mutations, run at most once per 300ms */
+      var pending = null;
+      var observer = new MutationObserver(function() {
+        if (pending) return;
+        pending = setTimeout(function() {
+          pending = null;
+          processAll();
+        }, 300);
+      });
       observer.observe(rd.shadowRoot, { childList: true, subtree: true });
     }
     startObserver();
