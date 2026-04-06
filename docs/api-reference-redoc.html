@@ -184,7 +184,8 @@
       "quiet_tags": "Quiet Tags",
       "unquiet_tags": "Unquiet Tags",
       "get_gen2x_config": "Get Gen2X Configuration",
-      "start_with_gen2x": "Start With Gen2X"
+      "start_with_gen2x": "Start With Gen2X",
+      "stop": "Stop"
     };
     var aliasToKeyMap = {
       "Enable Tag Protection": "enable_tag_protection",
@@ -199,9 +200,10 @@
       "Quiet Tags": "quiet_tags",
       "Unquiet Tags": "unquiet_tags",
       "Get Gen2X Configuration": "get_gen2x_config",
-      "Start With Gen2X": "start_with_gen2x"
+      "Start With Gen2X": "start_with_gen2x",
+      "Stop": "stop"
     };
-    var breadcrumbMap = {"enable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_short_range": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_fastid": {"group": "Setting it up", "tag": "FastID"}, "disable_fastid": {"group": "Setting it up", "tag": "FastID"}, "enable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "quiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Setting it up", "tag": "Overview"}, "start_with_gen2x": {"group": "Setting it up", "tag": "Overview"}};
+    var breadcrumbMap = {"enable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_protection": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "disable_tag_visibility": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_short_range": {"group": "Setting it up", "tag": "Protected Mode"}, "enable_fastid": {"group": "Setting it up", "tag": "FastID"}, "disable_fastid": {"group": "Setting it up", "tag": "FastID"}, "enable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "disable_tagfocus": {"group": "Setting it up", "tag": "TagFocus"}, "quiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "unquiet_tags": {"group": "Setting it up", "tag": "Tag Quieting"}, "get_gen2x_config": {"group": "Setting it up", "tag": "Overview"}, "start_with_gen2x": {"group": "Setting it up", "tag": "Overview"}, "stop": {"group": "Control Commands", "tag": "Control Commands"}};
     var commandOverviewMap = {
       "enable_tag_protection": "Locks a specific tag using Impinj TagProtect so it becomes invisible to all readers that do not have the correct password. Send the tag's EPC ID and access password  - the tag stops responding to standard inventory until protection is explicitly removed.",
       "disable_tag_protection": "Removes the TagProtect lock from a specific tag. Once disabled, the tag becomes visible to all readers again without needing any password. Send the same tag ID and password that were used when protection was enabled.",
@@ -215,7 +217,8 @@
       "quiet_tags": "Silences one or more specific tags by EPC ID. Quieted tags will not respond during inventory rounds while the configuration is active. Other tags are unaffected. Use unquiet_tags to restore them.",
       "unquiet_tags": "Restores previously silenced tags back to full inventory participation. Provide the same tag IDs that were quieted  - they will resume responding in inventory rounds normally.",
       "get_gen2x_config": "Reads back the current Gen2X configuration stored on the reader. Use this command to verify which settings (TagProtect, FastID, TagFocus, TagQuieting) are active before starting the radio. The response payload mirrors the last applied configuration.",
-      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command  - starting with Gen2X active while the radio is running will return an error."
+      "start_with_gen2x": "Applies all staged Gen2X settings and starts the radio. The applyImpinjGen2X flag must be set to true for the Gen2X configuration to take effect. Stop the radio before calling this command  - starting with Gen2X active while the radio is running will return an error.",
+      "stop": "Stops the radio. The radio must be stopped before applying any Gen2X configuration changes. Send this command to halt the current radio operation."
     };
 
     function lookupCommandKey(text) {
@@ -240,7 +243,7 @@
         if (!titles[t].parentElement.querySelector('[data-cmd-path]')) {
           var cmdPath = document.createElement('div');
           cmdPath.setAttribute('data-cmd-path', '1');
-          var pathText = (key === 'start_with_gen2x') ? '/start/gen2x' : '/cloud/impinjGen2X';
+          var pathText = (key === 'start_with_gen2x') ? '/start/gen2x' : (key === 'stop') ? '/stop' : '/cloud/impinjGen2X';
           cmdPath.classList.add('x-cmd-path');
           cmdPath.textContent = pathText;
           titles[t].parentElement.insertBefore(cmdPath, titles[t].nextSibling);
@@ -592,7 +595,8 @@
             'tag quieting': 'Tag Quieting',
             'fastid': 'FastID',
             'configuration': 'Configuration',
-            'radio control': 'Radio Control',
+            'radio control': 'Control Commands',
+            'control commands': 'Control Commands',
             'overview': 'Overview',
             'setting it up': 'Setting it up'
           };
@@ -622,7 +626,7 @@
       allH2.forEach(function(h) {
         if (h.getAttribute('data-tag-heading-styled')) return;
         var txt = (h.textContent || '').trim();
-        var knownTags = ['Protected Mode', 'FastID', 'TagFocus', 'Tag Quieting', 'Configuration', 'Radio Control', 'Overview', 'Setting it up'];
+        var knownTags = ['Protected Mode', 'FastID', 'TagFocus', 'Tag Quieting', 'Configuration', 'Control Commands', 'Overview', 'Setting it up'];
         if (knownTags.indexOf(txt) !== -1 || knownTags.some(function(t) { return txt.toUpperCase() === t.toUpperCase(); })) {
           h.setAttribute('data-tag-heading-styled', '1');
           h.classList.add('x-tag-title');

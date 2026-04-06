@@ -1,7 +1,7 @@
 {
     "title": "start_with_gen2x",
     "description": "Starts the radio with Gen2X configuration applied. Stop the radio first before issuing this command.",
-    "x-tag": "Radio Control",
+    "x-tag": "Control Commands",
     "type": "object",
     "required": [
         "command",

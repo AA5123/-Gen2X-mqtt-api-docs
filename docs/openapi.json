@@ -35,7 +35,7 @@
       "description": "Retrieve the current Gen2X feature configuration from the reader."
     },
     {
-      "name": "Radio Control",
+      "name": "Control Commands",
       "description": "Start and stop the radio with Gen2X configuration applied."
     }
   ],
@@ -60,7 +60,7 @@
       "name": "Configuration & Control",
       "tags": [
         "Configuration",
-        "Radio Control"
+        "Control Commands"
       ]
     }
   ],
@@ -2090,7 +2090,7 @@
     "/start/gen2x": {
       "post": {
         "tags": [
-          "Radio Control"
+          "Control Commands"
         ],
         "summary": "Start With Gen2X",
         "description": "Applies all staged Gen2X settings and starts the radio. The `applyImpinjGen2X` flag must be set to `true` for the Gen2X configuration to take effect.\n\n**Important:** Stop the radio before calling this command  - starting with Gen2X active while the radio is already running will return an error.\n\n**Workflow:**\n1. Configure Gen2X features using the set commands\n2. Verify configuration using `get_gen2x_config`\n3. Stop the radio if running\n4. Send this command with `applyImpinjGen2X: true`",
@@ -2220,6 +2220,125 @@
             "iot_status_code": "RADIO_BUSY",
             "cause": "Radio is already running an operation",
             "recommended_action": "Stop the radio first, then retry"
+          }
+        ]
+      }
+    },
+    "/stop": {
+      "post": {
+        "tags": [
+          "Control Commands"
+        ],
+        "summary": "Stop",
+        "description": "Stops the radio. The radio must be stopped before applying any Gen2X configuration changes.\n\nSend this command to halt the current radio operation. The response confirms whether the stop was successful.\n\n**Usage:**\n1. Send the stop command with an empty payload\n2. Wait for the success response\n3. Apply Gen2X configuration changes\n4. Restart the radio using `start_with_gen2x`",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "command_id",
+                  "payload"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": ["stop"],
+                    "description": "MQTT command name"
+                  },
+                  "command_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Unique identifier to correlate request with response"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "properties": {},
+                    "description": "Empty payload for stop command"
+                  }
+                }
+              },
+              "examples": {
+                "Tested example": {
+                  "description": "Stop the radio",
+                  "value": {
+                    "command": "stop",
+                    "command_id": "c3f1a2b4-5678-4def-abcd-123456789abc",
+                    "payload": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Stop response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "command",
+                    "command_id",
+                    "payload",
+                    "response"
+                  ],
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "enum": ["stop"],
+                      "description": "MQTT command name that was executed"
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier correlating this response to the original request"
+                    },
+                    "payload": {
+                      "type": "object",
+                      "description": "Response payload data"
+                    },
+                    "response": {
+                      "type": "string",
+                      "enum": [
+                        "success",
+                        "failure"
+                      ],
+                      "description": "Response status indicating success or failure"
+                    }
+                  }
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "command": "stop",
+                      "command_id": "c3f1a2b4-5678-4def-abcd-123456789abc",
+                      "payload": {},
+                      "response": "success"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-error-codes": [
+          {
+            "code": 0,
+            "description": "Success",
+            "iot_status_code": "SUCCESS",
+            "cause": "",
+            "recommended_action": ""
+          },
+          {
+            "code": 1,
+            "description": "General failure",
+            "iot_status_code": "GENERAL_FAILURE",
+            "cause": "Internal error or invalid payload",
+            "recommended_action": "Check the payload format and retry"
           }
         ]
       }
