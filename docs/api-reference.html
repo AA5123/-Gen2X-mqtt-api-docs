@@ -322,11 +322,12 @@
           infoSections.push(t);
         });
         if (infoSections.length) {
-          navHtml += '<div class="nav-group-header">Overview</div>';
           infoSections.forEach(function(t) {
+            if (t === 'Details') return;
             var id = 'info-' + t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
             navHtml += '<a class="nav-tag" href="#' + id + '">' + escHtml(t) + '</a>';
           });
+          navHtml += '<hr class="nav-divider">';
         }
       }
 
@@ -352,9 +353,6 @@
       /* Render by tag groups */
       var groups = spec['x-tagGroups'] || [{ name: 'API', tags: Object.keys(tagMap) }];
       groups.forEach(function (group) {
-        var groupId = slugify(group.name);
-        navHtml += '<div class="nav-group-header">' + escHtml(group.name) + '</div>';
-
         group.tags.forEach(function (tagName) {
           var tag = tagMap[tagName];
           if (!tag) return;
