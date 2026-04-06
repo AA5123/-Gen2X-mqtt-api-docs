@@ -360,8 +360,10 @@
 
           /* Nav entry for tag — collapsible */
           navHtml += '<div class="nav-tag-group">';
-          navHtml += '<button class="nav-tag nav-tag-toggle" data-target="nav-ops-' + tagId + '" href="#tag-' + tagId + '">' +
-            '<span class="nav-toggle-arrow">▾</span>' + escHtml(tagName) + '</button>';
+          navHtml += '<button class="nav-tag-toggle" data-target="nav-ops-' + tagId + '">' +
+            '<span class="nav-toggle-arrow">&#9660;</span>' +
+            '<a class="nav-tag-link" href="#tag-' + tagId + '">' + escHtml(tagName) + '</a>' +
+            '</button>';
           navHtml += '<div class="nav-ops" id="nav-ops-' + tagId + '">';
           tag.operations.forEach(function (entry) {
             var opId = slugify(entry.op.summary || entry.path);
@@ -391,14 +393,12 @@
       /* Wire up TOC expand/collapse */
       document.querySelectorAll('.nav-tag-toggle').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
+          if (e.target.closest('.nav-tag-link')) return; /* let link navigate freely */
           var targetId = btn.getAttribute('data-target');
           var ops = document.getElementById(targetId);
           var arrow = btn.querySelector('.nav-toggle-arrow');
-          var collapsed = ops.classList.toggle('collapsed');
-          arrow.textContent = collapsed ? '▸' : '▾';
-          /* Also navigate to section */
-          var href = btn.getAttribute('href');
-          if (href) { var el = document.querySelector(href); if (el) el.scrollIntoView({behavior:'smooth'}); }
+          ops.classList.toggle('collapsed');
+          arrow.innerHTML = ops.classList.contains('collapsed') ? '&#9654;' : '&#9660;';
         });
       });
 
