@@ -1,6 +1,4 @@
-﻿# Impinj Gen2X MQTT API &nbsp; v1.0.0
-
-MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. Send JSON command payloads to the MQTT command topic and receive responses on the response topic.
+﻿MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. Send JSON command payloads to the MQTT command topic and receive responses on the response topic.
 
 ## Overview
 
