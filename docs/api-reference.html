@@ -252,13 +252,15 @@
           }
           var schemaHtml = ct.schema ? schemaTable(ct.schema) : '';
 
-          reqHtml = '<div class="payload-heading">MQTT Command Payload</div>';
+          reqHtml = '<div class="payload-section">';
+          reqHtml += '<div class="payload-heading">MQTT Command Payload</div>';
           reqHtml += '<div class="tab-bar">';
           if (reqExampleJson) reqHtml += '<button class="tab-btn active" data-tab="req-ex-' + id + '">Example</button>';
           if (schemaHtml) reqHtml += '<button class="tab-btn" data-tab="req-sc-' + id + '">Schema</button>';
           reqHtml += '</div>';
           if (reqExampleJson) reqHtml += '<div class="tab-panel active" id="req-ex-' + id + '"><pre><code>' + escHtml(reqExampleJson) + '</code></pre></div>';
           if (schemaHtml) reqHtml += '<div class="tab-panel" id="req-sc-' + id + '">' + schemaHtml + '</div>';
+          reqHtml += '</div>';
         }
       }
 
@@ -277,7 +279,8 @@
             }
           }
           var resSchemaHtml = rct.schema ? schemaTable(rct.schema) : '';
-          resHtml = '<div class="payload-heading">MQTT Response Payload</div>';
+          resHtml = '<div class="payload-section">';
+          resHtml += '<div class="payload-heading">MQTT Response Payload</div>';
           if (resExampleJson || resSchemaHtml) {
             resHtml += '<div class="tab-bar">';
             if (resExampleJson) resHtml += '<button class="tab-btn active" data-tab="res-ex-' + id + '">Example</button>';
@@ -286,6 +289,7 @@
             if (resExampleJson) resHtml += '<div class="tab-panel active" id="res-ex-' + id + '"><pre><code>' + escHtml(resExampleJson) + '</code></pre></div>';
             if (resSchemaHtml) resHtml += '<div class="tab-panel" id="res-sc-' + id + '">' + resSchemaHtml + '</div>';
           }
+          resHtml += '</div>';
         }
       }
 
@@ -308,8 +312,11 @@
       var html = '';
       var navHtml = '';
 
-      /* Page title */
+      /* Page title + info description */
       html += '<h1 class="page-title">' + escHtml(spec.info.title) + '</h1>';
+      if (spec.info && spec.info.description) {
+        html += '<div class="info-description md-content">' + md(spec.info.description) + '</div>';
+      }
 
       /* Build tag map: tag name -> { description, operations[] } */
       var tagMap = {};
@@ -371,13 +378,15 @@
       document.querySelectorAll('.tab-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var tabId = btn.getAttribute('data-tab');
-          /* Deactivate siblings */
+          /* Deactivate siblings within this tab-bar only */
           var bar = btn.parentElement;
           bar.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
-          /* Show/hide panels */
-          var container = bar.parentElement;
-          container.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+          /* Show/hide panels within this payload-section only */
+          var section = bar.closest('.payload-section');
+          if (section) {
+            section.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+          }
           var target = document.getElementById(tabId);
           if (target) target.classList.add('active');
         });

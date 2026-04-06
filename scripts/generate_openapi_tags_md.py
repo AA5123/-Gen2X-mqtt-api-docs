@@ -44,6 +44,24 @@ SCHEMAS_DIR = _mod.SCHEMAS_DIR
 OUTPUT_PATH = os.path.join(_mod.PROJECT_ROOT, "docs", "openapi_md.json")  # separate file — does not touch openapi.json
 
 TAG_DESCRIPTIONS_DIR = os.path.join(SCHEMAS_DIR, "tag_descriptions")
+INFO_DESCRIPTION_PATH = os.path.join(SCHEMAS_DIR, "info_description.md")
+
+# ---------------------------------------------------------------------------
+# Load info description from .md file
+# ---------------------------------------------------------------------------
+
+def load_info_description():
+    """Read schemas/info_description.md for the API info.description field.
+    Falls back to the hardcoded string if the file does not exist."""
+    if os.path.isfile(INFO_DESCRIPTION_PATH):
+        with open(INFO_DESCRIPTION_PATH, "r", encoding="utf-8") as f:
+            text = f.read().strip()
+        print(f"  Loaded info description from info_description.md")
+        return text
+    return (
+        "# Impinj Gen2X MQTT API &nbsp; v1.0.0\n\n"
+        "MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers."
+    )
 
 # ---------------------------------------------------------------------------
 # Load tag descriptions from .md files
@@ -92,25 +110,13 @@ def build_openapi():
         if tag not in used_tags:
             used_tags[tag] = True
 
-    # --- Info (unchanged) ---
+    # --- Info ---
     openapi = OrderedDict()
     openapi["openapi"] = "3.0.0"
     openapi["info"] = OrderedDict([
         ("title", "Impinj Gen2X MQTT API"),
         ("version", "1.0.0"),
-        ("description",
-         "# Impinj Gen2X MQTT API &nbsp; v1.0.0\n\n"
-         "MQTT-based API for controlling Impinj Gen2X features on Zebra fixed RFID readers. "
-         "Send JSON command payloads to the MQTT command topic and receive responses on the response topic.\n\n"
-         "## About This Document\n"
-         "This API reference covers the Gen2X commands for the Impinj Gen2X feature set available on Zebra fixed RFID readers. "
-         "Each command section includes the request payload schema, response payload schema, field descriptions, and JSON examples.\n\n"
-         "## Supported Gen2X Features\n"
-         "- **Tag Protection (Protected Mode)** — Locks a tag using a 32-bit password so it becomes invisible to unauthorized readers. "
-         "Includes enable/disable protection, enable/disable visibility, and short-range mode\n"
-         "- **FastID** — Tags return both EPC and TID in a single inventory response, eliminating extra read operations\n"
-         "- **TagFocus** — Already-inventoried tags stay unresponsive so the reader focuses on finding new or unread tags\n"
-         "- **Tag Quieting** — Selectively silence or restore specific tags by EPC ID to control which tags participate in inventory"),
+        ("description", load_info_description()),
     ])
 
     # --- Tags (with md descriptions) ---
