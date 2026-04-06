@@ -8,19 +8,19 @@
  *  Injected via:   adoptedStyleSheets into RapiDoc shadow roots
  *  Last updated:   2026-03-26
  *
- *  Font Size Reference (unified 1.25× scale):
+ *  Font Size Reference (standard web scale):
  *  ─────────────────────────────────
- *    Small / captions: 1rem     (16px)
- *    Code / mono:      1.125rem (18px)
- *    Table / labels:   1.25rem  (20px)
- *    Body / schema:    1.375rem (22px)
- *    H3 headings:      1.75rem  (28px)
- *    H2 headings:      2.25rem  (36px)
- *    Operation title:  3.5rem   (56px)
+ *    Small / captions: 0.75rem  (12px)
+ *    Code / mono:      0.875rem (14px)
+ *    Table / labels:   0.9375rem(15px)
+ *    Body / schema:    0.9375rem(15px)
+ *    H3 headings:      1.25rem  (20px)
+ *    H2 headings:      1.5rem   (24px)
+ *    Operation title:  1.875rem (30px)
  *
- *  Enum badges:         1.125rem  (monospace, bordered)
- *  MQTT topic paths:    1.125rem  (code style)
- *  Command headers:     1.75rem   (bold, navy)
+ *  Enum badges:         0.875rem  (monospace, bordered)
+ *  MQTT topic paths:    0.875rem  (code style)
+ *  Command headers:     1.25rem   (bold, navy)
  *
  * ============================================================================
  */
@@ -195,7 +195,7 @@ th {
   background: #003d6b !important;
   color: #fff !important;
   font-weight: 600 !important;
-  font-size: 1.25rem !important;
+  font-size: 0.9375rem !important;
   letter-spacing: 0.3px !important;
   padding: 9px 12px !important;
   text-align: left !important;
@@ -205,7 +205,7 @@ th {
 td {
   padding: 8px 12px !important;
   vertical-align: top !important;
-  font-size: 1.25rem !important;
+  font-size: 0.9375rem !important;
   border: 1px solid #8a94a6 !important;
   word-break: break-word !important;
 }
@@ -226,8 +226,8 @@ tr:nth-child(even) td {
 .endpoint-body .summary .title,
 .summary .title,
 div.summary div.title {
-  font-size: 4.5rem !important;
-  font-weight: 900 !important;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
   color: #003d6b !important;
   letter-spacing: 0.3px !important;
   border-bottom: 3px solid #003d6b !important;
@@ -244,7 +244,7 @@ div.summary div.title {
   padding-bottom: 6px !important;
   margin-top: 16px !important;
   margin-bottom: 8px !important;
-  font-size: 2.25rem !important;
+  font-size: 1.5rem !important;
   font-weight: 700 !important;
 }
 
@@ -253,7 +253,7 @@ div.summary div.title {
   color: #003d6b !important;
   margin-top: 12px !important;
   margin-bottom: 6px !important;
-  font-size: 1.75rem !important;
+  font-size: 1.25rem !important;
   font-weight: 600 !important;
 }
 
@@ -267,7 +267,7 @@ pre {
   border-left: 4px solid #003d6b !important;
   border-radius: 4px !important;
   padding: 12px 14px !important;
-  font-size: 1.125rem !important;
+  font-size: 0.875rem !important;
   line-height: 1.5 !important;
   max-height: 300px !important;
   overflow: auto !important;
@@ -277,7 +277,7 @@ code {
   background: #f4f4f4 !important;
   border-radius: 3px !important;
   padding: 1px 5px !important;
-  font-size: 1.125rem !important;
+  font-size: 0.875rem !important;
   color: #1a1a1a !important;
 }
 
@@ -285,7 +285,7 @@ pre code {
   background: none !important;
   border: none !important;
   padding: 0 !important;
-  font-size: 1.125rem !important;
+  font-size: 0.875rem !important;
 }
 
 
@@ -298,7 +298,7 @@ textarea {
   max-height: 180px !important;
   height: auto !important;
   resize: vertical !important;
-  font-size: 1.125rem !important;
+  font-size: 0.875rem !important;
   padding: 8px !important;
 }
 
@@ -309,7 +309,7 @@ textarea {
 
 .m-markdown p,
 .m-markdown li {
-  font-size: 19px !important;
+  font-size: 15px !important;
   line-height: 1.6 !important;
   color: #1a1a1a !important;
 }
@@ -324,9 +324,9 @@ textarea {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :host {
-  --font-size-small: 19px !important;
-  --font-size-regular: 19px !important;
-  --font-size-mono: 17px !important;
+  --font-size-small: 13px !important;
+  --font-size-regular: 15px !important;
+  --font-size-mono: 13px !important;
 }
 
 .schema-table {
@@ -342,52 +342,52 @@ textarea {
 
 .schema-table .td {
   padding: 8px 12px !important;
-  font-size: 19px !important;
+  font-size: 15px !important;
   word-break: break-word !important;
   min-width: 0 !important;
 }
 
 .schema-table .key {
   min-width: 140px !important;
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .schema-table .key-type {
   min-width: 70px !important;
   white-space: nowrap !important;
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .schema-table .key-descr {
   min-width: 0 !important;
   flex: 1 !important;
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .obj-descr {
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .descr-text {
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 span.descr-text {
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .schema-description {
-  font-size: 19px !important;
+  font-size: 15px !important;
 }
 
 .toolbar-btn {
-  font-size: 17px !important;
+  font-size: 13px !important;
 }
 
 .request-body-container *,
 .response-body-container * {
-  --font-size-small: 19px !important;
-  --font-size-regular: 19px !important;
+  --font-size-small: 13px !important;
+  --font-size-regular: 15px !important;
 }
 
 .tree {
