@@ -17,13 +17,13 @@ Users should verify whether their tags support these operations by referring to 
 
 All Gen2X commands are sent as JSON payloads to the MQTT **command topic** and responses are received on the **response topic**. Each command uses the same top-level structure:
 
-`json
+```json
 {
   "command": "set_impinjGen2X",
   "command_id": "<uuid>",
   "payload": { ... }
 }
-`
+```
 
 The command_id (UUID) correlates each response back to its original request.
 
