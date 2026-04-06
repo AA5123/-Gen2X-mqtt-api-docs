@@ -176,7 +176,7 @@ def build_openapi():
 
         op = OrderedDict()
         op["tags"]    = [tag_name]
-        op["summary"] = op_name
+        op["summary"] = op_name.replace('_', ' ').title()
         if description:
             op["description"] = description
 
