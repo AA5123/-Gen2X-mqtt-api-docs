@@ -1,9 +1,0 @@
-{
-  "topic": "controlrequest",
-  "payload": {
-    "command": "get_impinjGen2X",
-    "command_id": "3af7232c-8ec5-40d1-a0ab-cf00f81e9e01",
-    "payload": {}
-  },
-  "sent_at": "2026-04-01T09:00:14.471857"
-}
