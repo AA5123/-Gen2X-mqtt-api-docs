@@ -271,22 +271,27 @@
         var res = op.responses[resKey];
         if (res && res.content && res.content['application/json']) {
           var rct = res.content['application/json'];
-          var resExObj = rct.examples;
-          if (resExObj) {
-            var rFirstKey = Object.keys(resExObj)[0];
-            if (rFirstKey && resExObj[rFirstKey].value) {
-              resExampleJson = JSON.stringify(resExObj[rFirstKey].value, null, 2);
-            }
-          }
+          var resExObj = rct.examples || {};
+          var resExKeys = Object.keys(resExObj);
           var resSchemaHtml = rct.schema ? schemaTable(rct.schema) : '';
           resHtml = '<div class="payload-section">';
           resHtml += '<div class="payload-heading">MQTT Response Payload</div>';
-          if (resExampleJson || resSchemaHtml) {
+          if (resExKeys.length || resSchemaHtml) {
             resHtml += '<div class="tab-bar">';
-            if (resExampleJson) resHtml += '<button class="tab-btn active" data-tab="res-ex-' + id + '">Example</button>';
+            if (resExKeys.length) resHtml += '<button class="tab-btn active" data-tab="res-ex-' + id + '">Example</button>';
             if (resSchemaHtml) resHtml += '<button class="tab-btn" data-tab="res-sc-' + id + '">Schema</button>';
             resHtml += '</div>';
-            if (resExampleJson) resHtml += '<div class="tab-panel active" id="res-ex-' + id + '"><pre><code>' + escHtml(resExampleJson) + '</code></pre></div>';
+            if (resExKeys.length) {
+              resHtml += '<div class="tab-panel active" id="res-ex-' + id + '">';
+              if (resExKeys.length > 1) {
+                var resExVals = {}; resExKeys.forEach(function(k){ resExVals[k] = resExObj[k].value; });
+                resHtml += '<select class="example-select" data-panel="res-ex-' + id + '" data-examples="' + escHtml(JSON.stringify(resExVals)) + '">';
+                resExKeys.forEach(function(k) { resHtml += '<option value="' + escHtml(k) + '">' + escHtml(k) + '</option>'; });
+                resHtml += '</select>';
+              }
+              resHtml += '<pre><code>' + escHtml(JSON.stringify(resExObj[resExKeys[0]].value, null, 2)) + '</code></pre>';
+              resHtml += '</div>';
+            }
             if (resSchemaHtml) resHtml += '<div class="tab-panel" id="res-sc-' + id + '">' + resSchemaHtml + '</div>';
           }
           resHtml += '</div>';
@@ -404,6 +409,24 @@
 
       addCopyButtons();
       wireSchemaToggles();
+
+      /* Wire example dropdowns */
+      document.querySelectorAll('.example-select').forEach(function(sel) {
+        sel.addEventListener('change', function() {
+          var panelId = sel.getAttribute('data-panel');
+          var panel = document.getElementById(panelId);
+          if (!panel) return;
+          var pre = panel.querySelector('pre code');
+          if (!pre) return;
+          var examplesJson = sel.getAttribute('data-examples');
+          if (!examplesJson) return;
+          try {
+            var examples = JSON.parse(examplesJson);
+            var val = examples[sel.value];
+            if (val !== undefined) pre.textContent = JSON.stringify(val, null, 2);
+          } catch(e) {}
+        });
+      });
 
       /* Highlight active nav on scroll */
       var allTags = document.querySelectorAll('.nav-tag');

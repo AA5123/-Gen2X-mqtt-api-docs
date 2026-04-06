@@ -251,6 +251,12 @@ blockquote p { margin: 0; }
 .tab-btn.active { color: #111; border-bottom-color: #111; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
+.example-select {
+  display: block; margin: 8px 0; padding: 5px 10px;
+  font-size: 13px; border: 1px solid #ddd; border-radius: 4px;
+  background: #fff; color: #333; cursor: pointer;
+  font-family: inherit;
+}
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 900px) {
