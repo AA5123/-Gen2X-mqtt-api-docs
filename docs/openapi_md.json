@@ -27,7 +27,8 @@
             "description": "﻿Retrieve the current Gen2X feature configuration from the reader."
         },
         {
-            "name": "Control Commands"
+            "name": "Control Commands",
+            "description": "Start and stop the radio while applying Gen2X configuration."
         }
     ],
     "x-tagGroups": [
@@ -48,12 +49,7 @@
         {
             "name": "Configuration & Control",
             "tags": [
-                "Configuration"
-            ]
-        },
-        {
-            "name": "Other",
-            "tags": [
+                "Configuration",
                 "Control Commands"
             ]
         }
