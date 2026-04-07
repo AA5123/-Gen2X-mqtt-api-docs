@@ -146,12 +146,32 @@ pre code { background: none; padding: 0; border: 0; }
   color: #111827;
 }
 
-/* Token colors for JS-applied highlighting */
-.tok-key  { color: #fb923c; }
-.tok-str  { color: #f8fafc; }
-.tok-num  { color: #93c5fd; }
-.tok-bool { color: #c4b5fd; }
-.tok-kw   { color: #fdba74; }
+/* Prism token tuning (dark editor-like) */
+pre[class*="language-"] {
+  background: #1b1f27;
+  border-color: #2b313d;
+  border-radius: 8px;
+  margin: 0 0 12px;
+}
+code[class*="language-"] { color: #e5e7eb; }
+.token.keyword,
+.token.operator,
+.token.boolean,
+.token.number { color: #c4b5fd; }
+.token.class-name,
+.token.function,
+.token.method,
+.token.namespace,
+.token.constant,
+.token.builtin,
+.token.property { color: #fb923c; }
+.token.string,
+.token.char,
+.token.attr-value { color: #f8fafc; }
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata { color: #94a3b8; }
 
 .copy-btn {
   position: absolute;

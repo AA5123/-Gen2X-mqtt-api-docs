@@ -7,6 +7,10 @@
   <title>Impinj Gen2X MQTT API</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700,900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/custom-api.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </head>
 <body>
   <nav id="sidebar">
@@ -35,11 +39,10 @@
       if (!text) return '';
       var html = text
         /* Code blocks */
-        .replace(/```json\n([\s\S]*?)```/g, function (_, code) {
-          return '<pre><code>' + escHtml(code.trim()) + '</code></pre>';
-        })
-        .replace(/```\n?([\s\S]*?)```/g, function (_, code) {
-          return '<pre><code>' + escHtml(code.trim()) + '</code></pre>';
+        .replace(/```([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g, function (_, lang, code) {
+          var language = (lang || '').toLowerCase();
+          var cls = language ? ' class="language-' + language + '"' : '';
+          return '<pre' + cls + '><code' + cls + '>' + escHtml(code.trim()) + '</code></pre>';
         })
         /* Blockquotes */
         .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
@@ -77,34 +80,6 @@
 
     function escHtml(s) {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    function colorizeCode(codeEl) {
-      if (!codeEl) return;
-      var text = codeEl.textContent || '';
-      var html = escHtml(text);
-
-      var looksLikeJson = /^\s*[\[{]/.test(text);
-      if (looksLikeJson) {
-        html = html
-          .replace(/("(?:\\.|[^"\\])*")(\s*:)/g, '<span class="tok-key">$1</span>$2')
-          .replace(/(:\s*)("(?:\\.|[^"\\])*")/g, '$1<span class="tok-str">$2</span>')
-          .replace(/(:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g, '$1<span class="tok-num">$2</span>')
-          .replace(/\b(true|false|null)\b/g, '<span class="tok-bool">$1</span>');
-      } else {
-        html = html
-          .replace(/\b(public|private|protected|class|new|try|catch|if|else|return|static|void|String|int|long|boolean)\b/g, '<span class="tok-kw">$1</span>')
-          .replace(/("(?:\\.|[^"\\])*")/g, '<span class="tok-str">$1</span>')
-          .replace(/\b\d+\b/g, '<span class="tok-num">$&</span>');
-      }
-
-      codeEl.innerHTML = html;
-    }
-
-    function colorizeAllCodeBlocks() {
-      document.querySelectorAll('pre code').forEach(function (codeEl) {
-        colorizeCode(codeEl);
-      });
     }
 
     /* ── Schema to flat table with inline expand/collapse ── */
@@ -286,7 +261,7 @@
           if (reqExampleJson) reqHtml += '<button class="tab-btn active" data-tab="req-ex-' + id + '">Example</button>';
           if (schemaHtml) reqHtml += '<button class="tab-btn" data-tab="req-sc-' + id + '">Schema</button>';
           reqHtml += '</div>';
-          if (reqExampleJson) reqHtml += '<div class="tab-panel active" id="req-ex-' + id + '"><pre><code>' + escHtml(reqExampleJson) + '</code></pre></div>';
+          if (reqExampleJson) reqHtml += '<div class="tab-panel active" id="req-ex-' + id + '"><pre class="language-json"><code class="language-json">' + escHtml(reqExampleJson) + '</code></pre></div>';
           if (schemaHtml) reqHtml += '<div class="tab-panel" id="req-sc-' + id + '">' + schemaHtml + '</div>';
           reqHtml += '</div>';
         }
@@ -317,7 +292,7 @@
                 resExKeys.forEach(function(k) { resHtml += '<option value="' + escHtml(k) + '">' + escHtml(k) + '</option>'; });
                 resHtml += '</select>';
               }
-              resHtml += '<pre><code>' + escHtml(JSON.stringify(resExObj[resExKeys[0]].value, null, 2)) + '</code></pre>';
+              resHtml += '<pre class="language-json"><code class="language-json">' + escHtml(JSON.stringify(resExObj[resExKeys[0]].value, null, 2)) + '</code></pre>';
               resHtml += '</div>';
             }
             if (resSchemaHtml) resHtml += '<div class="tab-panel" id="res-sc-' + id + '">' + resSchemaHtml + '</div>';
@@ -437,7 +412,7 @@
 
       addCopyButtons();
       wireSchemaToggles();
-      colorizeAllCodeBlocks();
+      if (window.Prism) Prism.highlightAllUnder(document.getElementById('content'));
 
       /* Wire example dropdowns */
       document.querySelectorAll('.example-select').forEach(function(sel) {
@@ -454,7 +429,7 @@
             var val = examples[sel.value];
             if (val !== undefined) {
               pre.textContent = JSON.stringify(val, null, 2);
-              colorizeCode(pre);
+              if (window.Prism) Prism.highlightElement(pre);
             }
           } catch(e) {}
         });
