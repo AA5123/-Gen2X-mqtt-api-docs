@@ -79,6 +79,34 @@
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function colorizeCode(codeEl) {
+      if (!codeEl) return;
+      var text = codeEl.textContent || '';
+      var html = escHtml(text);
+
+      var looksLikeJson = /^\s*[\[{]/.test(text);
+      if (looksLikeJson) {
+        html = html
+          .replace(/("(?:\\.|[^"\\])*")(\s*:)/g, '<span class="tok-key">$1</span>$2')
+          .replace(/(:\s*)("(?:\\.|[^"\\])*")/g, '$1<span class="tok-str">$2</span>')
+          .replace(/(:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g, '$1<span class="tok-num">$2</span>')
+          .replace(/\b(true|false|null)\b/g, '<span class="tok-bool">$1</span>');
+      } else {
+        html = html
+          .replace(/\b(public|private|protected|class|new|try|catch|if|else|return|static|void|String|int|long|boolean)\b/g, '<span class="tok-kw">$1</span>')
+          .replace(/("(?:\\.|[^"\\])*")/g, '<span class="tok-str">$1</span>')
+          .replace(/\b\d+\b/g, '<span class="tok-num">$&</span>');
+      }
+
+      codeEl.innerHTML = html;
+    }
+
+    function colorizeAllCodeBlocks() {
+      document.querySelectorAll('pre code').forEach(function (codeEl) {
+        colorizeCode(codeEl);
+      });
+    }
+
     /* ── Schema to flat table with inline expand/collapse ── */
     var schemaUid = 0;
     function schemaRows(schema, depth, parentUid) {
@@ -409,6 +437,7 @@
 
       addCopyButtons();
       wireSchemaToggles();
+      colorizeAllCodeBlocks();
 
       /* Wire example dropdowns */
       document.querySelectorAll('.example-select').forEach(function(sel) {
@@ -423,7 +452,10 @@
           try {
             var examples = JSON.parse(examplesJson);
             var val = examples[sel.value];
-            if (val !== undefined) pre.textContent = JSON.stringify(val, null, 2);
+            if (val !== undefined) {
+              pre.textContent = JSON.stringify(val, null, 2);
+              colorizeCode(pre);
+            }
           } catch(e) {}
         });
       });

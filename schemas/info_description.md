@@ -29,8 +29,15 @@ The command_id (UUID) correlates each response back to its original request.
 
 ## Setting it up
 
-Connect to the reader's MQTT broker and subscribe to the **response topic** and **data topic**. Then publish commands to the **command topic** using the JSON structures shown below.
+For MQTT connection setup, broker details, and topic onboarding, follow the Zebra reference guide:
 
-All Gen2X configuration commands use "command": "set_impinjGen2X". After configuring the desired features, stop the radio and send a start command with "applyImpinjGen2X": true to apply the configuration.
+- [Zebra IoTC MQTT Setup Guide](https://zebradevs.github.io/rfid-ziotc-docs/other_cloud_support/MQTT/index.html)
+
+### Next steps
+
+1. Configure required Gen2X features using the API commands below.
+2. Verify settings with `get_gen2x_config`.
+3. Stop the radio if running.
+4. Start with `start_with_gen2x` and set `applyImpinjGen2X` to `true`.
 
 > NOTE: The radio must be stopped before applying Gen2X configuration. Starting with Gen2X active while the radio is already running will return an error.
